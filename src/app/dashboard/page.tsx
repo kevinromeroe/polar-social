@@ -1,242 +1,260 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
-import { supabase } from "@/lib/supabase";
-import type { Account, AccountSnapshot } from "@/types/database";
 import {
   Users,
-  FileText,
-  Heart,
   TrendingUp,
-  Building2,
+  MessageCircle,
+  ThumbsUp,
+  AlertTriangle,
+  Info,
+  Zap,
 } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Legend,
+  Cell,
+} from "recharts";
+import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
+import { useClientData } from "@/lib/client-data";
 
-interface BrandSummary {
-  brand: string;
-  accounts: Account[];
-  latestSnapshots: AccountSnapshot[];
-  totalFollowers: number;
-  totalPosts: number;
-}
-
-function StatCard({
+function KpiCard({
   label,
   value,
+  subtitle,
   icon: Icon,
   color,
 }: {
   label: string;
-  value: string | number;
+  value: string;
+  subtitle: string;
   icon: React.ComponentType<{ className?: string }>;
   color: string;
 }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <div className="flex items-center justify-between">
+    <div className="bg-white rounded-xl border border-gray-200 p-5">
+      <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-500">{label}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">
-            {typeof value === "number" ? value.toLocaleString("es-CO") : value}
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            {label}
           </p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+          <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
         </div>
-        <div className={`p-3 rounded-lg ${color}`}>
-          <Icon className="h-6 w-6 text-white" />
+        <div className={`p-2.5 rounded-lg ${color}`}>
+          <Icon className="h-5 w-5 text-white" />
         </div>
       </div>
     </div>
   );
 }
 
-function BrandCard({ brand }: { brand: BrandSummary }) {
-  const networks = brand.accounts.map((a) => a.network);
-  const networkLabels: Record<string, string> = {
-    instagram: "IG",
-    facebook: "FB",
-    tiktok: "TK",
-    linkedin: "LI",
-    x: "X",
-  };
+const severityStyles = {
+  info: "border-l-blue-400 bg-blue-50",
+  warning: "border-l-amber-400 bg-amber-50",
+  critical: "border-l-red-400 bg-red-50",
+};
 
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900">{brand.brand}</h3>
-      <div className="flex gap-2 mt-2">
-        {networks.map((n) => (
-          <span
-            key={n}
-            className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium"
-          >
-            {networkLabels[n] || n}
-          </span>
-        ))}
-      </div>
-      <div className="mt-4 grid grid-cols-2 gap-4">
-        <div>
-          <p className="text-xs text-gray-500">Seguidores totales</p>
-          <p className="text-xl font-bold text-gray-900">
-            {brand.totalFollowers.toLocaleString("es-CO")}
-          </p>
-        </div>
-        <div>
-          <p className="text-xs text-gray-500">Posts totales</p>
-          <p className="text-xl font-bold text-gray-900">
-            {brand.totalPosts.toLocaleString("es-CO")}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+const severityIcons = {
+  info: Info,
+  warning: AlertTriangle,
+  critical: Zap,
+};
 
 export default function DashboardPage() {
-  const [brands, setBrands] = useState<BrandSummary[]>([]);
-  const [competitorCount, setCompetitorCount] = useState(0);
-  const [totalEngagement, setTotalEngagement] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const { ownBrands, sovData, growthTrend, alerts, clientDescription } = useClientData();
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const { data: accounts } = await supabase
-          .from("accounts")
-          .select("*")
-          .eq("account_type", "own");
+  const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
+  const avgEngOwn =
+    ownBrands.reduce((s, b) => s + getAvgEngagement(b), 0) / ownBrands.length;
+  const totalMentions = sovData
+    .filter((s) => ownBrands.some((b) => b.brand === s.brand))
+    .reduce((s, d) => s + d.mentions, 0);
+  const ownSentimentAvg = 70;
 
-        const { data: competitors } = await supabase
-          .from("accounts")
-          .select("id")
-          .eq("account_type", "competitor");
+  const sovChartData = sovData.slice(0, 8).map((s) => ({
+    ...s,
+    fill: ownBrands.some((b) => b.brand === s.brand) ? "#0d9488" : "#94a3b8",
+  }));
 
-        setCompetitorCount(competitors?.length ?? 0);
-
-        if (accounts && accounts.length > 0) {
-          const brandNames = [...new Set(accounts.map((a: Account) => a.brand_name))];
-          const summaries: BrandSummary[] = [];
-
-          for (const name of brandNames) {
-            const brandAccounts = accounts.filter((a: Account) => a.brand_name === name);
-            const accountIds = brandAccounts.map((a: Account) => a.id);
-
-            const { data: snapshots } = await supabase
-              .from("account_snapshots")
-              .select("*")
-              .in("account_id", accountIds)
-              .order("snapshot_date", { ascending: false });
-
-            const latestByAccount = new Map<string, AccountSnapshot>();
-            snapshots?.forEach((s: AccountSnapshot) => {
-              if (!latestByAccount.has(s.account_id)) {
-                latestByAccount.set(s.account_id, s);
-              }
-            });
-
-            const latestSnapshots = Array.from(latestByAccount.values());
-            const totalFollowers = latestSnapshots.reduce(
-              (sum, s) => sum + (s.followers ?? 0),
-              0
-            );
-            const totalPosts = latestSnapshots.reduce(
-              (sum, s) => sum + (s.total_posts ?? 0),
-              0
-            );
-
-            summaries.push({
-              brand: name,
-              accounts: brandAccounts,
-              latestSnapshots,
-              totalFollowers,
-              totalPosts,
-            });
-          }
-          setBrands(summaries);
-        }
-
-        const { data: recentPosts } = await supabase
-          .from("posts")
-          .select("engagement_total")
-          .gte(
-            "published_at",
-            new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
-          );
-
-        const eng = recentPosts?.reduce(
-          (sum, p: { engagement_total: number }) => sum + (p.engagement_total ?? 0),
-          0
-        );
-        setTotalEngagement(eng ?? 0);
-      } catch (err) {
-        console.error("Error loading dashboard:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadData();
-  }, []);
-
-  const totalFollowers = brands.reduce((s, b) => s + b.totalFollowers, 0);
+  const ownBrandNames = ownBrands.map((b) => b.brand);
+  const lineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
 
   return (
     <ProtectedLayout>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-        <p className="text-gray-500 mt-1">
-          Resumen general — Alimentos Polar
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-900">Resumen</h2>
+        <p className="text-gray-500 text-sm mt-1">
+          Vista ejecutiva — todas las marcas y redes
         </p>
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard
-              label="Seguidores totales"
-              value={totalFollowers}
-              icon={Users}
-              color="bg-blue-500"
-            />
-            <StatCard
-              label="Marcas propias"
-              value={brands.length}
-              icon={Building2}
-              color="bg-green-500"
-            />
-            <StatCard
-              label="Competidores monitoreados"
-              value={competitorCount}
-              icon={TrendingUp}
-              color="bg-orange-500"
-            />
-            <StatCard
-              label="Engagement (30 días)"
-              value={totalEngagement}
-              icon={Heart}
-              color="bg-pink-500"
-            />
-          </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <KpiCard
+          label="Seguidores totales"
+          value={formatNumber(totalFollowersOwn)}
+          subtitle="Todas las marcas propias"
+          icon={Users}
+          color="bg-teal-600"
+        />
+        <KpiCard
+          label="Engagement promedio"
+          value={avgEngOwn.toFixed(1) + "%"}
+          subtitle="Últimos 30 días"
+          icon={TrendingUp}
+          color="bg-indigo-600"
+        />
+        <KpiCard
+          label="Menciones del período"
+          value={formatNumber(totalMentions)}
+          subtitle="Escucha activa, 7 redes"
+          icon={MessageCircle}
+          color="bg-amber-600"
+        />
+        <KpiCard
+          label="Sentimiento neto"
+          value={"+" + ownSentimentAvg + "%"}
+          subtitle="Positivo predominante"
+          icon={ThumbsUp}
+          color="bg-emerald-600"
+        />
+      </div>
 
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Nuestras Marcas
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {brands.map((b) => (
-                <BrandCard key={b.brand} brand={b} />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Share of Voice — Categoría
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Porcentaje de menciones por marca (top 8)
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={sovChartData}
+              layout="vertical"
+              margin={{ left: 10, right: 20, top: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis
+                type="number"
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                tickFormatter={(v) => v + "%"}
+              />
+              <YAxis
+                dataKey="brand"
+                type="category"
+                width={90}
+                tick={{ fontSize: 12, fill: "#334155" }}
+              />
+              <Tooltip
+                formatter={(value) => [Number(value).toFixed(1) + "%", "SOV"]}
+                contentStyle={{
+                  fontSize: 12,
+                  borderRadius: 8,
+                  border: "1px solid #e2e8f0",
+                }}
+              />
+              <Bar dataKey="percentage" radius={[0, 4, 4, 0]} fill="#94a3b8">
+                {sovChartData.map((entry, i) => (
+                  <Cell key={i} fill={entry.fill} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Crecimiento de seguidores
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Marcas propias — total consolidado (últimos 6 meses)
+          </p>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={growthTrend}
+              margin={{ left: 10, right: 20, top: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis
+                dataKey="date"
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "#94a3b8" }}
+                tickFormatter={(v) => formatNumber(v)}
+              />
+              <Tooltip
+                formatter={(value) => [
+                  Number(value).toLocaleString("es-CO"),
+                  "",
+                ]}
+                contentStyle={{
+                  fontSize: 12,
+                  borderRadius: 8,
+                  border: "1px solid #e2e8f0",
+                }}
+              />
+              <Legend wrapperStyle={{ fontSize: 12 }} />
+              {ownBrandNames.map((name, i) => (
+                <Line
+                  key={name}
+                  type="monotone"
+                  dataKey={name}
+                  stroke={lineColors[i]}
+                  strokeWidth={2}
+                  dot={false}
+                />
               ))}
-              {brands.length === 0 && (
-                <p className="text-gray-400 text-sm col-span-2">
-                  Sin datos aún. Conecta Supabase y ejecuta el primer scraping.
-                </p>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">
+          Alertas y cambios significativos
+        </h3>
+        <div className="space-y-3">
+          {alerts.map((alert, i) => {
+            const Icon = severityIcons[alert.severity];
+            return (
+              <div
+                key={i}
+                className={`border-l-4 rounded-r-lg p-4 ${severityStyles[alert.severity]}`}
+              >
+                <div className="flex items-start gap-3">
+                  <Icon className="h-4 w-4 mt-0.5 shrink-0 text-gray-600" />
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      {alert.title}
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {alert.description}
+                    </p>
+                    <div className="flex gap-3 mt-2">
+                      <span className="text-[10px] font-medium text-gray-400 uppercase">
+                        {alert.brand}
+                      </span>
+                      <span className="text-[10px] text-gray-400">
+                        {alert.date}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </ProtectedLayout>
   );
 }
-

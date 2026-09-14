@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/layout/AuthProvider";
+import { ClientDataProvider } from "@/lib/client-data";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Polar Social Intelligence",
-  description: "Plataforma de monitoreo de redes sociales — Alimentos Polar",
+  title: "Escucha Activa de Clientes",
+  description: "Plataforma de monitoreo de redes sociales",
 };
 
 export default function RootLayout({
@@ -29,7 +30,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ClientDataProvider>{children}</ClientDataProvider>
+        </AuthProvider>
       </body>
     </html>
   );
