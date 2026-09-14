@@ -17,7 +17,6 @@ import {
 import { formatNumber } from "@/lib/mock-data";
 import type { MentionData } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
-import { Star } from "lucide-react";
 
 const sentimentLabels: Record<string, string> = {
   positive: "Positivo",
@@ -60,7 +59,7 @@ function MentionCard({ mention }: { mention: MentionData }) {
 }
 
 export default function EscuchaActivaPage() {
-  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, googleMapsData, ownBrands } = useClientData();
+  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands } = useClientData();
 
   const [brandFilter, setBrandFilter] = useState<string>("all");
   const [sentimentFilter, setSentimentFilter] = useState<string>("all");
@@ -98,8 +97,7 @@ export default function EscuchaActivaPage() {
           Share of Voice — Categoría completa
         </h3>
         <p className="text-xs text-gray-400 mb-4">
-          Quién domina la conversación. Consolidado de X, TikTok, Facebook,
-          Reddit, Instagram, LinkedIn y Google Maps.
+          Quién domina la conversación en redes sociales
         </p>
         <ResponsiveContainer width="100%" height={340}>
           <BarChart
@@ -137,6 +135,9 @@ export default function EscuchaActivaPage() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
+        <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
+          Cálculo: total de menciones públicas de cada marca en X, TikTok, Facebook, Instagram, LinkedIn, Reddit y Google Maps durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -252,7 +253,7 @@ export default function EscuchaActivaPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+      <div className="bg-white rounded-xl border border-gray-200 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
             <h3 className="text-sm font-semibold text-gray-900">
@@ -291,42 +292,6 @@ export default function EscuchaActivaPage() {
           {filteredMentions.map((m) => (
             <MentionCard key={m.id} mention={m} />
           ))}
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-1">
-          Google Maps — Reseñas de la categoría
-        </h3>
-        <p className="text-xs text-gray-400 mb-4">
-          Ratings y reseñas de puntos de venta y productos
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-          {googleMapsData.map((g) => {
-            const isOwn = ownBrands.some((b) => b.brand === g.brand);
-            return (
-              <div
-                key={g.brand}
-                className={`border rounded-lg p-4 ${isOwn ? "border-teal-200 bg-teal-50/30" : "border-gray-200"}`}
-              >
-                <p className="text-xs font-semibold text-gray-900">
-                  {g.brand}
-                </p>
-                <div className="flex items-center gap-1 mt-2">
-                  <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
-                  <span className="text-lg font-bold text-gray-900">
-                    {g.rating}
-                  </span>
-                </div>
-                <p className="text-[10px] text-gray-400 mt-1">
-                  {g.totalReviews} reseñas totales
-                </p>
-                <p className="text-[10px] text-gray-400">
-                  {g.recentCount} recientes (30d)
-                </p>
-              </div>
-            );
-          })}
         </div>
       </div>
     </ProtectedLayout>

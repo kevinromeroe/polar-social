@@ -3,20 +3,13 @@
 import { useState } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
   RadarChart,
   Radar,
   PolarGrid,
   PolarAngleAxis,
   PolarRadiusAxis,
   Legend,
-  Cell,
+  ResponsiveContainer,
 } from "recharts";
 import {
   getTotalFollowers,
@@ -27,6 +20,7 @@ import {
 } from "@/lib/mock-data";
 import type { BrandData, Network } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
 import {
   ChevronDown,
   ChevronUp,
@@ -34,7 +28,31 @@ import {
   TrendingDown,
 } from "lucide-react";
 
-type SortKey = "followers" | "engagement" | "posts" | "growth";
+const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number; color?: string }>> = {
+  instagram: FaInstagram,
+  facebook: FaFacebookF,
+  tiktok: FaTiktok,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+};
+
+const ALL_NETWORKS: Network[] = ["instagram", "facebook", "tiktok", "linkedin", "x"];
+
+function getFollowersForNetwork(brand: BrandData, network: Network): number {
+  return brand.networks[network]?.followers ?? 0;
+}
+
+function getEngagementForNetwork(brand: BrandData, network: Network): number {
+  return brand.networks[network]?.engagementRate ?? 0;
+}
+
+function getPostsForNetwork(brand: BrandData, network: Network): number {
+  return brand.networks[network]?.posts ?? 0;
+}
+
+function getGrowthForNetwork(brand: BrandData, network: Network): number {
+  return brand.networks[network]?.growth ?? 0;
+}
 
 function getTotalPosts(brand: BrandData): number {
   return Object.values(brand.networks).reduce((sum, n) => sum + (n?.posts ?? 0), 0);
@@ -52,10 +70,13 @@ function getNetworkCount(brand: BrandData): number {
   return Object.keys(brand.networks).length;
 }
 
+type SortKey = "followers" | "engagement" | "posts" | "growth";
+
 export default function CompetenciaPage() {
-  const { ownBrands, competitors, sovData, mentions, productLineLabels, productLineKeys } = useClientData();
+  const { ownBrands, competitors, productLineLabels, productLineKeys } = useClientData();
 
   const [selectedLine, setSelectedLine] = useState<string>("all");
+  const [selectedNetwork, setSelectedNetwork] = useState<Network | "all">("all");
   const [sortKey, setSortKey] = useState<SortKey>("followers");
   const [expandedBrand, setExpandedBrand] = useState<string | null>(null);
 
@@ -67,29 +88,27 @@ export default function CompetenciaPage() {
     return b.productLine === selectedLine;
   });
 
+  const getFollowers = (b: BrandData) =>
+    selectedNetwork === "all" ? getTotalFollowers(b) : getFollowersForNetwork(b, selectedNetwork);
+  const getEngagement = (b: BrandData) =>
+    selectedNetwork === "all" ? getAvgEngagement(b) : getEngagementForNetwork(b, selectedNetwork);
+  const getPosts = (b: BrandData) =>
+    selectedNetwork === "all" ? getTotalPosts(b) : getPostsForNetwork(b, selectedNetwork);
+  const getGrowth = (b: BrandData) =>
+    selectedNetwork === "all" ? getAvgGrowth(b) : getGrowthForNetwork(b, selectedNetwork);
+
   const sortedBrands = [...filteredBrands].sort((a, b) => {
     switch (sortKey) {
-      case "followers":
-        return getTotalFollowers(b) - getTotalFollowers(a);
-      case "engagement":
-        return getAvgEngagement(b) - getAvgEngagement(a);
-      case "posts":
-        return getTotalPosts(b) - getTotalPosts(a);
-      case "growth":
-        return getAvgGrowth(b) - getAvgGrowth(a);
-      default:
-        return 0;
+      case "followers": return getFollowers(b) - getFollowers(a);
+      case "engagement": return getEngagement(b) - getEngagement(a);
+      case "posts": return getPosts(b) - getPosts(a);
+      case "growth": return getGrowth(b) - getGrowth(a);
+      default: return 0;
     }
   });
 
-  const sovChartData = sovData
-    .filter((s) => filteredBrands.some((b) => b.brand === s.brand))
-    .map((s) => ({
-      ...s,
-      fill: ownBrands.some((b) => b.brand === s.brand) ? "#0d9488" : "#94a3b8",
-    }));
-
-  const top4 = sortedBrands.slice(0, 4);
+  // Radar chart — top 4 por seguidores (consolidado)
+  const top4 = [...filteredBrands].sort((a, b) => getTotalFollowers(b) - getTotalFollowers(a)).slice(0, 4);
   const radarData = [
     { metric: "Seguidores", ...Object.fromEntries(top4.map((b) => [b.brand, Math.min(100, (getTotalFollowers(b) / getTotalFollowers(top4[0])) * 100)])) },
     { metric: "Engagement", ...Object.fromEntries(top4.map((b) => [b.brand, Math.min(100, (getAvgEngagement(b) / 5) * 100)])) },
@@ -113,6 +132,7 @@ export default function CompetenciaPage() {
         </p>
       </div>
 
+      {/* Filtro por línea de producto */}
       <div className="flex flex-wrap gap-2 mb-6">
         {lineFilterOptions.map((opt) => (
           <button
@@ -129,90 +149,85 @@ export default function CompetenciaPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">
-            Share of Voice
-          </h3>
-          <p className="text-xs text-gray-400 mb-4">
-            Porcentaje de menciones por marca
-          </p>
-          <ResponsiveContainer width="100%" height={Math.max(250, sovChartData.length * 30)}>
-            <BarChart
-              data={sovChartData}
-              layout="vertical"
-              margin={{ left: 10, right: 20 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
-                tickFormatter={(v) => v + "%"}
+      {/* Radar chart */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">
+          Comparación multidimensional
+        </h3>
+        <p className="text-xs text-gray-400 mb-4">
+          Top 4 marcas — 5 dimensiones normalizadas
+        </p>
+        <ResponsiveContainer width="100%" height={320}>
+          <RadarChart data={radarData}>
+            <PolarGrid stroke="#e2e8f0" />
+            <PolarAngleAxis
+              dataKey="metric"
+              tick={{ fontSize: 11, fill: "#64748b" }}
+            />
+            <PolarRadiusAxis tick={false} domain={[0, 100]} />
+            {top4.map((b, i) => (
+              <Radar
+                key={b.brand}
+                name={b.brand}
+                dataKey={b.brand}
+                stroke={radarColors[i]}
+                fill={radarColors[i]}
+                fillOpacity={0.1}
+                strokeWidth={2}
               />
-              <YAxis
-                dataKey="brand"
-                type="category"
-                width={95}
-                tick={{ fontSize: 11, fill: "#334155" }}
-              />
-              <Tooltip
-                formatter={(value) => [Number(value).toFixed(1) + "%", "SOV"]}
-                contentStyle={{
-                  fontSize: 12,
-                  borderRadius: 8,
-                  border: "1px solid #e2e8f0",
-                }}
-              />
-              <Bar dataKey="percentage" radius={[0, 4, 4, 0]}>
-                {sovChartData.map((entry, i) => (
-                  <Cell key={i} fill={entry.fill} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">
-            Comparación multidimensional
-          </h3>
-          <p className="text-xs text-gray-400 mb-4">
-            Top 4 marcas — 5 dimensiones normalizadas
-          </p>
-          <ResponsiveContainer width="100%" height={300}>
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#e2e8f0" />
-              <PolarAngleAxis
-                dataKey="metric"
-                tick={{ fontSize: 11, fill: "#64748b" }}
-              />
-              <PolarRadiusAxis tick={false} domain={[0, 100]} />
-              {top4.map((b, i) => (
-                <Radar
-                  key={b.brand}
-                  name={b.brand}
-                  dataKey={b.brand}
-                  stroke={radarColors[i]}
-                  fill={radarColors[i]}
-                  fillOpacity={0.1}
-                  strokeWidth={2}
-                />
-              ))}
-              <Legend wrapperStyle={{ fontSize: 11 }} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
+            ))}
+            <Legend wrapperStyle={{ fontSize: 11 }} />
+          </RadarChart>
+        </ResponsiveContainer>
       </div>
 
+      {/* Tabla comparativa con segmentador por plataforma */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-6">
         <div className="px-5 py-4 border-b border-gray-100">
-          <h3 className="text-sm font-semibold text-gray-900">
-            Tabla comparativa
-          </h3>
-          <p className="text-xs text-gray-400">
-            Click en una marca para ver detalle. Click en columna para ordenar.
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900">
+                Tabla comparativa
+              </h3>
+              <p className="text-xs text-gray-400">
+                Click en columna para ordenar. Selecciona una plataforma para ver métricas específicas.
+              </p>
+            </div>
+          </div>
+
+          {/* Segmentador por plataforma */}
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            <button
+              onClick={() => setSelectedNetwork("all")}
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                selectedNetwork === "all"
+                  ? "bg-gray-900 text-white"
+                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Consolidado
+            </button>
+            {ALL_NETWORKS.map((net) => {
+              const Icon = networkIcons[net];
+              return (
+                <button
+                  key={net}
+                  onClick={() => setSelectedNetwork(net)}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center gap-1.5 ${
+                    selectedNetwork === net
+                      ? "text-white"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                  style={selectedNetwork === net ? { background: networkColors[net] } : {}}
+                >
+                  {Icon && <Icon size={12} />}
+                  {networkLabels[net]}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -259,28 +274,39 @@ export default function CompetenciaPage() {
                     <ChevronDown className="inline h-3 w-3" />
                   )}
                 </th>
-                <th className="text-center px-5 py-3 text-gray-500 font-medium">
-                  Redes
-                </th>
+                {selectedNetwork === "all" && (
+                  <th className="text-center px-5 py-3 text-gray-500 font-medium">
+                    Redes
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
               {sortedBrands.map((brand) => {
                 const isOwn = brand.type === "own";
                 const isExpanded = expandedBrand === brand.brand;
-                const growth = getAvgGrowth(brand);
-                const brandMentions = mentions.filter(
-                  (m) => m.brand === brand.brand
-                );
+                const growth = getGrowth(brand);
+                const followers = getFollowers(brand);
+                const engagement = getEngagement(brand);
+                const posts = getPosts(brand);
                 const lineLabel = brand.productLine
                   ? productLineLabels[brand.productLine] || brand.productLine
                   : null;
 
+                if (selectedNetwork !== "all" && !brand.networks[selectedNetwork]) {
+                  return null;
+                }
+
                 return (
                   <tr key={brand.brand} className="group">
-                    <td colSpan={7} className="p-0">
+                    <td colSpan={selectedNetwork === "all" ? 7 : 6} className="p-0">
                       <div
-                        className={`grid grid-cols-[1fr_auto_auto_auto_auto_auto_auto] items-center cursor-pointer hover:bg-gray-50 transition-colors ${isOwn ? "bg-teal-50/30" : ""}`}
+                        className={`grid items-center cursor-pointer hover:bg-gray-50 transition-colors ${isOwn ? "bg-teal-50/30" : ""}`}
+                        style={{
+                          gridTemplateColumns: selectedNetwork === "all"
+                            ? "1fr auto auto auto auto auto auto"
+                            : "1fr auto auto auto auto auto",
+                        }}
                         onClick={() =>
                           setExpandedBrand(isExpanded ? null : brand.brand)
                         }
@@ -298,13 +324,13 @@ export default function CompetenciaPage() {
                           </span>
                         </div>
                         <div className="px-5 py-3 text-right font-semibold text-gray-900 tabular-nums">
-                          {formatNumber(getTotalFollowers(brand))}
+                          {formatNumber(followers)}
                         </div>
                         <div className="px-5 py-3 text-right text-gray-700 tabular-nums">
-                          {getAvgEngagement(brand)}%
+                          {engagement}%
                         </div>
                         <div className="px-5 py-3 text-right text-gray-700 tabular-nums">
-                          {getTotalPosts(brand)}
+                          {posts}
                         </div>
                         <div className="px-5 py-3 text-right tabular-nums">
                           <span
@@ -319,14 +345,16 @@ export default function CompetenciaPage() {
                             {growth}%
                           </span>
                         </div>
-                        <div className="px-5 py-3 text-center text-gray-500">
-                          {getNetworkCount(brand)}
-                          {isExpanded ? (
-                            <ChevronUp className="inline h-3 w-3 ml-1" />
-                          ) : (
-                            <ChevronDown className="inline h-3 w-3 ml-1" />
-                          )}
-                        </div>
+                        {selectedNetwork === "all" && (
+                          <div className="px-5 py-3 text-center text-gray-500">
+                            {getNetworkCount(brand)}
+                            {isExpanded ? (
+                              <ChevronUp className="inline h-3 w-3 ml-1" />
+                            ) : (
+                              <ChevronDown className="inline h-3 w-3 ml-1" />
+                            )}
+                          </div>
+                        )}
                       </div>
 
                       {isExpanded && (
@@ -339,76 +367,35 @@ export default function CompetenciaPage() {
                               ][]
                             )
                               .filter(([, v]) => v != null)
-                              .map(([net, metrics]) => (
-                                <div
-                                  key={net}
-                                  className="bg-white border border-gray-200 rounded-lg p-3"
-                                >
-                                  <div className="flex items-center gap-2 mb-2">
-                                    <span
-                                      className="w-2 h-2 rounded-full"
-                                      style={{
-                                        background:
-                                          networkColors[net] || "#6b7280",
-                                      }}
-                                    />
-                                    <span className="text-xs font-semibold text-gray-700">
-                                      {networkLabels[net]}
-                                    </span>
-                                  </div>
-                                  <p className="text-sm font-bold text-gray-900">
-                                    {formatNumber(metrics.followers)}
-                                  </p>
-                                  <p className="text-[10px] text-gray-400">
-                                    {metrics.engagementRate}% eng · {metrics.growth > 0 ? "+" : ""}
-                                    {metrics.growth}%
-                                  </p>
-                                </div>
-                              ))}
-                          </div>
-
-                          {brandMentions.length > 0 && (
-                            <div className="mt-4">
-                              <p className="text-xs font-semibold text-gray-600 mb-2">
-                                Menciones recientes
-                              </p>
-                              <div className="space-y-2">
-                                {brandMentions.slice(0, 3).map((m) => (
+                              .map(([net, metrics]) => {
+                                const Icon = networkIcons[net];
+                                return (
                                   <div
-                                    key={m.id}
-                                    className="bg-white border border-gray-100 rounded-lg p-3"
+                                    key={net}
+                                    className="bg-white border border-gray-200 rounded-lg p-3"
                                   >
-                                    <div className="flex items-center gap-2 mb-1">
-                                      <span className="text-[10px] font-semibold text-gray-500">
-                                        {m.network}
-                                      </span>
-                                      <span className="text-[10px] text-gray-400">
-                                        {m.author}
-                                      </span>
+                                    <div className="flex items-center gap-2 mb-2">
                                       <span
-                                        className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ml-auto ${
-                                          m.sentiment === "positive"
-                                            ? "text-emerald-600 bg-emerald-50"
-                                            : m.sentiment === "negative"
-                                              ? "text-red-600 bg-red-50"
-                                              : "text-amber-600 bg-amber-50"
-                                        }`}
+                                        className="w-6 h-6 rounded flex items-center justify-center text-white"
+                                        style={{ background: networkColors[net] || "#6b7280" }}
                                       >
-                                        {m.sentiment === "positive"
-                                          ? "+"
-                                          : m.sentiment === "negative"
-                                            ? "−"
-                                            : "~"}
+                                        {Icon ? <Icon size={12} /> : null}
+                                      </span>
+                                      <span className="text-xs font-semibold text-gray-700">
+                                        {networkLabels[net]}
                                       </span>
                                     </div>
-                                    <p className="text-xs text-gray-600">
-                                      {m.text}
+                                    <p className="text-sm font-bold text-gray-900">
+                                      {formatNumber(metrics.followers)}
+                                    </p>
+                                    <p className="text-[10px] text-gray-400">
+                                      {metrics.engagementRate}% eng · {metrics.growth > 0 ? "+" : ""}
+                                      {metrics.growth}%
                                     </p>
                                   </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                                );
+                              })}
+                          </div>
                         </div>
                       )}
                     </td>

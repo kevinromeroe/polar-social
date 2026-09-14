@@ -231,18 +231,12 @@ export const sentimentByBrand = [
 ];
 
 export const growthTrend = [
-  { date: "Abr 1", "Buena Mesa": 196500, "Pasta P.A.N.": 162800 },
-  { date: "Abr 15", "Buena Mesa": 197200, "Pasta P.A.N.": 163400 },
-  { date: "May 1", "Buena Mesa": 198100, "Pasta P.A.N.": 164200 },
-  { date: "May 15", "Buena Mesa": 199400, "Pasta P.A.N.": 165100 },
-  { date: "Jun 1", "Buena Mesa": 200800, "Pasta P.A.N.": 166300 },
-  { date: "Jun 15", "Buena Mesa": 202300, "Pasta P.A.N.": 167500 },
-  { date: "Jul 1", "Buena Mesa": 203900, "Pasta P.A.N.": 168400 },
-  { date: "Jul 15", "Buena Mesa": 205200, "Pasta P.A.N.": 169200 },
-  { date: "Ago 1", "Buena Mesa": 206800, "Pasta P.A.N.": 170100 },
-  { date: "Ago 15", "Buena Mesa": 207900, "Pasta P.A.N.": 171200 },
-  { date: "Sep 1", "Buena Mesa": 209200, "Pasta P.A.N.": 173100 },
-  { date: "Sep 14", "Buena Mesa": 209900, "Pasta P.A.N.": 174600 },
+  { date: "Abr", "Buena Mesa": 197200, "Pasta P.A.N.": 163400 },
+  { date: "May", "Buena Mesa": 199400, "Pasta P.A.N.": 165100 },
+  { date: "Jun", "Buena Mesa": 202300, "Pasta P.A.N.": 167500 },
+  { date: "Jul", "Buena Mesa": 205200, "Pasta P.A.N.": 169200 },
+  { date: "Ago", "Buena Mesa": 207900, "Pasta P.A.N.": 171200 },
+  { date: "Sep", "Buena Mesa": 209900, "Pasta P.A.N.": 174600 },
 ];
 
 export const mentionsByNetwork = [

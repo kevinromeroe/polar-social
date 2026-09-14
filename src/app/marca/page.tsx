@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import {
   networkLabels,
@@ -22,8 +23,16 @@ import {
   TrendingUp,
   TrendingDown,
   Minus,
-  Star,
 } from "lucide-react";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+
+const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number; color?: string }>> = {
+  instagram: FaInstagram,
+  facebook: FaFacebookF,
+  tiktok: FaTiktok,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+};
 
 function NetworkCard({
   network,
@@ -41,20 +50,20 @@ function NetworkCard({
         ? "text-red-500"
         : "text-gray-400";
 
+  const Icon = networkIcons[network];
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 p-5">
       <div className="flex items-center gap-3 mb-4">
         <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center text-white text-xs font-bold"
+          className="w-9 h-9 rounded-lg flex items-center justify-center text-white"
           style={{ background: networkColors[network] || "#6b7280" }}
         >
-          {network === "x" ? "X" : network.slice(0, 2).toUpperCase()}
+          {Icon ? <Icon size={18} /> : <span className="text-xs font-bold">{network.slice(0, 2).toUpperCase()}</span>}
         </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-900">
-            {networkLabels[network] || network}
-          </p>
-        </div>
+        <p className="text-sm font-semibold text-gray-900">
+          {networkLabels[network] || network}
+        </p>
       </div>
       <div className="grid grid-cols-2 gap-x-4 gap-y-3">
         <div>
@@ -97,7 +106,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, googleMapsData, clientDescription } = useClientData();
+  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -107,15 +116,18 @@ export default function MarcaPage() {
   const brandSentiment = sentimentByBrand.find(
     (s) => s.brand === selectedBrand
   );
-  const brandGoogleMaps = googleMapsData.find(
-    (g) => g.brand === selectedBrand
-  );
 
   const networkEntries = currentBrand
     ? (Object.entries(currentBrand.networks) as [Network, NonNullable<BrandData["networks"][Network]>][]).filter(
         ([, v]) => v != null
       )
     : [];
+
+  const totalFollowers = networkEntries.reduce((sum, [, m]) => sum + m.followers, 0);
+  const totalPosts = networkEntries.reduce((sum, [, m]) => sum + m.posts, 0);
+
+  const lineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
+  const ownBrandNames = ownBrands.map((b) => b.brand);
 
   return (
     <ProtectedLayout>
@@ -144,6 +156,46 @@ export default function MarcaPage() {
 
       {currentBrand && (
         <div className="space-y-6">
+          {/* Distribución por plataforma — horizontal */}
+          <div className="bg-white rounded-xl border border-gray-200 p-5">
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">
+              Presencia por plataforma
+            </h3>
+            <p className="text-xs text-gray-400 mb-4">
+              {selectedBrand} tiene {formatNumber(totalFollowers)} seguidores en {networkEntries.length} redes y {totalPosts} publicaciones
+            </p>
+            <div className="flex items-center gap-1 h-8 rounded-lg overflow-hidden">
+              {networkEntries.map(([net, metrics]) => {
+                const pct = (metrics.followers / totalFollowers) * 100;
+                const Icon = networkIcons[net];
+                return (
+                  <div
+                    key={net}
+                    className="h-full flex items-center justify-center gap-1.5 px-2 text-white text-[10px] font-medium relative group"
+                    style={{ width: pct + "%", minWidth: 40, background: networkColors[net] || "#6b7280" }}
+                    title={`${networkLabels[net]}: ${formatNumber(metrics.followers)} (${pct.toFixed(0)}%)`}
+                  >
+                    {Icon && <Icon size={12} />}
+                    <span>{pct.toFixed(0)}%</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+              {networkEntries.map(([net, metrics]) => {
+                const Icon = networkIcons[net];
+                return (
+                  <div key={net} className="flex items-center gap-1.5 text-xs text-gray-500">
+                    {Icon && <Icon size={12} color={networkColors[net]} />}
+                    <span>{networkLabels[net]}</span>
+                    <span className="font-semibold text-gray-700">{formatNumber(metrics.followers)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Métricas por red social */}
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-3">
               Métricas por red social
@@ -155,12 +207,13 @@ export default function MarcaPage() {
             </div>
           </div>
 
+          {/* Evolución de seguidores — mensual, todas las marcas */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
               Evolución de seguidores
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              Total consolidado — últimos 6 meses
+              Total consolidado por mes — todas las marcas propias
             </p>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart
@@ -177,9 +230,9 @@ export default function MarcaPage() {
                   tickFormatter={(v) => formatNumber(v)}
                 />
                 <Tooltip
-                  formatter={(value) => [
+                  formatter={(value, name) => [
                     Number(value).toLocaleString("es-CO"),
-                    selectedBrand,
+                    name,
                   ]}
                   contentStyle={{
                     fontSize: 12,
@@ -187,18 +240,23 @@ export default function MarcaPage() {
                     border: "1px solid #e2e8f0",
                   }}
                 />
-                <Line
-                  type="monotone"
-                  dataKey={selectedBrand}
-                  stroke="#0d9488"
-                  strokeWidth={2}
-                  dot={false}
-                  activeDot={{ r: 4 }}
-                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                {ownBrandNames.map((name, i) => (
+                  <Line
+                    key={name}
+                    type="monotone"
+                    dataKey={name}
+                    stroke={lineColors[i]}
+                    strokeWidth={2}
+                    dot={{ r: 3 }}
+                    activeDot={{ r: 5 }}
+                  />
+                ))}
               </LineChart>
             </ResponsiveContainer>
           </div>
 
+          {/* Top publicaciones */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
               Top publicaciones por engagement
@@ -208,37 +266,41 @@ export default function MarcaPage() {
             </p>
             {brandTopPosts.length > 0 ? (
               <div className="space-y-3">
-                {brandTopPosts.map((post, i) => (
-                  <div
-                    key={i}
-                    className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className="text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
-                        style={{
-                          background: networkColors[post.network] || "#6b7280",
-                        }}
-                      >
-                        {networkLabels[post.network]}
-                      </span>
-                      <span className="text-xs text-gray-400">{post.date}</span>
-                    </div>
-                    <p className="text-sm text-gray-700 mb-3">
-                      {post.caption}
-                    </p>
-                    <div className="flex flex-wrap gap-4 text-xs text-gray-500">
-                      <span>{formatNumber(post.likes)} likes</span>
-                      <span>{formatNumber(post.comments)} comentarios</span>
-                      <span>{formatNumber(post.shares)} compartidos</span>
-                      {post.views > 0 && (
-                        <span className="font-medium text-gray-900">
-                          {formatNumber(post.views)} views
+                {brandTopPosts.map((post, i) => {
+                  const Icon = networkIcons[post.network];
+                  return (
+                    <div
+                      key={i}
+                      className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className="flex items-center gap-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
+                          style={{
+                            background: networkColors[post.network] || "#6b7280",
+                          }}
+                        >
+                          {Icon && <Icon size={10} />}
+                          {networkLabels[post.network]}
                         </span>
-                      )}
+                        <span className="text-xs text-gray-400">{post.date}</span>
+                      </div>
+                      <p className="text-sm text-gray-700 mb-3">
+                        {post.caption}
+                      </p>
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                        <span>{formatNumber(post.likes)} likes</span>
+                        <span>{formatNumber(post.comments)} comentarios</span>
+                        <span>{formatNumber(post.shares)} compartidos</span>
+                        {post.views > 0 && (
+                          <span className="font-medium text-gray-900">
+                            {formatNumber(post.views)} views
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sm text-gray-400">
@@ -247,6 +309,7 @@ export default function MarcaPage() {
             )}
           </div>
 
+          {/* Sentimiento + menciones */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
               Qué dicen de {selectedBrand}
@@ -333,36 +396,6 @@ export default function MarcaPage() {
               <p className="text-sm text-gray-400">Sin menciones recientes.</p>
             )}
           </div>
-
-          {brandGoogleMaps && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                Google Maps — Reseñas
-              </h3>
-              <p className="text-xs text-gray-400 mb-4">
-                Ratings y reseñas de puntos de venta
-              </p>
-              <div className="flex items-center gap-6">
-                <div className="text-center">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-5 w-5 text-amber-400 fill-amber-400" />
-                    <span className="text-3xl font-bold text-gray-900">
-                      {brandGoogleMaps.rating}
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-400 mt-1">
-                    {brandGoogleMaps.totalReviews} reseñas
-                  </p>
-                </div>
-                <div className="text-sm text-gray-600">
-                  <p>
-                    {brandGoogleMaps.recentCount} reseñas nuevas en los últimos
-                    30 días
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       )}
     </ProtectedLayout>

@@ -2,10 +2,6 @@
 
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
-  Users,
-  TrendingUp,
-  MessageCircle,
-  ThumbsUp,
   AlertTriangle,
   Info,
   Zap,
@@ -25,37 +21,6 @@ import {
 } from "recharts";
 import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
-
-function KpiCard({
-  label,
-  value,
-  subtitle,
-  icon: Icon,
-  color,
-}: {
-  label: string;
-  value: string;
-  subtitle: string;
-  icon: React.ComponentType<{ className?: string }>;
-  color: string;
-}) {
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-            {label}
-          </p>
-          <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
-          <p className="text-xs text-gray-400 mt-1">{subtitle}</p>
-        </div>
-        <div className={`p-2.5 rounded-lg ${color}`}>
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 const severityStyles = {
   info: "border-l-blue-400 bg-blue-50",
@@ -93,39 +58,31 @@ export default function DashboardPage() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Resumen</h2>
         <p className="text-gray-500 text-sm mt-1">
-          Vista ejecutiva — todas las marcas y redes
+          Vista ejecutiva — {clientDescription}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <KpiCard
-          label="Seguidores totales"
-          value={formatNumber(totalFollowersOwn)}
-          subtitle="Todas las marcas propias"
-          icon={Users}
-          color="bg-teal-600"
-        />
-        <KpiCard
-          label="Engagement promedio"
-          value={avgEngOwn.toFixed(1) + "%"}
-          subtitle="Últimos 30 días"
-          icon={TrendingUp}
-          color="bg-indigo-600"
-        />
-        <KpiCard
-          label="Menciones del período"
-          value={formatNumber(totalMentions)}
-          subtitle="Escucha activa, 7 redes"
-          icon={MessageCircle}
-          color="bg-amber-600"
-        />
-        <KpiCard
-          label="Sentimiento neto"
-          value={"+" + ownSentimentAvg + "%"}
-          subtitle="Positivo predominante"
-          icon={ThumbsUp}
-          color="bg-emerald-600"
-        />
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Seguidores totales</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalFollowersOwn)}</p>
+          <p className="text-xs text-gray-400 mt-1">Marcas propias, todas las redes</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Engagement promedio</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{avgEngOwn.toFixed(1)}%</p>
+          <p className="text-xs text-gray-400 mt-1">Últimos 30 días</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Menciones propias</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalMentions)}</p>
+          <p className="text-xs text-gray-400 mt-1">Veces que se mencionan nuestras marcas en redes</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Sentimiento neto</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">+{ownSentimentAvg}%</p>
+          <p className="text-xs text-gray-400 mt-1">% positivo menos % negativo</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -134,7 +91,7 @@ export default function DashboardPage() {
             Share of Voice — Categoría
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Porcentaje de menciones por marca (top 8)
+            Porcentaje de menciones de cada marca sobre el total de la categoría (top 8)
           </p>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -169,6 +126,9 @@ export default function DashboardPage() {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+          <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
+            Cálculo: total de menciones públicas de cada marca en X, TikTok, Facebook, Instagram, LinkedIn, Reddit y Google Maps durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
+          </p>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-5">
@@ -176,7 +136,7 @@ export default function DashboardPage() {
             Crecimiento de seguidores
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Marcas propias — total consolidado (últimos 6 meses)
+            Marcas propias — total consolidado por mes
           </p>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
@@ -211,7 +171,8 @@ export default function DashboardPage() {
                   dataKey={name}
                   stroke={lineColors[i]}
                   strokeWidth={2}
-                  dot={false}
+                  dot={{ r: 3 }}
+                  activeDot={{ r: 5 }}
                 />
               ))}
             </LineChart>

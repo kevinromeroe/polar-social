@@ -178,18 +178,12 @@ export const sentimentByBrand = [
 ];
 
 export const growthTrend = [
-  { date: "Abr 1", "Havoline": 246800, "Delo": 55200 },
-  { date: "Abr 15", "Havoline": 248100, "Delo": 55600 },
-  { date: "May 1", "Havoline": 249500, "Delo": 56100 },
-  { date: "May 15", "Havoline": 251200, "Delo": 56500 },
-  { date: "Jun 1", "Havoline": 253100, "Delo": 57000 },
-  { date: "Jun 15", "Havoline": 254800, "Delo": 57400 },
-  { date: "Jul 1", "Havoline": 256200, "Delo": 57700 },
-  { date: "Jul 15", "Havoline": 257400, "Delo": 57900 },
-  { date: "Ago 1", "Havoline": 258300, "Delo": 58100 },
-  { date: "Ago 15", "Havoline": 258900, "Delo": 57700 },
-  { date: "Sep 1", "Havoline": 259200, "Delo": 57700 },
-  { date: "Sep 14", "Havoline": 258800, "Delo": 57700 },
+  { date: "Abr", "Havoline": 248100, "Delo": 55600 },
+  { date: "May", "Havoline": 251200, "Delo": 56500 },
+  { date: "Jun", "Havoline": 254800, "Delo": 57400 },
+  { date: "Jul", "Havoline": 257400, "Delo": 57900 },
+  { date: "Ago", "Havoline": 258900, "Delo": 57700 },
+  { date: "Sep", "Havoline": 258800, "Delo": 57700 },
 ];
 
 export const mentionsByNetwork = [

@@ -1,13 +1,22 @@
 export type SocialNetwork = "instagram" | "facebook" | "tiktok" | "linkedin" | "x";
 export type AccountType = "own" | "competitor";
-export type ProductLine = "pasta" | "pasta_atun";
+
+export interface Client {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  auth_email: string;
+  created_at: string;
+}
 
 export interface Account {
   id: string;
+  client_id: string | null;
   brand_name: string;
   network: SocialNetwork;
   account_type: AccountType;
-  product_line: ProductLine | null;
+  product_line: string | null;
   username: string;
   profile_url: string | null;
   avatar_url: string | null;
@@ -67,6 +76,7 @@ export interface ScrapeRun {
 export interface Database {
   public: {
     Tables: {
+      clients: { Row: Client; Insert: Omit<Client, "id" | "created_at">; Update: Partial<Client> };
       accounts: { Row: Account; Insert: Omit<Account, "id" | "created_at" | "updated_at">; Update: Partial<Account> };
       account_snapshots: { Row: AccountSnapshot; Insert: Omit<AccountSnapshot, "id" | "created_at">; Update: Partial<AccountSnapshot> };
       posts: { Row: Post; Insert: Omit<Post, "id" | "scraped_at" | "engagement_total">; Update: Partial<Post> };
