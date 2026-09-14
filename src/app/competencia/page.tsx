@@ -73,20 +73,13 @@ function getNetworkCount(brand: BrandData): number {
 type SortKey = "followers" | "engagement" | "posts" | "growth";
 
 export default function CompetenciaPage() {
-  const { ownBrands, competitors, productLineLabels, productLineKeys } = useClientData();
+  const { ownBrands, competitors, productLineLabels } = useClientData();
 
-  const [selectedLine, setSelectedLine] = useState<string>("all");
   const [selectedNetwork, setSelectedNetwork] = useState<Network | "all">("all");
   const [sortKey, setSortKey] = useState<SortKey>("followers");
   const [expandedBrand, setExpandedBrand] = useState<string | null>(null);
 
   const allBrands = [...ownBrands, ...competitors];
-
-  const filteredBrands = allBrands.filter((b) => {
-    if (selectedLine === "all") return true;
-    if (b.type === "own") return true;
-    return b.productLine === selectedLine;
-  });
 
   const getFollowers = (b: BrandData) =>
     selectedNetwork === "all" ? getTotalFollowers(b) : getFollowersForNetwork(b, selectedNetwork);
@@ -97,7 +90,7 @@ export default function CompetenciaPage() {
   const getGrowth = (b: BrandData) =>
     selectedNetwork === "all" ? getAvgGrowth(b) : getGrowthForNetwork(b, selectedNetwork);
 
-  const sortedBrands = [...filteredBrands].sort((a, b) => {
+  const sortedBrands = [...allBrands].sort((a, b) => {
     switch (sortKey) {
       case "followers": return getFollowers(b) - getFollowers(a);
       case "engagement": return getEngagement(b) - getEngagement(a);
@@ -108,7 +101,7 @@ export default function CompetenciaPage() {
   });
 
   // Radar chart — top 4 por seguidores (consolidado)
-  const top4 = [...filteredBrands].sort((a, b) => getTotalFollowers(b) - getTotalFollowers(a)).slice(0, 4);
+  const top4 = [...allBrands].sort((a, b) => getTotalFollowers(b) - getTotalFollowers(a)).slice(0, 4);
   const radarData = [
     { metric: "Seguidores", ...Object.fromEntries(top4.map((b) => [b.brand, Math.min(100, (getTotalFollowers(b) / getTotalFollowers(top4[0])) * 100)])) },
     { metric: "Engagement", ...Object.fromEntries(top4.map((b) => [b.brand, Math.min(100, (getAvgEngagement(b) / 5) * 100)])) },
@@ -118,11 +111,6 @@ export default function CompetenciaPage() {
   ];
   const radarColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
 
-  const lineFilterOptions = [
-    { key: "all", label: "Todas" },
-    ...productLineKeys.map((key) => ({ key, label: productLineLabels[key] || key })),
-  ];
-
   return (
     <ProtectedLayout>
       <div className="mb-6">
@@ -130,23 +118,6 @@ export default function CompetenciaPage() {
         <p className="text-gray-500 text-sm mt-1">
           Benchmarking comparativo — marcas propias vs. competidores
         </p>
-      </div>
-
-      {/* Filtro por línea de producto */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {lineFilterOptions.map((opt) => (
-          <button
-            key={opt.key}
-            onClick={() => setSelectedLine(opt.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              selectedLine === opt.key
-                ? "bg-teal-600 text-white"
-                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
       </div>
 
       {/* Radar chart */}

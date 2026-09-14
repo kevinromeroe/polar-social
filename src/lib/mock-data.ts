@@ -53,7 +53,7 @@ export const brands: BrandData[] = [
   {
     brand: "Buena Mesa",
     type: "own",
-    productLine: "pasta",
+    productLine: "pasta_atun",
     networks: {
       instagram: { username: "buenamesa_oficial", followers: 45200, posts: 234, engagementRate: 2.8, growth: 1.2, avgLikes: 1120, avgComments: 85, avgShares: 42 },
       facebook: { username: "BuenaMesaOficial", followers: 112000, posts: 456, engagementRate: 0.9, growth: -0.1, avgLikes: 890, avgComments: 124, avgShares: 67 },

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
 import type { BrandData, MentionData, AlertData, TopPostData } from "./mock-data";
 
@@ -23,6 +23,19 @@ export interface ClientDataset {
   productLineKeys: string[];
   clientName: string;
   clientDescription: string;
+}
+
+export interface ProductLineOption {
+  key: string;
+  brandName: string;
+  label: string;
+}
+
+export interface ClientContextValue extends ClientDataset {
+  selectedProductLine: string;
+  setSelectedProductLine: (line: string) => void;
+  productLineOptions: ProductLineOption[];
+  hasMultipleProductLines: boolean;
 }
 
 const polarDataset: ClientDataset = {
@@ -66,23 +79,113 @@ const clients: Record<string, ClientDataset> = {
   "havoline@datalitica.com.co": havolineDataset,
 };
 
-const ClientDataContext = createContext<ClientDataset>(polarDataset);
+function filterDatasetByProductLine(dataset: ClientDataset, productLine: string): ClientDataset {
+  const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine);
+  const filteredCompetitors = dataset.competitors.filter(b => b.productLine === productLine);
+  const brandNamesInLine = new Set(
+    [...filteredOwnBrands, ...filteredCompetitors].map(b => b.brand)
+  );
+
+  const filteredSov = dataset.sovData.filter(s => brandNamesInLine.has(s.brand));
+  const totalMentions = filteredSov.reduce((sum, s) => sum + s.mentions, 0);
+  const recalcSov = filteredSov.map(s => ({
+    ...s,
+    percentage: totalMentions > 0 ? Number(((s.mentions / totalMentions) * 100).toFixed(1)) : 0,
+  }));
+
+  const ownBrandNames = new Set(filteredOwnBrands.map(b => b.brand));
+  const filteredGrowth = dataset.growthTrend.map(entry => {
+    const filtered: Record<string, string | number> = { date: entry.date as string };
+    for (const key of Object.keys(entry)) {
+      if (key !== "date" && ownBrandNames.has(key)) {
+        filtered[key] = entry[key];
+      }
+    }
+    return filtered;
+  });
+
+  return {
+    ...dataset,
+    brands: [...filteredOwnBrands, ...filteredCompetitors],
+    ownBrands: filteredOwnBrands,
+    competitors: filteredCompetitors,
+    sovData: recalcSov,
+    sentimentByBrand: dataset.sentimentByBrand.filter(s => brandNamesInLine.has(s.brand)),
+    growthTrend: filteredGrowth,
+    topPosts: dataset.topPosts.filter(p => brandNamesInLine.has(p.brand)),
+    mentions: dataset.mentions.filter(m => brandNamesInLine.has(m.brand)),
+    alerts: dataset.alerts.filter(a => brandNamesInLine.has(a.brand)),
+    clientDescription: filteredOwnBrands.map(b => b.brand).join(" y "),
+  };
+}
+
+const defaultContext: ClientContextValue = {
+  ...polarDataset,
+  selectedProductLine: "",
+  setSelectedProductLine: () => {},
+  productLineOptions: [],
+  hasMultipleProductLines: false,
+};
+
+const ClientDataContext = createContext<ClientContextValue>(defaultContext);
 
 export function ClientDataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
 
-  const dataset = useMemo(() => {
+  const baseDataset = useMemo(() => {
     const email = user?.email ?? "";
     return clients[email] ?? polarDataset;
   }, [user?.email]);
 
+  const productLineOptions = useMemo<ProductLineOption[]>(() => {
+    const seen = new Set<string>();
+    return baseDataset.ownBrands
+      .filter(b => {
+        if (!b.productLine || seen.has(b.productLine)) return false;
+        seen.add(b.productLine);
+        return true;
+      })
+      .map(b => ({
+        key: b.productLine!,
+        brandName: b.brand,
+        label: baseDataset.productLineLabels[b.productLine!] || b.productLine!,
+      }));
+  }, [baseDataset]);
+
+  const [selectedProductLine, setSelectedProductLine] = useState<string>("");
+
+  useEffect(() => {
+    if (productLineOptions.length > 0 && !productLineOptions.some(o => o.key === selectedProductLine)) {
+      setSelectedProductLine(productLineOptions[0].key);
+    }
+  }, [productLineOptions, selectedProductLine]);
+
+  const effectiveProductLine = useMemo(() => {
+    if (productLineOptions.length === 0) return "";
+    if (productLineOptions.some(o => o.key === selectedProductLine)) return selectedProductLine;
+    return productLineOptions[0].key;
+  }, [productLineOptions, selectedProductLine]);
+
+  const filteredDataset = useMemo(() => {
+    if (!effectiveProductLine || productLineOptions.length <= 1) return baseDataset;
+    return filterDatasetByProductLine(baseDataset, effectiveProductLine);
+  }, [baseDataset, effectiveProductLine, productLineOptions]);
+
+  const contextValue = useMemo<ClientContextValue>(() => ({
+    ...filteredDataset,
+    selectedProductLine: effectiveProductLine,
+    setSelectedProductLine,
+    productLineOptions,
+    hasMultipleProductLines: productLineOptions.length > 1,
+  }), [filteredDataset, effectiveProductLine, productLineOptions]);
+
   return (
-    <ClientDataContext.Provider value={dataset}>
+    <ClientDataContext.Provider value={contextValue}>
       {children}
     </ClientDataContext.Provider>
   );
 }
 
-export function useClientData(): ClientDataset {
+export function useClientData(): ClientContextValue {
   return useContext(ClientDataContext);
 }

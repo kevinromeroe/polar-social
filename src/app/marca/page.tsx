@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
   LineChart,
@@ -109,6 +109,12 @@ export default function MarcaPage() {
   const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
+
+  useEffect(() => {
+    if (ownBrands.length > 0 && !ownBrands.some(b => b.brand === selectedBrand)) {
+      setSelectedBrand(ownBrands[0].brand);
+    }
+  }, [ownBrands, selectedBrand]);
 
   const currentBrand = ownBrands.find((b) => b.brand === selectedBrand);
   const brandTopPosts = topPosts.filter((p) => p.brand === selectedBrand);
