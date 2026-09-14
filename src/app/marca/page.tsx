@@ -216,10 +216,10 @@ export default function MarcaPage() {
           {/* Evolución de seguidores — mensual, todas las marcas */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Evolución de seguidores
+              Evolución mensual
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              Total consolidado por mes — todas las marcas propias
+              Actividad consolidada por mes — marcas propias
             </p>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart

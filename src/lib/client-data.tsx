@@ -71,7 +71,7 @@ const havolineDataset: ClientDataset = {
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",
-  clientDescription: "Havoline y Delo",
+  clientDescription: "Havoline Colombia",
 };
 
 const clients: Record<string, ClientDataset> = {
