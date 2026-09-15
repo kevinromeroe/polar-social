@@ -3,8 +3,19 @@
 import { useState } from "react";
 import { signIn } from "@/lib/auth";
 
+const userMap: Record<string, string> = {
+  admin: "admin@datalitica.com.co",
+  polar: "admin@datalitica.com.co",
+  havoline: "havoline@datalitica.com.co",
+};
+
+function resolveEmail(input: string): string {
+  if (input.includes("@")) return input;
+  return userMap[input.toLowerCase()] ?? `${input}@datalitica.com.co`;
+}
+
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,6 +26,7 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const email = resolveEmail(username);
       await signIn(email, password);
       window.location.href = "/dashboard";
     } catch (err: unknown) {
@@ -27,13 +39,25 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md px-4">
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <svg viewBox="0 0 56 56" className="w-16 h-16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="28" cy="28" r="27" stroke="#2dd4bf" strokeWidth="2" fill="#0f766e" fillOpacity="0.25" />
+              <path d="M28 10a18 18 0 0 1 0 36" stroke="#2dd4bf" strokeWidth="2" strokeLinecap="round" opacity="0.3" />
+              <path d="M28 16a12 12 0 0 1 0 24" stroke="#2dd4bf" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
+              <path d="M28 22a6 6 0 0 1 0 12" stroke="#5eead4" strokeWidth="2.5" strokeLinecap="round" />
+              <circle cx="28" cy="28" r="2.5" fill="#2dd4bf" />
+            </svg>
+          </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">
             Escucha Activa
           </h1>
-          <p className="text-teal-300 mt-1 text-sm">
+          <p className="text-teal-300 mt-0.5 text-sm font-medium">
             de Clientes
+          </p>
+          <p className="text-slate-400 mt-3 text-xs tracking-widest uppercase">
+            Escucha · Analiza · Actúa
           </p>
         </div>
 
@@ -43,19 +67,20 @@ export default function LoginPage() {
         >
           <div>
             <label
-              htmlFor="email"
+              htmlFor="username"
               className="block text-sm font-medium text-gray-700 mb-1.5"
             >
               Usuario
             </label>
             <input
-              id="email"
-              type="email"
+              id="username"
+              type="text"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900"
-              placeholder="usuario@datalitica.com.co"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition text-gray-900"
+              placeholder="usuario"
             />
           </div>
 
@@ -70,9 +95,10 @@ export default function LoginPage() {
               id="password"
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition text-gray-900"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition text-gray-900"
               placeholder="••••••••"
             />
           </div>

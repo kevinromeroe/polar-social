@@ -33,10 +33,18 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col">
       <div className="p-6 border-b border-slate-700/50">
-        <h1 className="text-base font-semibold tracking-tight text-white leading-tight">
-          Escucha Activa
-          <span className="block text-xs font-normal text-slate-400 mt-0.5">de Clientes</span>
-        </h1>
+        <div className="flex items-center gap-3">
+          <svg viewBox="0 0 36 36" className="w-9 h-9 shrink-0" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="17" stroke="#2dd4bf" strokeWidth="1.5" fill="#0f766e" fillOpacity="0.25" />
+            <path d="M18 8a10 10 0 0 1 0 20" stroke="#2dd4bf" strokeWidth="1.5" strokeLinecap="round" opacity="0.4" />
+            <path d="M18 12a6 6 0 0 1 0 12" stroke="#5eead4" strokeWidth="2" strokeLinecap="round" />
+            <circle cx="18" cy="18" r="2" fill="#2dd4bf" />
+          </svg>
+          <h1 className="text-sm font-semibold tracking-tight text-white leading-tight">
+            Escucha Activa
+            <span className="block text-[10px] font-normal text-slate-400 mt-0.5">de Clientes</span>
+          </h1>
+        </div>
       </div>
 
       {hasMultipleProductLines && (
