@@ -38,6 +38,12 @@ export interface AlertData {
   date: string;
 }
 
+export interface TopComment {
+  author: string;
+  text: string;
+  likes: number;
+}
+
 export interface TopPostData {
   brand: string;
   network: Network;
@@ -49,6 +55,8 @@ export interface TopPostData {
   date: string;
   url?: string;
   imageUrl?: string;
+  topComment?: TopComment;
+  ranking?: "best" | "worst";
 }
 
 export interface SentimentCategorySummary {

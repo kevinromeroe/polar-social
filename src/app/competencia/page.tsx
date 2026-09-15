@@ -5,15 +5,29 @@ import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
   getTotalInteractions,
   formatNumber,
+  networkColors,
+  networkLabels,
 } from "@/lib/mock-data";
-import type { BrandData, Network } from "@/lib/mock-data";
+import type { BrandData, Network, TopPostData } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 import {
   ChevronDown,
   ChevronUp,
   TrendingUp,
   TrendingDown,
+  ThumbsUp,
+  ThumbsDown,
+  MessageCircle,
 } from "lucide-react";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+
+const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
+  instagram: FaInstagram,
+  facebook: FaFacebookF,
+  tiktok: FaTiktok,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+};
 
 function getSemaforoColor(value: number, allValues: number[]): string {
   if (allValues.length === 0) return "bg-amber-400";
@@ -241,12 +255,104 @@ function NetworkTable({
   );
 }
 
+function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Record<string, string> }) {
+  const Icon = networkIcons[post.network];
+  const totalEng = post.likes + post.comments + post.shares;
+  const isBest = post.ranking === "best";
+
+  return (
+    <div className={`border rounded-xl overflow-hidden ${isBest ? "border-emerald-200" : "border-red-200"}`}>
+      <div className={`px-4 py-2 flex items-center justify-between ${isBest ? "bg-emerald-50" : "bg-red-50"}`}>
+        <div className="flex items-center gap-2">
+          {isBest
+            ? <ThumbsUp className="h-3.5 w-3.5 text-emerald-600" />
+            : <ThumbsDown className="h-3.5 w-3.5 text-red-500" />
+          }
+          <span className={`text-[10px] font-bold uppercase ${isBest ? "text-emerald-700" : "text-red-600"}`}>
+            {isBest ? "Mejor post" : "Peor post"}
+          </span>
+        </div>
+        <span className={`text-[10px] font-bold ${isBest ? "text-emerald-700" : "text-red-600"}`}>
+          {formatNumber(totalEng)} interacciones
+        </span>
+      </div>
+      <div className="p-4">
+        <div className="flex gap-4">
+          {post.imageUrl && (
+            <a href={post.url || "#"} target="_blank" rel="noopener noreferrer" className="shrink-0">
+              <img src={post.imageUrl} alt="" className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-gray-100" loading="lazy" />
+            </a>
+          )}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <span
+                className="font-bold text-xs"
+                style={{ color: brandColors[post.brand] || "#334155" }}
+              >
+                {post.brand}
+              </span>
+              <span
+                className="flex items-center gap-1 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
+                style={{ background: networkColors[post.network] || "#6b7280" }}
+              >
+                {Icon && <Icon size={10} />}
+                {networkLabels[post.network]}
+              </span>
+              <span className="text-[10px] text-gray-400">{post.date}</span>
+            </div>
+            <p className="text-sm text-gray-700 mb-2 line-clamp-3">{post.caption}</p>
+            <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
+              <span>{formatNumber(post.likes)} likes</span>
+              <span>{formatNumber(post.comments)} comentarios</span>
+              <span>{formatNumber(post.shares)} compartidos</span>
+              {post.url && (
+                <a href={post.url} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:text-teal-700 font-medium ml-auto" onClick={(e) => e.stopPropagation()}>
+                  Ver post &rarr;
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+        {post.topComment && (
+          <div className="mt-3 pt-3 border-t border-gray-100">
+            <div className="flex items-start gap-2">
+              <MessageCircle className="h-3.5 w-3.5 text-gray-400 mt-0.5 shrink-0" />
+              <div>
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[10px] font-semibold text-gray-600">Comentario destacado</span>
+                  <span className="text-[10px] text-gray-400">{post.topComment.author}</span>
+                  {post.topComment.likes > 0 && <span className="text-[10px] text-gray-400">{post.topComment.likes} likes</span>}
+                </div>
+                <p className="text-xs text-gray-600 italic leading-relaxed">&ldquo;{post.topComment.text}&rdquo;</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function CompetenciaPage() {
-  const { ownBrands, competitors, brandColors } = useClientData();
+  const { ownBrands, competitors, brandColors, topPosts } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const hasInstagram = allBrands.some((b) => b.networks.instagram);
   const hasFacebook = allBrands.some((b) => b.networks.facebook);
+
+  const ownBrandNames = new Set(ownBrands.map((b) => b.brand));
+
+  const bestPosts = topPosts
+    .filter((p) => p.ranking === "best")
+    .sort((a, b) => (b.likes + b.comments + b.shares) - (a.likes + a.comments + a.shares));
+  const worstPosts = topPosts
+    .filter((p) => p.ranking === "worst")
+    .sort((a, b) => (a.likes + a.comments + a.shares) - (b.likes + b.comments + b.shares));
+
+  const ownBestPosts = bestPosts.filter((p) => ownBrandNames.has(p.brand));
+  const ownWorstPosts = worstPosts.filter((p) => ownBrandNames.has(p.brand));
+  const compBestPosts = bestPosts.filter((p) => !ownBrandNames.has(p.brand));
+  const compWorstPosts = worstPosts.filter((p) => !ownBrandNames.has(p.brand));
 
   return (
     <ProtectedLayout>
@@ -277,6 +383,50 @@ export default function CompetenciaPage() {
           brandColors={brandColors}
           disclaimer="Datos acumulados del período de monitoreo (dic 2025 – ago 2026). Seguidores al corte más reciente. Reacciones = total de likes + comentarios + compartidos. Engagement rate = interacciones / seguidores."
         />
+      )}
+
+      {/* Mejores y peores posts */}
+      {(bestPosts.length > 0 || worstPosts.length > 0) && (
+        <div className="mt-6 space-y-6">
+          <div>
+            <h3 className="text-sm font-semibold text-gray-900 mb-1">
+              Mejores y peores publicaciones
+            </h3>
+            <p className="text-xs text-gray-400 mb-4">
+              Comparación del contenido con mayor y menor interacción — marcas propias vs. competencia
+            </p>
+          </div>
+
+          {/* Marcas propias */}
+          {(ownBestPosts.length > 0 || ownWorstPosts.length > 0) && (
+            <div>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Marcas propias</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {ownBestPosts.slice(0, 3).map((p, i) => (
+                  <PostCard key={`own-best-${i}`} post={p} brandColors={brandColors} />
+                ))}
+                {ownWorstPosts.slice(0, 2).map((p, i) => (
+                  <PostCard key={`own-worst-${i}`} post={p} brandColors={brandColors} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Competencia */}
+          {(compBestPosts.length > 0 || compWorstPosts.length > 0) && (
+            <div>
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Competencia</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {compBestPosts.slice(0, 5).map((p, i) => (
+                  <PostCard key={`comp-best-${i}`} post={p} brandColors={brandColors} />
+                ))}
+                {compWorstPosts.slice(0, 4).map((p, i) => (
+                  <PostCard key={`comp-worst-${i}`} post={p} brandColors={brandColors} />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </ProtectedLayout>
   );
