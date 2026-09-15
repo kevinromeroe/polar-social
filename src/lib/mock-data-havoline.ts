@@ -51,6 +51,14 @@ export const brands: BrandData[] = [
 export const ownBrands = brands.filter((b) => b.type === "own");
 export const competitors = brands.filter((b) => b.type === "competitor");
 
+export const brandColors: Record<string, string> = {
+  Havoline: "#C8102E",
+  Mobil: "#002F87",
+  "Liqui Moly": "#003DA5",
+  Motul: "#CE0E2D",
+  Castrol: "#006B3F",
+};
+
 export const sovData = [
   { brand: "Havoline", mentions: 67791, percentage: 37.9 },
   { brand: "Mobil", mentions: 65875, percentage: 36.8 },

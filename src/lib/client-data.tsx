@@ -20,6 +20,7 @@ export interface ClientDataset {
   alerts: AlertData[];
   googleMapsData: { brand: string; rating: number; totalReviews: number; recentCount: number }[];
   sentimentCategorySummaries: Record<string, SentimentCategorySummary>;
+  brandColors: Record<string, string>;
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -52,6 +53,7 @@ const polarDataset: ClientDataset = {
   alerts: polarData.alerts,
   googleMapsData: polarData.googleMapsData,
   sentimentCategorySummaries: polarData.sentimentCategorySummaries,
+  brandColors: polarData.brandColors,
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -71,6 +73,7 @@ const havolineDataset: ClientDataset = {
   alerts: havolineData.alerts,
   googleMapsData: havolineData.googleMapsData,
   sentimentCategorySummaries: havolineData.sentimentCategorySummaries,
+  brandColors: havolineData.brandColors,
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",

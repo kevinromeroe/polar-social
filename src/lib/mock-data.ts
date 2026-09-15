@@ -299,6 +299,22 @@ export const googleMapsData = [
   { brand: "Zenú", rating: 4.2, totalReviews: 456, recentCount: 35 },
 ];
 
+export const brandColors: Record<string, string> = {
+  "Buena Mesa": "#D97706",
+  "Pasta P.A.N.": "#1D4ED8",
+  "Doria": "#DC2626",
+  "La Muñeca": "#9333EA",
+  "Comarico": "#059669",
+  "San Remo": "#B45309",
+  "Pugliese": "#6D28D9",
+  "Van Camps": "#0284C7",
+  "Zenú": "#E11D48",
+  "La Soberana": "#7C3AED",
+  "Bari": "#0891B2",
+  "Isabell": "#CA8A04",
+  "La Española": "#BE185D",
+};
+
 export const networkColors: Record<string, string> = {
   instagram: "#E4405F",
   facebook: "#1877F2",

@@ -106,7 +106,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, clientDescription } = useClientData();
+  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -132,7 +132,7 @@ export default function MarcaPage() {
   const totalFollowers = networkEntries.reduce((sum, [, m]) => sum + m.followers, 0);
   const totalPosts = networkEntries.reduce((sum, [, m]) => sum + m.posts, 0);
 
-  const lineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
+  const fallbackLineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
   const ownBrandNames = ownBrands.map((b) => b.brand);
 
   return (
@@ -145,19 +145,24 @@ export default function MarcaPage() {
       </div>
 
       <div className="flex gap-2 mb-6">
-        {ownBrands.map((b) => (
-          <button
-            key={b.brand}
-            onClick={() => setSelectedBrand(b.brand)}
-            className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-              selectedBrand === b.brand
-                ? "bg-teal-600 text-white"
-                : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-            }`}
-          >
-            {b.brand}
-          </button>
-        ))}
+        {ownBrands.map((b) => {
+          const isActive = selectedBrand === b.brand;
+          const color = brandColors[b.brand] || "#0d9488";
+          return (
+            <button
+              key={b.brand}
+              onClick={() => setSelectedBrand(b.brand)}
+              className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive
+                  ? "text-white"
+                  : "bg-white border border-gray-200 hover:bg-gray-50"
+              }`}
+              style={isActive ? { background: color } : { color }}
+            >
+              {b.brand}
+            </button>
+          );
+        })}
       </div>
 
       {currentBrand && (
@@ -168,7 +173,7 @@ export default function MarcaPage() {
               Presencia por plataforma
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              {selectedBrand} tiene {formatNumber(totalFollowers)} seguidores en {networkEntries.length} redes y {totalPosts} publicaciones
+              <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span> tiene {formatNumber(totalFollowers)} seguidores en {networkEntries.length} redes y {totalPosts} publicaciones
             </p>
             <div className="flex items-center gap-1 h-8 rounded-lg overflow-hidden">
               {networkEntries.map(([net, metrics]) => {
@@ -252,7 +257,7 @@ export default function MarcaPage() {
                     key={name}
                     type="monotone"
                     dataKey={name}
-                    stroke={lineColors[i]}
+                    stroke={brandColors[name] || fallbackLineColors[i]}
                     strokeWidth={2}
                     dot={{ r: 3 }}
                     activeDot={{ r: 5 }}
@@ -346,10 +351,13 @@ export default function MarcaPage() {
           </div>
 
           {/* Sentimiento + menciones por categoría */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                Qué dicen de {selectedBrand}
+                Qué dicen de{" "}
+                <span style={{ color: brandColors[selectedBrand] || "#0d9488" }}>
+                  {selectedBrand}
+                </span>
               </h3>
               <p className="text-xs text-gray-400">
                 Menciones encontradas por búsqueda de keywords (earned media)
@@ -357,84 +365,119 @@ export default function MarcaPage() {
             </div>
 
             {brandSentiment && (
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                <div className="bg-white rounded-xl border border-gray-200 p-4 sm:col-span-1">
-                  <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-2">Sentimiento general</p>
-                  <div className="flex h-2.5 rounded-full overflow-hidden bg-gray-100 mb-3">
-                    <div className="bg-emerald-500" style={{ width: brandSentiment.positive + "%" }} />
-                    <div className="bg-amber-400" style={{ width: brandSentiment.neutral + "%" }} />
-                    <div className="bg-red-400" style={{ width: brandSentiment.negative + "%" }} />
+              <>
+                {/* Tarjeta resumen de sentimiento */}
+                <div className="bg-white rounded-xl border border-gray-200 p-5">
+                  <div className="flex items-center gap-3 mb-4">
+                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Sentimiento general</p>
                   </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-                        <span className="text-xs text-gray-600">Positivo</span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-900">{brandSentiment.positive}%</span>
+                  <div className="flex h-8 rounded-lg overflow-hidden mb-4">
+                    <div
+                      className="flex items-center justify-center text-white text-xs font-bold"
+                      style={{ width: brandSentiment.positive + "%", background: "#10b981" }}
+                    >
+                      {brandSentiment.positive > 10 && `${brandSentiment.positive}%`}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-                        <span className="text-xs text-gray-600">Neutro</span>
-                      </div>
-                      <span className="text-sm font-bold text-gray-900">{brandSentiment.neutral}%</span>
+                    <div
+                      className="flex items-center justify-center text-white text-xs font-bold"
+                      style={{ width: brandSentiment.neutral + "%", background: "#f59e0b" }}
+                    >
+                      {brandSentiment.neutral > 10 && `${brandSentiment.neutral}%`}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                        <span className="text-xs text-gray-600">Negativo</span>
+                    <div
+                      className="flex items-center justify-center text-white text-xs font-bold"
+                      style={{ width: brandSentiment.negative + "%", background: "#ef4444" }}
+                    >
+                      {brandSentiment.negative > 10 && `${brandSentiment.negative}%`}
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-1.5">
+                        <span className="text-lg">+</span>
                       </div>
-                      <span className="text-sm font-bold text-gray-900">{brandSentiment.negative}%</span>
+                      <p className="text-xl font-bold text-emerald-600">{brandSentiment.positive}%</p>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Positivo</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-1.5">
+                        <span className="text-lg">=</span>
+                      </div>
+                      <p className="text-xl font-bold text-amber-500">{brandSentiment.neutral}%</p>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Neutro</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-1.5">
+                        <span className="text-lg">&minus;</span>
+                      </div>
+                      <p className="text-xl font-bold text-red-500">{brandSentiment.negative}%</p>
+                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Negativo</p>
                     </div>
                   </div>
                 </div>
 
-                {(
-                  [
-                    { key: "positive" as const, label: "Positivo", color: "emerald", borderColor: "border-emerald-200", bgColor: "bg-emerald-50" },
-                    { key: "neutral" as const, label: "Neutro", color: "amber", borderColor: "border-amber-200", bgColor: "bg-amber-50" },
-                    { key: "negative" as const, label: "Negativo", color: "red", borderColor: "border-red-200", bgColor: "bg-red-50" },
-                  ] as const
-                ).map(({ key, label, borderColor, bgColor }) => {
-                  const summary = sentimentCategorySummaries[selectedBrand]?.[key];
-                  const categoryMentions = brandMentions.filter((m) => m.sentiment === key);
-                  return (
-                    <div key={key} className={`bg-white rounded-xl border ${borderColor} p-4`}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${bgColor} ${
-                          key === "positive" ? "text-emerald-700" : key === "negative" ? "text-red-700" : "text-amber-700"
-                        }`}>
-                          {label}
-                        </span>
-                        <span className="text-[10px] text-gray-400">{categoryMentions.length} menciones</span>
-                      </div>
-                      {summary && (
-                        <p className="text-xs text-gray-600 mb-3 leading-relaxed">{summary}</p>
-                      )}
-                      {categoryMentions.length > 0 ? (
-                        <div className="space-y-2">
-                          {categoryMentions.slice(0, 3).map((m) => (
-                            <div key={m.id} className="border border-gray-100 rounded-lg p-2.5">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[10px] font-semibold text-gray-500">{m.network}</span>
-                                <span className="text-[10px] text-gray-400">{m.author}</span>
-                              </div>
-                              <p className="text-xs text-gray-700 leading-relaxed">{m.text}</p>
-                              <div className="flex justify-between mt-1.5">
-                                <span className="text-[10px] text-gray-400">{m.date}</span>
-                                {m.likes > 0 && <span className="text-[10px] text-gray-400">{formatNumber(m.likes)} likes</span>}
-                              </div>
+                {/* Categorías de sentimiento */}
+                <div className="space-y-4">
+                  {(
+                    [
+                      { key: "positive" as const, label: "Positivo", accentColor: "#10b981", bgClass: "bg-emerald-50", textClass: "text-emerald-700", borderClass: "border-emerald-200" },
+                      { key: "neutral" as const, label: "Neutro", accentColor: "#f59e0b", bgClass: "bg-amber-50", textClass: "text-amber-700", borderClass: "border-amber-200" },
+                      { key: "negative" as const, label: "Negativo", accentColor: "#ef4444", bgClass: "bg-red-50", textClass: "text-red-700", borderClass: "border-red-200" },
+                    ] as const
+                  ).map(({ key, label, accentColor, bgClass, textClass, borderClass }) => {
+                    const summary = sentimentCategorySummaries[selectedBrand]?.[key];
+                    const categoryMentions = brandMentions.filter((m) => m.sentiment === key);
+                    return (
+                      <div key={key} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div className="flex items-stretch">
+                          <div className="w-1.5 shrink-0" style={{ background: accentColor }} />
+                          <div className="flex-1 p-5">
+                            <div className="flex items-center gap-3 mb-3">
+                              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${bgClass} ${textClass}`}>
+                                {label}
+                              </span>
+                              <span className="text-xs text-gray-400">{categoryMentions.length} menciones</span>
                             </div>
-                          ))}
+                            {summary && (
+                              <p className="text-sm text-gray-600 mb-4 leading-relaxed">{summary}</p>
+                            )}
+                            {categoryMentions.length > 0 ? (
+                              <div className="space-y-3">
+                                {categoryMentions.slice(0, 3).map((m) => {
+                                  const Icon = networkIcons[m.network.toLowerCase()];
+                                  return (
+                                    <div key={m.id} className={`rounded-lg p-4 ${bgClass} border ${borderClass}`}>
+                                      <p className="text-sm text-gray-800 leading-relaxed italic">
+                                        &ldquo;{m.text}&rdquo;
+                                      </p>
+                                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
+                                        <div className="flex items-center gap-2">
+                                          {Icon && (
+                                            <span className="w-5 h-5 rounded flex items-center justify-center text-white" style={{ background: networkColors[m.network.toLowerCase()] || "#6b7280" }}>
+                                              <Icon size={10} />
+                                            </span>
+                                          )}
+                                          <span className="text-xs font-medium text-gray-700">{m.author}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                          {m.likes > 0 && <span className="text-[10px] text-gray-500">{formatNumber(m.likes)} likes</span>}
+                                          <span className="text-[10px] text-gray-400">{m.date}</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p className="text-xs text-gray-400">Sin menciones en esta categoría.</p>
+                            )}
+                          </div>
                         </div>
-                      ) : (
-                        <p className="text-[10px] text-gray-400">Sin menciones en esta categoría.</p>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
             )}
           </div>
         </div>

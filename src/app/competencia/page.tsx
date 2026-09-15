@@ -35,12 +35,14 @@ function NetworkTable({
   brands,
   ownBrands,
   disclaimer,
+  brandColors,
 }: {
   network: Network;
   networkLabel: string;
   brands: BrandData[];
   ownBrands: BrandData[];
   disclaimer: string;
+  brandColors: Record<string, string>;
 }) {
   const [sortKey, setSortKey] = useState<SortKey>("followers");
   const [expandedBrand, setExpandedBrand] = useState<string | null>(null);
@@ -137,7 +139,16 @@ function NetworkTable({
                   >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">{brand.brand}</span>
+                        <span
+                          className="w-1 h-5 rounded-full shrink-0"
+                          style={{ background: brandColors[brand.brand] || "#94a3b8" }}
+                        />
+                        <span
+                          className="font-semibold"
+                          style={{ color: brandColors[brand.brand] || "#111827" }}
+                        >
+                          {brand.brand}
+                        </span>
                         {isOwn && (
                           <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-teal-100 text-teal-700">
                             Propia
@@ -231,7 +242,7 @@ function NetworkTable({
 }
 
 export default function CompetenciaPage() {
-  const { ownBrands, competitors } = useClientData();
+  const { ownBrands, competitors, brandColors } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const hasInstagram = allBrands.some((b) => b.networks.instagram);
@@ -252,6 +263,7 @@ export default function CompetenciaPage() {
           networkLabel="Instagram"
           brands={allBrands}
           ownBrands={ownBrands}
+          brandColors={brandColors}
           disclaimer="Datos acumulados del período de monitoreo (dic 2025 – ago 2026). Seguidores al corte más reciente. Reacciones = total de likes + comentarios + compartidos. Engagement rate = interacciones / seguidores."
         />
       )}
@@ -262,6 +274,7 @@ export default function CompetenciaPage() {
           networkLabel="Facebook"
           brands={allBrands}
           ownBrands={ownBrands}
+          brandColors={brandColors}
           disclaimer="Datos acumulados del período de monitoreo (dic 2025 – ago 2026). Seguidores al corte más reciente. Reacciones = total de likes + comentarios + compartidos. Engagement rate = interacciones / seguidores."
         />
       )}
