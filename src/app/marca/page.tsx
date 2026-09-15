@@ -279,41 +279,60 @@ export default function MarcaPage() {
                       key={i}
                       className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors"
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span
-                          className="flex items-center gap-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
-                          style={{
-                            background: networkColors[post.network] || "#6b7280",
-                          }}
-                        >
-                          {Icon && <Icon size={10} />}
-                          {networkLabels[post.network]}
-                        </span>
-                        <span className="text-xs text-gray-400">{post.date}</span>
-                      </div>
-                      <p className="text-sm text-gray-700 mb-3">
-                        {post.caption}
-                      </p>
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                        <span>{formatNumber(post.likes)} likes</span>
-                        <span>{formatNumber(post.comments)} comentarios</span>
-                        <span>{formatNumber(post.shares)} compartidos</span>
-                        {post.views > 0 && (
-                          <span className="font-medium text-gray-900">
-                            {formatNumber(post.views)} views
-                          </span>
-                        )}
-                        {post.url && (
+                      <div className="flex gap-4">
+                        {post.imageUrl && (
                           <a
-                            href={post.url}
+                            href={post.url || "#"}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-teal-600 hover:text-teal-700 font-medium ml-auto"
-                            onClick={(e) => e.stopPropagation()}
+                            className="shrink-0"
                           >
-                            Ver post &rarr;
+                            <img
+                              src={post.imageUrl}
+                              alt=""
+                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-gray-100"
+                              loading="lazy"
+                            />
                           </a>
                         )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span
+                              className="flex items-center gap-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
+                              style={{
+                                background: networkColors[post.network] || "#6b7280",
+                              }}
+                            >
+                              {Icon && <Icon size={10} />}
+                              {networkLabels[post.network]}
+                            </span>
+                            <span className="text-xs text-gray-400">{post.date}</span>
+                          </div>
+                          <p className="text-sm text-gray-700 mb-3">
+                            {post.caption}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                            <span>{formatNumber(post.likes)} likes</span>
+                            <span>{formatNumber(post.comments)} comentarios</span>
+                            <span>{formatNumber(post.shares)} compartidos</span>
+                            {post.views > 0 && (
+                              <span className="font-medium text-gray-900">
+                                {formatNumber(post.views)} views
+                              </span>
+                            )}
+                            {post.url && (
+                              <a
+                                href={post.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-teal-600 hover:text-teal-700 font-medium ml-auto"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                Ver post &rarr;
+                              </a>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   );

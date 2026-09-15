@@ -48,6 +48,7 @@ export interface TopPostData {
   views: number;
   date: string;
   url?: string;
+  imageUrl?: string;
 }
 
 export interface SentimentCategorySummary {
