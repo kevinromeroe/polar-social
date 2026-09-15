@@ -1,4 +1,4 @@
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation } from "./mock-data";
 
 export const brands: BrandData[] = [
   {
@@ -155,3 +155,8 @@ export const productLineLabels: Record<string, string> = {
 };
 
 export const productLineKeys = ["automotriz"];
+
+export const chartAnnotations: ChartAnnotation[] = [
+  { date: "Mar", brand: "Havoline", text: "Post viral \"Puntos ciegos en moto\" — 25K interacciones en IG + 18K en FB" },
+  { date: "Jul", brand: "Havoline", text: "Contenido seguridad vial (parrillero) con alto engagement en FB (4.4K interacciones)" },
+];

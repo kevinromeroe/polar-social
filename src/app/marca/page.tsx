@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
+  ReferenceDot,
 } from "recharts";
 import {
   networkLabels,
@@ -106,7 +107,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, clientDescription } = useClientData();
+  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, chartAnnotations, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -263,8 +264,44 @@ export default function MarcaPage() {
                     activeDot={{ r: 5 }}
                   />
                 ))}
+                {chartAnnotations
+                  .filter((ann) => ann.brand === selectedBrand)
+                  .map((ann, i) => {
+                    const point = growthTrend.find((d) => d.date === ann.date);
+                    const val = point?.[ann.brand];
+                    if (val == null) return null;
+                    return (
+                      <ReferenceDot
+                        key={i}
+                        x={ann.date}
+                        y={Number(val)}
+                        r={6}
+                        fill={brandColors[ann.brand] || "#0d9488"}
+                        stroke="#fff"
+                        strokeWidth={2}
+                      />
+                    );
+                  })}
               </LineChart>
             </ResponsiveContainer>
+            {chartAnnotations.filter((a) => a.brand === selectedBrand).length > 0 && (
+              <div className="mt-4 space-y-2">
+                {chartAnnotations
+                  .filter((a) => a.brand === selectedBrand)
+                  .map((ann, i) => (
+                    <div key={i} className="flex items-start gap-2">
+                      <span
+                        className="w-3 h-3 rounded-full shrink-0 mt-0.5 border-2 border-white"
+                        style={{ background: brandColors[ann.brand] || "#0d9488", boxShadow: "0 0 0 1px " + (brandColors[ann.brand] || "#0d9488") }}
+                      />
+                      <p className="text-xs text-gray-600 leading-relaxed">
+                        <span className="font-semibold" style={{ color: brandColors[ann.brand] || "#0d9488" }}>{ann.date}</span>
+                        {" — "}{ann.text}
+                      </p>
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
 
           {/* Top publicaciones */}

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation } from "./mock-data";
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
@@ -21,6 +21,7 @@ export interface ClientDataset {
   googleMapsData: { brand: string; rating: number; totalReviews: number; recentCount: number }[];
   sentimentCategorySummaries: Record<string, SentimentCategorySummary>;
   brandColors: Record<string, string>;
+  chartAnnotations: ChartAnnotation[];
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -54,6 +55,7 @@ const polarDataset: ClientDataset = {
   googleMapsData: polarData.googleMapsData,
   sentimentCategorySummaries: polarData.sentimentCategorySummaries,
   brandColors: polarData.brandColors,
+  chartAnnotations: polarData.chartAnnotations,
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -74,6 +76,7 @@ const havolineDataset: ClientDataset = {
   googleMapsData: havolineData.googleMapsData,
   sentimentCategorySummaries: havolineData.sentimentCategorySummaries,
   brandColors: havolineData.brandColors,
+  chartAnnotations: havolineData.chartAnnotations,
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",

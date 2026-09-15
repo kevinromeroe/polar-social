@@ -18,6 +18,7 @@ import {
   Line,
   Legend,
   Cell,
+  ReferenceDot,
 } from "recharts";
 import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
@@ -35,7 +36,7 @@ const severityIcons = {
 };
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, growthTrend, alerts, clientDescription, brandColors } = useClientData();
+  const { ownBrands, sovData, growthTrend, alerts, clientDescription, brandColors, chartAnnotations } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -190,8 +191,40 @@ export default function DashboardPage() {
                   activeDot={{ r: 5 }}
                 />
               ))}
+              {chartAnnotations.map((ann, i) => {
+                const point = growthTrend.find((d) => d.date === ann.date);
+                const val = point?.[ann.brand];
+                if (val == null) return null;
+                return (
+                  <ReferenceDot
+                    key={i}
+                    x={ann.date}
+                    y={Number(val)}
+                    r={6}
+                    fill={brandColors[ann.brand] || "#0d9488"}
+                    stroke="#fff"
+                    strokeWidth={2}
+                  />
+                );
+              })}
             </LineChart>
           </ResponsiveContainer>
+          {chartAnnotations.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {chartAnnotations.map((ann, i) => (
+                <div key={i} className="flex items-start gap-2">
+                  <span
+                    className="w-3 h-3 rounded-full shrink-0 mt-0.5 border-2 border-white"
+                    style={{ background: brandColors[ann.brand] || "#0d9488", boxShadow: "0 0 0 1px " + (brandColors[ann.brand] || "#0d9488") }}
+                  />
+                  <p className="text-xs text-gray-600 leading-relaxed">
+                    <span className="font-semibold" style={{ color: brandColors[ann.brand] || "#0d9488" }}>{ann.date}</span>
+                    {" — "}{ann.text}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

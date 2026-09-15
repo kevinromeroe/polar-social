@@ -57,6 +57,12 @@ export interface SentimentCategorySummary {
   negative: string;
 }
 
+export interface ChartAnnotation {
+  date: string;
+  brand: string;
+  text: string;
+}
+
 export const brands: BrandData[] = [
   {
     brand: "Buena Mesa",
@@ -368,3 +374,5 @@ export const productLineLabels: Record<string, string> = {
 };
 
 export const productLineKeys = ["pasta", "pasta_atun"];
+
+export const chartAnnotations: ChartAnnotation[] = [];
