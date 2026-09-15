@@ -181,7 +181,22 @@ export default function EscuchaActivaPage() {
                       dataKey="brand"
                       type="category"
                       width={95}
-                      tick={{ fontSize: 12, fill: "#334155" }}
+                      tick={(props: Record<string, unknown>) => {
+                        const { x, y, payload } = props as { x: number; y: number; payload: { value: string } };
+                        return (
+                          <text
+                            x={x}
+                            y={y}
+                            dy={4}
+                            textAnchor="end"
+                            fontSize={12}
+                            fontWeight={ownBrands.some((b) => b.brand === payload.value) ? 700 : 400}
+                            fill={brandColors[payload.value] || "#334155"}
+                          >
+                            {payload.value}
+                          </text>
+                        );
+                      }}
                     />
                     <Tooltip
                       formatter={(value) => [

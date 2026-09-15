@@ -35,7 +35,7 @@ const severityIcons = {
 };
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, growthTrend, alerts, clientDescription } = useClientData();
+  const { ownBrands, sovData, growthTrend, alerts, clientDescription, brandColors } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -47,11 +47,11 @@ export default function DashboardPage() {
 
   const sovChartData = sovData.slice(0, 8).map((s) => ({
     ...s,
-    fill: ownBrands.some((b) => b.brand === s.brand) ? "#0d9488" : "#94a3b8",
+    fill: ownBrands.some((b) => b.brand === s.brand) ? (brandColors[s.brand] || "#0d9488") : "#94a3b8",
   }));
 
   const ownBrandNames = ownBrands.map((b) => b.brand);
-  const lineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
+  const fallbackLineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
 
   return (
     <ProtectedLayout>
@@ -109,7 +109,22 @@ export default function DashboardPage() {
                 dataKey="brand"
                 type="category"
                 width={90}
-                tick={{ fontSize: 12, fill: "#334155" }}
+                tick={(props: Record<string, unknown>) => {
+                  const { x, y, payload } = props as { x: number; y: number; payload: { value: string } };
+                  return (
+                    <text
+                      x={x}
+                      y={y}
+                      dy={4}
+                      textAnchor="end"
+                      fontSize={12}
+                      fontWeight={ownBrands.some((b) => b.brand === payload.value) ? 700 : 400}
+                      fill={brandColors[payload.value] || "#334155"}
+                    >
+                      {payload.value}
+                    </text>
+                  );
+                }}
               />
               <Tooltip
                 formatter={(value) => [Number(value).toFixed(1) + "%", "SOV"]}
@@ -169,7 +184,7 @@ export default function DashboardPage() {
                   key={name}
                   type="monotone"
                   dataKey={name}
-                  stroke={lineColors[i]}
+                  stroke={brandColors[name] || fallbackLineColors[i]}
                   strokeWidth={2}
                   dot={{ r: 3 }}
                   activeDot={{ r: 5 }}
@@ -202,7 +217,10 @@ export default function DashboardPage() {
                       {alert.description}
                     </p>
                     <div className="flex gap-3 mt-2">
-                      <span className="text-[10px] font-medium text-gray-400 uppercase">
+                      <span
+                        className="text-[10px] font-bold uppercase"
+                        style={{ color: brandColors[alert.brand] || "#9ca3af" }}
+                      >
                         {alert.brand}
                       </span>
                       <span className="text-[10px] text-gray-400">
