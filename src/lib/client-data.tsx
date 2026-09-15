@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
-import type { BrandData, MentionData, AlertData, TopPostData } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary } from "./mock-data";
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
@@ -19,6 +19,7 @@ export interface ClientDataset {
   mentions: MentionData[];
   alerts: AlertData[];
   googleMapsData: { brand: string; rating: number; totalReviews: number; recentCount: number }[];
+  sentimentCategorySummaries: Record<string, SentimentCategorySummary>;
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -50,6 +51,7 @@ const polarDataset: ClientDataset = {
   mentions: polarData.mentions,
   alerts: polarData.alerts,
   googleMapsData: polarData.googleMapsData,
+  sentimentCategorySummaries: polarData.sentimentCategorySummaries,
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -68,6 +70,7 @@ const havolineDataset: ClientDataset = {
   mentions: havolineData.mentions,
   alerts: havolineData.alerts,
   googleMapsData: havolineData.googleMapsData,
+  sentimentCategorySummaries: havolineData.sentimentCategorySummaries,
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",

@@ -1,4 +1,4 @@
-import type { BrandData, MentionData, AlertData, TopPostData } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary } from "./mock-data";
 
 export const brands: BrandData[] = [
   {
@@ -85,8 +85,8 @@ export const mentionsByNetwork = [
 ];
 
 export const topPosts: TopPostData[] = [
-  { brand: "Havoline", network: "instagram", caption: "Muchos roces en la vía pasan por lo mismo: estar en el lugar donde nadie te ve. Rodar pegado a la puerta, quedarse en el punto ciego...", likes: 24154, comments: 1307, shares: 0, views: 0, date: "2026-03-18" },
-  { brand: "Havoline", network: "facebook", caption: "Muchos roces en la vía pasan por lo mismo: estar en el lugar donde nadie te ve. Rodar pegado a la puerta...", likes: 13446, comments: 0, shares: 5272, views: 0, date: "2026-03-18" },
+  { brand: "Havoline", network: "instagram", caption: "Muchos roces en la vía pasan por lo mismo: estar en el lugar donde nadie te ve. Rodar pegado a la puerta, quedarse en el punto ciego...", likes: 24154, comments: 1307, shares: 0, views: 0, date: "2026-03-18", url: "https://www.instagram.com/p/DUZJCriFGMY/" },
+  { brand: "Havoline", network: "facebook", caption: "Muchos roces en la vía pasan por lo mismo: estar en el lugar donde nadie te ve. Rodar pegado a la puerta...", likes: 13446, comments: 0, shares: 5272, views: 0, date: "2026-03-18", url: "https://www.facebook.com/HavolineColombia/posts/pfbid02rNt5YYmGF7RrEtPbuUNfxoUWMn5z16RJcvxMaDyR3NASxJ4KxF5rRk1s6ykYoFRgl" },
   { brand: "Mobil", network: "instagram", caption: "Por primera vez, un mismo apellido conquistó el podio del Gran Premio Mobil Delvac. Más que una victoria...", likes: 10906, comments: 31, shares: 0, views: 0, date: "2026-07-27" },
   { brand: "Mobil", network: "instagram", caption: "La historia ya tiene a su primera campeona. Juliana Castelblanco Rueda conquistó la pista y se convirtió en la primera mujer en ganar...", likes: 7563, comments: 47, shares: 0, views: 0, date: "2026-07-28" },
   { brand: "Castrol", network: "instagram", caption: "Lucas tiene claro el objetivo para 2026. Estuvimos con él en el Autódromo de Tocancipá hablando del plan, las carreras...", likes: 6708, comments: 4, shares: 0, views: 0, date: "2026-03-04" },
@@ -119,6 +119,24 @@ export const alerts: AlertData[] = [
   { type: "sentiment", severity: "warning", title: "Baja actividad de Havoline en agosto", description: "Havoline registró solo 256 interacciones totales en agosto (202 IG + 54 FB), una caída significativa respecto a meses anteriores.", brand: "Havoline", date: "2026-08-31" },
   { type: "spike", severity: "info", title: "Liqui Moly fuerte en Facebook agosto", description: "Liqui Moly alcanzó 2,078 interacciones en Facebook en agosto, su mejor mes en esa red, impulsado por contenido educativo sobre mantenimiento.", brand: "Liqui Moly", date: "2026-08-10" },
 ];
+
+export const sentimentCategorySummaries: Record<string, SentimentCategorySummary> = {
+  Havoline: {
+    positive: "Fans celebran el contenido de seguridad vial y convivencia en las vías, elogian la calidad del producto y muestran entusiasmo por promociones, premios y activaciones de marca como el Motoclub.",
+    neutral: "Preguntas sobre disponibilidad de productos (aceite sintético dorado), consultas técnicas sobre uso en carros vs. motos, y debates sobre seguridad vial entre ciclistas, motociclistas y conductores.",
+    negative: "Críticas sobre publicidad pagada y pérdida de credibilidad de influenciadores, cuestionamientos sobre prácticas de ingeniería y obsolescencia programada en la industria de lubricantes.",
+  },
+  Mobil: {
+    positive: "Entusiasmo por el Gran Premio Mobil Delvac de tractomulas y reconocimiento a pilotos patrocinados.",
+    neutral: "Comentarios generales sobre eventos y competencias de motorsport.",
+    negative: "Sin menciones negativas significativas en el período.",
+  },
+  Castrol: {
+    positive: "Lealtad de fans del motorsport, entusiasmo por concursos de experiencia F1 y contenido de automovilismo.",
+    neutral: "Preguntas sobre patrocinios deportivos y disponibilidad de productos.",
+    negative: "Sin menciones negativas relevantes en el período.",
+  },
+};
 
 export const googleMapsData: { brand: string; rating: number; totalReviews: number; recentCount: number }[] = [];
 

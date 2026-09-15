@@ -106,7 +106,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, clientDescription } = useClientData();
+  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -216,10 +216,10 @@ export default function MarcaPage() {
           {/* Evolución de seguidores — mensual, todas las marcas */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Evolución mensual
+              Evolución mensual de interacciones
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              Actividad consolidada por mes — marcas propias
+              Total de likes + comentarios + compartidos por mes — marcas propias
             </p>
             <ResponsiveContainer width="100%" height={260}>
               <LineChart
@@ -294,7 +294,7 @@ export default function MarcaPage() {
                       <p className="text-sm text-gray-700 mb-3">
                         {post.caption}
                       </p>
-                      <div className="flex flex-wrap gap-4 text-xs text-gray-500">
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
                         <span>{formatNumber(post.likes)} likes</span>
                         <span>{formatNumber(post.comments)} comentarios</span>
                         <span>{formatNumber(post.shares)} compartidos</span>
@@ -302,6 +302,17 @@ export default function MarcaPage() {
                           <span className="font-medium text-gray-900">
                             {formatNumber(post.views)} views
                           </span>
+                        )}
+                        {post.url && (
+                          <a
+                            href={post.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-teal-600 hover:text-teal-700 font-medium ml-auto"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Ver post &rarr;
+                          </a>
                         )}
                       </div>
                     </div>
@@ -315,91 +326,96 @@ export default function MarcaPage() {
             )}
           </div>
 
-          {/* Sentimiento + menciones */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Qué dicen de {selectedBrand}
-            </h3>
-            <p className="text-xs text-gray-400 mb-4">
-              Menciones encontradas por búsqueda de keywords (earned media)
-            </p>
+          {/* Sentimiento + menciones por categoría */}
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                Qué dicen de {selectedBrand}
+              </h3>
+              <p className="text-xs text-gray-400">
+                Menciones encontradas por búsqueda de keywords (earned media)
+              </p>
+            </div>
 
             {brandSentiment && (
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-gray-600">
-                    Sentimiento
-                  </span>
-                  <span className="text-[10px] text-gray-400">
-                    +{brandSentiment.positive}% / {brandSentiment.neutral}% / -
-                    {brandSentiment.negative}%
-                  </span>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div className="bg-white rounded-xl border border-gray-200 p-4 sm:col-span-1">
+                  <p className="text-[10px] text-gray-400 uppercase tracking-wide mb-2">Sentimiento general</p>
+                  <div className="flex h-2.5 rounded-full overflow-hidden bg-gray-100 mb-3">
+                    <div className="bg-emerald-500" style={{ width: brandSentiment.positive + "%" }} />
+                    <div className="bg-amber-400" style={{ width: brandSentiment.neutral + "%" }} />
+                    <div className="bg-red-400" style={{ width: brandSentiment.negative + "%" }} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                        <span className="text-xs text-gray-600">Positivo</span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-900">{brandSentiment.positive}%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                        <span className="text-xs text-gray-600">Neutro</span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-900">{brandSentiment.neutral}%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-400" />
+                        <span className="text-xs text-gray-600">Negativo</span>
+                      </div>
+                      <span className="text-sm font-bold text-gray-900">{brandSentiment.negative}%</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex h-2.5 rounded-full overflow-hidden bg-gray-100">
-                  <div
-                    className="bg-emerald-500"
-                    style={{ width: brandSentiment.positive + "%" }}
-                  />
-                  <div
-                    className="bg-amber-400"
-                    style={{ width: brandSentiment.neutral + "%" }}
-                  />
-                  <div
-                    className="bg-red-400"
-                    style={{ width: brandSentiment.negative + "%" }}
-                  />
-                </div>
-              </div>
-            )}
 
-            {brandMentions.length > 0 ? (
-              <div className="space-y-3">
-                {brandMentions.map((m) => {
-                  const sentColor =
-                    m.sentiment === "positive"
-                      ? "text-emerald-600 bg-emerald-50"
-                      : m.sentiment === "negative"
-                        ? "text-red-600 bg-red-50"
-                        : "text-amber-600 bg-amber-50";
+                {(
+                  [
+                    { key: "positive" as const, label: "Positivo", color: "emerald", borderColor: "border-emerald-200", bgColor: "bg-emerald-50" },
+                    { key: "neutral" as const, label: "Neutro", color: "amber", borderColor: "border-amber-200", bgColor: "bg-amber-50" },
+                    { key: "negative" as const, label: "Negativo", color: "red", borderColor: "border-red-200", bgColor: "bg-red-50" },
+                  ] as const
+                ).map(({ key, label, borderColor, bgColor }) => {
+                  const summary = sentimentCategorySummaries[selectedBrand]?.[key];
+                  const categoryMentions = brandMentions.filter((m) => m.sentiment === key);
                   return (
-                    <div
-                      key={m.id}
-                      className="border border-gray-100 rounded-lg p-3"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-gray-500">
-                            {m.network}
-                          </span>
-                          <span className="text-xs text-gray-400">
-                            {m.author}
-                          </span>
+                    <div key={key} className={`bg-white rounded-xl border ${borderColor} p-4`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${bgColor} ${
+                          key === "positive" ? "text-emerald-700" : key === "negative" ? "text-red-700" : "text-amber-700"
+                        }`}>
+                          {label}
+                        </span>
+                        <span className="text-[10px] text-gray-400">{categoryMentions.length} menciones</span>
+                      </div>
+                      {summary && (
+                        <p className="text-xs text-gray-600 mb-3 leading-relaxed">{summary}</p>
+                      )}
+                      {categoryMentions.length > 0 ? (
+                        <div className="space-y-2">
+                          {categoryMentions.slice(0, 3).map((m) => (
+                            <div key={m.id} className="border border-gray-100 rounded-lg p-2.5">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-[10px] font-semibold text-gray-500">{m.network}</span>
+                                <span className="text-[10px] text-gray-400">{m.author}</span>
+                              </div>
+                              <p className="text-xs text-gray-700 leading-relaxed">{m.text}</p>
+                              <div className="flex justify-between mt-1.5">
+                                <span className="text-[10px] text-gray-400">{m.date}</span>
+                                {m.likes > 0 && <span className="text-[10px] text-gray-400">{formatNumber(m.likes)} likes</span>}
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                        <span
-                          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${sentColor}`}
-                        >
-                          {m.sentiment === "positive"
-                            ? "Positivo"
-                            : m.sentiment === "negative"
-                              ? "Negativo"
-                              : "Neutral"}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-700">{m.text}</p>
-                      <div className="flex justify-between mt-2">
-                        <span className="text-[10px] text-gray-400">
-                          {m.date}
-                        </span>
-                        <span className="text-[10px] text-gray-400">
-                          {formatNumber(m.likes)} likes
-                        </span>
-                      </div>
+                      ) : (
+                        <p className="text-[10px] text-gray-400">Sin menciones en esta categoría.</p>
+                      )}
                     </div>
                   );
                 })}
               </div>
-            ) : (
-              <p className="text-sm text-gray-400">Sin menciones recientes.</p>
             )}
           </div>
         </div>

@@ -47,6 +47,13 @@ export interface TopPostData {
   shares: number;
   views: number;
   date: string;
+  url?: string;
+}
+
+export interface SentimentCategorySummary {
+  positive: string;
+  neutral: string;
+  negative: string;
 }
 
 export const brands: BrandData[] = [
@@ -312,6 +319,31 @@ export function formatNumber(n: number): string {
   if (n >= 1000) return (n / 1000).toFixed(1) + "K";
   return n.toLocaleString("es-CO");
 }
+
+export function getTotalInteractions(brand: BrandData, network?: Network): number {
+  if (network) {
+    const m = brand.networks[network];
+    if (!m) return 0;
+    return Math.round((m.avgLikes + m.avgComments + m.avgShares) * m.posts);
+  }
+  return Object.values(brand.networks).reduce((sum, m) => {
+    if (!m) return sum;
+    return sum + Math.round((m.avgLikes + m.avgComments + m.avgShares) * m.posts);
+  }, 0);
+}
+
+export const sentimentCategorySummaries: Record<string, SentimentCategorySummary> = {
+  "Buena Mesa": {
+    positive: "Elogios a la calidad del producto, nuevos empaques sostenibles y recetas compartidas por la comunidad.",
+    neutral: "Comentarios sobre disponibilidad en tiendas, preguntas sobre ingredientes y comparaciones con otras marcas.",
+    negative: "Percepción de cambio en la receta y preocupaciones sobre la relación calidad-precio.",
+  },
+  "Pasta P.A.N.": {
+    positive: "Recetas rápidas y prácticas, contenido de loncheras escolares y reconocimiento a la estrategia de sostenibilidad.",
+    neutral: "Preguntas sobre tabla nutricional, comparaciones con otras marcas y discusiones generales sobre pastas.",
+    negative: "Comentarios aislados sobre textura y presentación del producto.",
+  },
+};
 
 export const productLineLabels: Record<string, string> = {
   pasta: "Pasta",
