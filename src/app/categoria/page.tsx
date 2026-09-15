@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
   BarChart,
@@ -14,8 +14,8 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { formatNumber } from "@/lib/mock-data";
-import type { MentionData } from "@/lib/mock-data";
+import { formatNumber, getTotalInteractions } from "@/lib/mock-data";
+import type { MentionData, Network } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 
 const sentimentLabels: Record<string, string> = {
@@ -26,7 +26,7 @@ const sentimentLabels: Record<string, string> = {
 
 const pieColors = ["#1DA1F2", "#000000", "#1877F2", "#FF4500", "#E4405F", "#0A66C2", "#34A853"];
 
-function MentionCard({ mention }: { mention: MentionData }) {
+function MentionCard({ mention, brandColor }: { mention: MentionData; brandColor?: string }) {
   const sentColor =
     mention.sentiment === "positive"
       ? "text-emerald-600 bg-emerald-50"
@@ -38,6 +38,13 @@ function MentionCard({ mention }: { mention: MentionData }) {
     <div className="border border-gray-200 rounded-lg p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
+          <span
+            className="text-xs font-bold"
+            style={{ color: brandColor || "#0d9488" }}
+          >
+            {mention.brand}
+          </span>
+          <span className="text-[10px] text-gray-300">|</span>
           <span className="text-xs font-semibold text-gray-500">
             {mention.network}
           </span>
@@ -59,22 +66,62 @@ function MentionCard({ mention }: { mention: MentionData }) {
 }
 
 export default function EscuchaActivaPage() {
-  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands } = useClientData();
+  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands, competitors, brandColors } = useClientData();
 
   const [brandFilter, setBrandFilter] = useState<string>("all");
   const [sentimentFilter, setSentimentFilter] = useState<string>("all");
 
   const allBrandNames = sovData.map((s) => s.brand);
+  const allBrands = [...ownBrands, ...competitors];
 
   const sovChartData = sovData.map((s) => ({
     ...s,
-    fill: ownBrands.some((b) => b.brand === s.brand) ? "#0d9488" : "#94a3b8",
+    fill: ownBrands.some((b) => b.brand === s.brand) ? (brandColors[s.brand] || "#0d9488") : "#94a3b8",
   }));
 
   const networkPieData = mentionsByNetwork.map((m, i) => ({
     ...m,
     color: pieColors[i % pieColors.length],
   }));
+
+  const availableNetworks = useMemo(() => {
+    const nets = new Set<Network>();
+    allBrands.forEach((b) => {
+      (Object.keys(b.networks) as Network[]).forEach((n) => {
+        if (b.networks[n]) nets.add(n);
+      });
+    });
+    return Array.from(nets);
+  }, [allBrands]);
+
+  const networkLabelsMap: Record<string, string> = {
+    instagram: "Instagram",
+    facebook: "Facebook",
+    tiktok: "TikTok",
+    linkedin: "LinkedIn",
+    x: "X",
+  };
+
+  const sovByNetwork = useMemo(() => {
+    const result: Record<string, { brand: string; interactions: number; fill: string }[]> = {};
+    for (const net of availableNetworks) {
+      const entries = allBrands
+        .filter((b) => b.networks[net])
+        .map((b) => ({
+          brand: b.brand,
+          interactions: getTotalInteractions(b, net),
+          fill: ownBrands.some((o) => o.brand === b.brand) ? (brandColors[b.brand] || "#0d9488") : "#94a3b8",
+        }))
+        .sort((a, b) => b.interactions - a.interactions);
+
+      const total = entries.reduce((s, e) => s + e.interactions, 0);
+      result[net] = entries.map((e) => ({
+        ...e,
+        percentage: total > 0 ? Number(((e.interactions / total) * 100).toFixed(1)) : 0,
+      }));
+    }
+    return result;
+  }, [allBrands, availableNetworks, ownBrands, brandColors]);
 
   const filteredMentions = mentions.filter((m) => {
     if (brandFilter !== "all" && m.brand !== brandFilter) return false;
@@ -92,55 +139,80 @@ export default function EscuchaActivaPage() {
         </p>
       </div>
 
+      {/* Share of Voice por plataforma */}
       <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
         <h3 className="text-sm font-semibold text-gray-900 mb-1">
-          Share of Voice — Categoría completa
+          Share of Voice por plataforma
         </h3>
-        <p className="text-xs text-gray-400 mb-4">
-          Quién domina la conversación en redes sociales
+        <p className="text-xs text-gray-400 mb-1">
+          Porcentaje de interacciones (likes + comentarios + compartidos) de cada marca sobre el total de la categoría en cada red social.
         </p>
-        <ResponsiveContainer width="100%" height={340}>
-          <BarChart
-            data={sovChartData}
-            layout="vertical"
-            margin={{ left: 10, right: 20 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis
-              type="number"
-              tick={{ fontSize: 11, fill: "#94a3b8" }}
-              tickFormatter={(v) => v + "%"}
-            />
-            <YAxis
-              dataKey="brand"
-              type="category"
-              width={95}
-              tick={{ fontSize: 12, fill: "#334155" }}
-            />
-            <Tooltip
-              formatter={(value) => [
-                Number(value).toFixed(1) + "%",
-                "SOV",
-              ]}
-              contentStyle={{
-                fontSize: 12,
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
-              }}
-            />
-            <Bar dataKey="percentage" radius={[0, 4, 4, 0]} fill="#94a3b8">
-              {sovChartData.map((entry, i) => (
-                <Cell key={i} fill={entry.fill} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-        <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-          Cálculo: total de menciones públicas de cada marca en X, TikTok, Facebook, Instagram, LinkedIn, Reddit y Google Maps durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
+        <p className="text-xs text-gray-400 mb-5">
+          Indica qué proporción de la conversación e interacción total de la categoría le corresponde a cada marca.
+        </p>
+
+        <div className="space-y-6">
+          {availableNetworks.map((net) => {
+            const data = sovByNetwork[net];
+            if (!data || data.length === 0) return null;
+            const chartData = data.map((d) => ({
+              brand: d.brand,
+              percentage: (d as Record<string, unknown>).percentage as number,
+              fill: d.fill,
+            }));
+            return (
+              <div key={net}>
+                <p className="text-xs font-semibold text-gray-700 mb-2">
+                  {networkLabelsMap[net] || net}
+                </p>
+                <ResponsiveContainer width="100%" height={Math.max(180, chartData.length * 32)}>
+                  <BarChart
+                    data={chartData}
+                    layout="vertical"
+                    margin={{ left: 10, right: 30 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis
+                      type="number"
+                      tick={{ fontSize: 11, fill: "#94a3b8" }}
+                      tickFormatter={(v) => v + "%"}
+                    />
+                    <YAxis
+                      dataKey="brand"
+                      type="category"
+                      width={95}
+                      tick={{ fontSize: 12, fill: "#334155" }}
+                    />
+                    <Tooltip
+                      formatter={(value) => [
+                        Number(value).toFixed(1) + "%",
+                        "SOV",
+                      ]}
+                      contentStyle={{
+                        fontSize: 12,
+                        borderRadius: 8,
+                        border: "1px solid #e2e8f0",
+                      }}
+                    />
+                    <Bar dataKey="percentage" radius={[0, 4, 4, 0]} fill="#94a3b8">
+                      {chartData.map((entry, i) => (
+                        <Cell key={i} fill={entry.fill} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+          Cálculo: total de interacciones (likes + comentarios + compartidos) de cada marca en cada plataforma durante el período, dividido por el total de interacciones de la categoría en esa misma plataforma. Fuente: datos públicos de redes sociales.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Sentimiento por marca — barras más gruesas con % dentro */}
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-1">
             Sentimiento por marca
@@ -148,30 +220,33 @@ export default function EscuchaActivaPage() {
           <p className="text-xs text-gray-400 mb-4">
             Distribución positivo / neutral / negativo
           </p>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {sentimentByBrand.slice(0, 8).map((s) => (
               <div key={s.brand}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-medium text-gray-700">
-                    {s.brand}
-                  </span>
-                  <span className="text-[10px] text-gray-400">
-                    +{s.positive}% / {s.neutral}% / -{s.negative}%
-                  </span>
-                </div>
-                <div className="flex h-2 rounded-full overflow-hidden bg-gray-100">
+                <p className="text-xs font-medium text-gray-700 mb-1.5"
+                   style={{ color: brandColors[s.brand] || "#374151" }}
+                >
+                  {s.brand}
+                </p>
+                <div className="flex h-7 rounded-lg overflow-hidden">
                   <div
-                    className="bg-emerald-500"
-                    style={{ width: s.positive + "%" }}
-                  />
+                    className="flex items-center justify-center text-white text-[10px] font-bold"
+                    style={{ width: s.positive + "%", background: "#10b981" }}
+                  >
+                    {s.positive > 12 && `${s.positive}%`}
+                  </div>
                   <div
-                    className="bg-amber-400"
-                    style={{ width: s.neutral + "%" }}
-                  />
+                    className="flex items-center justify-center text-white text-[10px] font-bold"
+                    style={{ width: s.neutral + "%", background: "#f59e0b" }}
+                  >
+                    {s.neutral > 12 && `${s.neutral}%`}
+                  </div>
                   <div
-                    className="bg-red-400"
-                    style={{ width: s.negative + "%" }}
-                  />
+                    className="flex items-center justify-center text-white text-[10px] font-bold"
+                    style={{ width: s.negative + "%", background: "#ef4444" }}
+                  >
+                    {s.negative > 12 && `${s.negative}%`}
+                  </div>
                 </div>
               </div>
             ))}
@@ -290,7 +365,7 @@ export default function EscuchaActivaPage() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {filteredMentions.map((m) => (
-            <MentionCard key={m.id} mention={m} />
+            <MentionCard key={m.id} mention={m} brandColor={brandColors[m.brand]} />
           ))}
         </div>
       </div>
