@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard,
   Star,
   Swords,
   Ear,
@@ -14,7 +13,6 @@ import { useAuth } from "./AuthProvider";
 import { useClientData } from "@/lib/client-data";
 
 const navigation = [
-  { name: "Resumen", href: "/dashboard", icon: LayoutDashboard },
   { name: "Nuestras Marcas", href: "/marca", icon: Star },
   { name: "Competencia", href: "/competencia", icon: Swords },
   { name: "Escucha Activa", href: "/categoria", icon: Ear },
@@ -50,7 +48,7 @@ export function Sidebar() {
 
       {hasMultipleProductLines && (
         <div className="mx-3 mt-4 mb-3 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50">
-          <p className="text-[10px] text-slate-500 uppercase tracking-wider mb-2 px-1">Categoría</p>
+          <p className="text-[10px] text-white uppercase tracking-wider mb-2 px-1">Categoría</p>
           <div className="grid grid-cols-2 gap-1.5">
             {productLineOptions.map((opt) => (
               <button

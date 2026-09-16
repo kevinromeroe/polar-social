@@ -6,6 +6,8 @@ import {
   networkLabels,
   networkColors,
   formatNumber,
+  getTotalFollowers,
+  getAvgEngagement,
 } from "@/lib/mock-data";
 import type { BrandData, Network } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
@@ -96,7 +98,19 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription } = useClientData();
+  const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription, sovData } = useClientData();
+
+  const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
+  const avgEngOwn = ownBrands.length > 0
+    ? ownBrands.reduce((s, b) => s + getAvgEngagement(b), 0) / ownBrands.length
+    : 0;
+  const totalMentions = sovData
+    .filter((s) => ownBrands.some((b) => b.brand === s.brand))
+    .reduce((s, d) => s + d.mentions, 0);
+  const ownSentimentData = sentimentByBrand.filter((s) => ownBrands.some((b) => b.brand === s.brand));
+  const ownSentimentAvg = ownSentimentData.length > 0
+    ? Math.round(ownSentimentData.reduce((sum, s) => sum + s.positive - s.negative, 0) / ownSentimentData.length)
+    : 0;
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -129,6 +143,29 @@ export default function MarcaPage() {
         <p className="text-gray-500 text-sm mt-1">
           Desempeño y escucha — {clientDescription}
         </p>
+      </div>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Seguidores totales</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalFollowersOwn)}</p>
+          <p className="text-xs text-gray-400 mt-1">Marcas propias, todas las redes</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Engagement promedio</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{avgEngOwn.toFixed(1)}%</p>
+          <p className="text-xs text-gray-400 mt-1">Últimos 30 días</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Menciones propias</p>
+          <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalMentions)}</p>
+          <p className="text-xs text-gray-400 mt-1">Veces que se mencionan nuestras marcas</p>
+        </div>
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Sentimiento neto</p>
+          <p className="text-2xl font-bold text-emerald-600 mt-1">+{ownSentimentAvg}%</p>
+          <p className="text-xs text-gray-400 mt-1">% positivo menos % negativo</p>
+        </div>
       </div>
 
       <div className="flex gap-2 mb-6">

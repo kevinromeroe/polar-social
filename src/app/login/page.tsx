@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       const email = resolveEmail(username);
       await signIn(email, password);
-      router.replace("/dashboard");
+      router.replace("/marca");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al iniciar sesión";
       setError(message);
@@ -82,7 +82,7 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition text-gray-900"
-              placeholder="usuario"
+              placeholder="ej: polar"
             />
           </div>
 
