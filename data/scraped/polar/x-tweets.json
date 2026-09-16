@@ -1,0 +1,1792 @@
+[
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "type": "user",
+    "userName": "AlimentosDoria",
+    "url": "https://x.com/AlimentosDoria",
+    "twitterUrl": "https://twitter.com/AlimentosDoria",
+    "id": "801190028",
+    "name": "Alimentos Doria",
+    "isVerified": false,
+    "hasNftAvatar": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2093452491878707201/Q2PrMYJZ_normal.png",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/801190028/1789418248",
+    "description": "👨🏻‍🍳 El lugar en donde el sabor, el amor y la nutrición se unen. \n🍝 No es lo mismo, si es Doria #PastaSinGluten 🌾 \n#Nutrivit 💙",
+    "location": "",
+    "followers": 7543,
+    "following": 914,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Mon Sep 03 20:47:41 +0000 2012",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "alimentosdoria.com",
+            "expanded_url": "http://www.alimentosdoria.com/",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/xtNwutgmfN"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 1122,
+    "listedCount": 20,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 1277,
+    "statusesCount": 3091,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "Catalba",
+    "url": "https://x.com/Catalba",
+    "twitterUrl": "https://twitter.com/Catalba",
+    "id": "29846969",
+    "name": "Catalina Alba",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2030991099083247616/S34f3oIj_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/29846969/1744384915",
+    "description": "Cocinera, autora, publicista, creadora del https://t.co/1JNNVgcUWO y de ConContraseña, un lugar mágico para vivir experiencias inspiradoras. https://t.co/bDLnQFEwQQ",
+    "location": "",
+    "followers": 42282,
+    "following": 9079,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": false,
+    "createdAt": "Wed Apr 08 22:55:44 +0000 2009",
+    "entities": {
+      "description": {
+        "urls": [
+          {
+            "display_url": "AlmorzaDiario.com",
+            "expanded_url": "http://AlmorzaDiario.com",
+            "indices": [
+              43,
+              66
+            ],
+            "url": "https://t.co/1JNNVgcUWO"
+          },
+          {
+            "display_url": "Catalba.co",
+            "expanded_url": "http://Catalba.co",
+            "indices": [
+              141,
+              164
+            ],
+            "url": "https://t.co/bDLnQFEwQQ"
+          }
+        ]
+      },
+      "url": {
+        "urls": [
+          {
+            "display_url": "catalba.co",
+            "expanded_url": "http://www.catalba.co",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/n8REQGE1Hx"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 32814,
+    "listedCount": 409,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 3514,
+    "statusesCount": 68725,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "peerritoo",
+    "url": "https://x.com/peerritoo",
+    "twitterUrl": "https://twitter.com/peerritoo",
+    "id": "2091624354136092672",
+    "name": "peerritoo",
+    "isVerified": false,
+    "profilePicture": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 14,
+    "following": 1158,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sun Aug 23 20:31:40 +0000 2026",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 1756,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 0,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "cfg32",
+    "url": "https://x.com/cfg32",
+    "twitterUrl": "https://twitter.com/cfg32",
+    "id": "451145917",
+    "name": "Carolina Fernández G.",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2099244127267471360/h5uJmP17_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/451145917/1683686600",
+    "description": "Jurista | Esp. en derecho Laboral y Seguridad Social |Magister en derecho Administrativo| ExJuezLaboral y ExConjuez Sala Laboral.",
+    "location": "",
+    "followers": 870,
+    "following": 3300,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Sat Dec 31 03:05:06 +0000 2011",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 3480,
+    "listedCount": 12,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 1366,
+    "statusesCount": 13471,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 483,
+          "name": "Lawyer & Law Firm"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1951672841729941556"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "HuynhKhoa79623",
+    "url": "https://x.com/HuynhKhoa79623",
+    "twitterUrl": "https://twitter.com/HuynhKhoa79623",
+    "id": "2027971314276032512",
+    "name": "Huynh Khoa",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2027971562964750337/iNIENssp_normal.png",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 6,
+    "following": 149,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sun Mar 01 04:57:52 +0000 2026",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 4,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 5,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "Alejo3307213959",
+    "url": "https://x.com/Alejo3307213959",
+    "twitterUrl": "https://twitter.com/Alejo3307213959",
+    "id": "1950722628039434240",
+    "name": "Alejo",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1950722712260820993/Bph-yBz2_normal.png",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 720,
+    "following": 7500,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Thu Jul 31 00:58:31 +0000 2025",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 36376,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 37,
+    "statusesCount": 1160,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "alfonsotap1",
+    "url": "https://x.com/alfonsotap1",
+    "twitterUrl": "https://twitter.com/alfonsotap1",
+    "id": "871928926049902592",
+    "name": "alfonso tapias",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2059001347370889216/Yhg8kJM3_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/871928926049902592/1779739154",
+    "description": "alfonso tapias barrera",
+    "location": "calla 46 # 12c-18 sogamoso",
+    "followers": 4,
+    "following": 348,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Tue Jun 06 03:17:10 +0000 2017",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 0,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 4,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 15,
+          "name": "Entertainment & Recreation"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1755655073172967821"
+    },
+    "possiblySensitive": true,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "liliana57623088",
+    "url": "https://x.com/liliana57623088",
+    "twitterUrl": "https://twitter.com/liliana57623088",
+    "id": "756555928594415616",
+    "name": "Lucero",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1767588559228141577/m99A6L9u_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/756555928594415616/1709925238",
+    "description": "Me encantan los gatos",
+    "location": "BogotaDC",
+    "followers": 29,
+    "following": 72,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Fri Jul 22 18:26:04 +0000 2016",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 2355,
+    "listedCount": 0,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 28,
+    "statusesCount": 259,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "1044705288992030721"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "henrygiovanyes",
+    "url": "https://x.com/henrygiovanyes",
+    "twitterUrl": "https://twitter.com/henrygiovanyes",
+    "id": "1570569912334123008",
+    "name": "henry estrada",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1570570035378126850/zF4veaeJ_normal.jpg",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 0,
+    "following": 36,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Fri Sep 16 00:27:30 +0000 2022",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 14,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 1,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosDoria",
+    "followerOf": "AlimentosDoria",
+    "type": "user",
+    "userName": "OrnatusFilmsPe",
+    "url": "https://x.com/OrnatusFilmsPe",
+    "twitterUrl": "https://twitter.com/OrnatusFilmsPe",
+    "id": "372093513",
+    "name": "Ornatus Films",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1907900271444787200/DEfcLGgR_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/372093513/1406098406",
+    "description": "Agente Inmobiliario, Emprendedor.",
+    "location": "Trujillo - Perú ",
+    "followers": 46,
+    "following": 2087,
+    "protected": true,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Mon Sep 12 03:33:53 +0000 2011",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "instagram.com/ornatusfilms",
+            "expanded_url": "https://www.instagram.com/ornatusfilms",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/Qdm6eLsaq3"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 871,
+    "listedCount": 1,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 3,
+    "statusesCount": 18,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Doria",
+    "_type": "comp-pasta"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "type": "user",
+    "userName": "atunvancamps",
+    "url": "https://x.com/atunvancamps",
+    "twitterUrl": "https://twitter.com/atunvancamps",
+    "id": "570002218",
+    "name": "Atún Van Camp's",
+    "isVerified": false,
+    "hasNftAvatar": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/655068731815628800/VjUbLauo_normal.png",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/570002218/1730989076",
+    "description": "El verdadero lomito de atún. 🐟 Recetas y tips en: https://t.co/rFM7IcxWRT 😋 \n#VanCamps #Atún #Sardinas #AtúnVanCamps",
+    "location": "Latinoamérica",
+    "followers": 6187,
+    "following": 2404,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Thu May 03 14:05:35 +0000 2012",
+    "entities": {
+      "description": {
+        "urls": [
+          {
+            "display_url": "vancamps.com.co",
+            "expanded_url": "http://vancamps.com.co",
+            "indices": [
+              50,
+              73
+            ],
+            "url": "https://t.co/rFM7IcxWRT"
+          }
+        ]
+      },
+      "url": {
+        "urls": [
+          {
+            "display_url": "vancamps.com",
+            "expanded_url": "http://www.vancamps.com",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/i2E8KARMsS"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 2132,
+    "listedCount": 22,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 2222,
+    "statusesCount": 5012,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 389,
+          "name": "Food & Beverage Company"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1455672884563750921"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "MariaFdaCabal",
+    "url": "https://x.com/MariaFdaCabal",
+    "twitterUrl": "https://twitter.com/MariaFdaCabal",
+    "id": "350862112",
+    "name": "María Fernanda Cabal",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1655417439822151682/c__haLBq_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/350862112/1789503616",
+    "description": "Representante a la Cámara 2014 - 2018\nSenadora de la República 2018 - 2026\nDefensora del sentido común y de la extrema coherencia 🇨🇴",
+    "location": "Bogotá, Colombia ",
+    "followers": 770727,
+    "following": 5391,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Mon Aug 08 12:34:30 +0000 2011",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "mariafernandacabal.com",
+            "expanded_url": "http://www.mariafernandacabal.com",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/tWlEWAQo1p"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 62323,
+    "listedCount": 1111,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 17133,
+    "statusesCount": 114735,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [],
+      "professional_type": "Creator",
+      "rest_id": "1460667670907559940"
+    },
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "2080488618976518643"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "DanielSamperO",
+    "url": "https://x.com/DanielSamperO",
+    "twitterUrl": "https://twitter.com/DanielSamperO",
+    "id": "134855279",
+    "name": "Daniel Samper Ospina",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2095579986803507203/rtRxaoMC_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/134855279/1622481736",
+    "description": "Columnista en @LosDanieles; youtuber en #HolaSoyDanny; comediante en #MiPutaObra #ConPdePolombia; #Circombia; #ElPetroVerso. Cont: ConPdePauta@gmail.com",
+    "location": "Bogotá",
+    "followers": 3022025,
+    "following": 6703,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Mon Apr 19 16:55:43 +0000 2010",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "youtube.com/channel/UCRTAH…",
+            "expanded_url": "https://www.youtube.com/channel/UCRTAHXRbRuYlsSCmb_78d_Q",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/1sM5QhJByw"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 103375,
+    "listedCount": 4239,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 27187,
+    "statusesCount": 317599,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "2098382681004188158"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "Enrique_GomezM",
+    "url": "https://x.com/Enrique_GomezM",
+    "twitterUrl": "https://twitter.com/Enrique_GomezM",
+    "id": "1368471536",
+    "name": "Enrique Gómez",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2061416690429120512/rjQ3tvfL_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1368471536/1787170727",
+    "description": "Director Nacional del @MovSalvacionNal, senador de la República 🇨🇴\n#ElSenadorDelTigre",
+    "location": "Colombia",
+    "followers": 278232,
+    "following": 2069,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sun Apr 21 02:21:03 +0000 2013",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "salvacionnacional.com",
+            "expanded_url": "http://www.salvacionnacional.com",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/HUMXmT5Grz"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 31514,
+    "listedCount": 231,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 8972,
+    "statusesCount": 19677,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 1009,
+          "name": "Community"
+        }
+      ],
+      "professional_type": "Creator",
+      "rest_id": "1541546096035610630"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "pulzo",
+    "url": "https://x.com/pulzo",
+    "twitterUrl": "https://twitter.com/pulzo",
+    "id": "1733793840",
+    "name": "Pulzo",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1868458101852004353/_cnEvElr_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1733793840/1777915493",
+    "description": "📲 Buscamos y curamos información relevante de Colombia 🇨🇴 y el mundo.",
+    "location": "Colombia",
+    "followers": 232316,
+    "following": 7650,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Fri Sep 06 03:08:07 +0000 2013",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "linktr.ee/pulzo",
+            "expanded_url": "https://linktr.ee/pulzo",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/04CQbB3NeK"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 2145,
+    "listedCount": 835,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 440329,
+    "statusesCount": 657566,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 955,
+          "name": "Journalist"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1591166178457751554"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "tuliorecomienda",
+    "url": "https://x.com/tuliorecomienda",
+    "twitterUrl": "https://twitter.com/tuliorecomienda",
+    "id": "96556764",
+    "name": "Tulio Recomienda",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/508374142375444481/3LMZ4HSS_normal.jpeg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/96556764/1785723393",
+    "description": "Creador del BURGER MASTER",
+    "location": "Colombia",
+    "followers": 183788,
+    "following": 4286,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Sun Dec 13 14:13:38 +0000 2009",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "tuliorecomienda.com/app",
+            "expanded_url": "http://tuliorecomienda.com/app",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/wyMIg0LAN3"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 51844,
+    "listedCount": 484,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 13682,
+    "statusesCount": 31293,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 934,
+          "name": "Social Media Influencer"
+        }
+      ],
+      "professional_type": "Creator",
+      "rest_id": "1517007351714390043"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "CamiloGrajale14",
+    "url": "https://x.com/CamiloGrajale14",
+    "twitterUrl": "https://twitter.com/CamiloGrajale14",
+    "id": "804792629875576832",
+    "name": "Camilo Grajales",
+    "isVerified": false,
+    "profilePicture": "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 10,
+    "following": 171,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Fri Dec 02 21:01:30 +0000 2016",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 13,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 1,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "cfg32",
+    "url": "https://x.com/cfg32",
+    "twitterUrl": "https://twitter.com/cfg32",
+    "id": "451145917",
+    "name": "Carolina Fernández G.",
+    "isVerified": true,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2099244127267471360/h5uJmP17_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/451145917/1683686600",
+    "description": "Jurista | Esp. en derecho Laboral y Seguridad Social |Magister en derecho Administrativo| ExJuezLaboral y ExConjuez Sala Laboral.",
+    "location": "",
+    "followers": 870,
+    "following": 3300,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Sat Dec 31 03:05:06 +0000 2011",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 3480,
+    "listedCount": 12,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 1366,
+    "statusesCount": 13471,
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 483,
+          "name": "Lawyer & Law Firm"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1951672841729941556"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "leslie_col",
+    "url": "https://x.com/leslie_col",
+    "twitterUrl": "https://twitter.com/leslie_col",
+    "id": "138654074",
+    "name": "ℒℯ𝓈𝓁𝒾ℯ ✍🏼",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2081719723813715968/qVdWiOfe_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/138654074/1785155293",
+    "description": "Espero que mi piso en algún momento tenga firmeza.",
+    "location": "Colombia",
+    "followers": 904,
+    "following": 1494,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": false,
+    "createdAt": "Fri Apr 30 05:03:40 +0000 2010",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 15058,
+    "listedCount": 2,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 896,
+    "statusesCount": 13384,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "2056903880814764480"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/atunvancamps",
+    "followerOf": "atunvancamps",
+    "type": "user",
+    "userName": "Droguetta",
+    "url": "https://x.com/Droguetta",
+    "twitterUrl": "https://twitter.com/Droguetta",
+    "id": "119025567",
+    "name": "Deslenguada de 8 a 9",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1246587498970693637/u3TkG8D__normal.jpg",
+    "coverPicture": "",
+    "description": "Tengo tanto que decir y no se como decirlo... Por la calle, me gusta mirar los zapatos de la gente, Ni de izquierda, ni derecha, menos al centro.. si pa'dentro!",
+    "location": "",
+    "followers": 189,
+    "following": 749,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Tue Mar 02 12:53:29 +0000 2010",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 684,
+    "listedCount": 0,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 121,
+    "statusesCount": 2484,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Van Camp's",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "type": "user",
+    "userName": "AlimentosZenu",
+    "url": "https://x.com/AlimentosZenu",
+    "twitterUrl": "https://twitter.com/AlimentosZenu",
+    "id": "238222273",
+    "name": "Alimentos Zenú",
+    "isVerified": false,
+    "hasNftAvatar": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1215619758/fotos_zenu_normal.gif",
+    "coverPicture": "",
+    "description": "Zenú es hoy la empresa de carnes Frías más importante de Colombia, mérito obtenido por la calidad, variedad y presentaciones de sus productos.",
+    "location": "Medellin",
+    "followers": 395,
+    "following": 12,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Fri Jan 14 17:13:29 +0000 2011",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "zenu.com.co",
+            "expanded_url": "http://www.zenu.com.co",
+            "indices": [
+              0,
+              22
+            ],
+            "url": "http://t.co/TJ2OO6h1No"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 1,
+    "listedCount": 4,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 1,
+    "statusesCount": 6,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "edmancaceres",
+    "url": "https://x.com/edmancaceres",
+    "twitterUrl": "https://twitter.com/edmancaceres",
+    "id": "1668504086",
+    "name": "Edman Caceres",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/485830653314097152/x7Vc1Pzd_normal.jpeg",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 32,
+    "following": 401,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Tue Aug 13 18:42:14 +0000 2013",
+    "entities": {
+      "description": {}
+    },
+    "favouritesCount": 429,
+    "isTranslator": false,
+    "mediaCount": 3,
+    "statusesCount": 138,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "bancoalguajira",
+    "url": "https://x.com/bancoalguajira",
+    "twitterUrl": "https://twitter.com/bancoalguajira",
+    "id": "1601617499635720194",
+    "name": "Banco de Alimentos de la Diócesis de Riohacha",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1819051077104246790/J_-eqhDK_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1601617499635720194/1762359904",
+    "description": "Trabajamos por la seguridad alimentaria y nutricional de La Guajira.  \nApoya Banco de Hilos con las #MochilasQueSalvanVidas",
+    "location": "Riohacha, La Guajira",
+    "followers": 53,
+    "following": 127,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Dec 10 16:39:24 +0000 2022",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "balguajira.org",
+            "expanded_url": "http://balguajira.org",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/jgStivxXwU"
+          }
+        ]
+      }
+    },
+    "favouritesCount": 211,
+    "isTranslator": false,
+    "mediaCount": 151,
+    "statusesCount": 348,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "alejx_R",
+    "url": "https://x.com/alejx_R",
+    "twitterUrl": "https://twitter.com/alejx_R",
+    "id": "1537094612464058374",
+    "name": "lookatthestars",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1748091457469087744/H2eogUB-_normal.jpg",
+    "coverPicture": "",
+    "description": ":)",
+    "location": "",
+    "followers": 2,
+    "following": 189,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Wed Jun 15 15:28:21 +0000 2022",
+    "entities": {
+      "description": {}
+    },
+    "favouritesCount": 116,
+    "isTranslator": false,
+    "mediaCount": 1,
+    "statusesCount": 48,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "melimarhe88",
+    "url": "https://x.com/melimarhe88",
+    "twitterUrl": "https://twitter.com/melimarhe88",
+    "id": "1547026841302622208",
+    "name": "Melissa Martinez Herrera",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1547027073750925312/ieKKLJCE_normal.png",
+    "coverPicture": "",
+    "description": "",
+    "location": "",
+    "followers": 0,
+    "following": 30,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Wed Jul 13 01:16:11 +0000 2022",
+    "entities": {
+      "description": {}
+    },
+    "favouritesCount": 0,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 0,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "PesaraOficial",
+    "url": "https://x.com/PesaraOficial",
+    "twitterUrl": "https://twitter.com/PesaraOficial",
+    "id": "1242564237861556229",
+    "name": "Pedro Sanchez R. S.A.S",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1242565548690550787/oiNXrnNi_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1242564237861556229/1585087406",
+    "description": "40 años de experiencia en la industria colombiana. Sellado de Fluidos - Lubricación/MRO - Recubrimientos Industriales - Herramientas & Equipos.",
+    "location": "Bogotá DC. Colombia",
+    "followers": 90,
+    "following": 667,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Tue Mar 24 21:30:03 +0000 2020",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "pesara.com.co",
+            "expanded_url": "http://www.pesara.com.co",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/QRpmmh9epF"
+          }
+        ]
+      }
+    },
+    "favouritesCount": 13,
+    "isTranslator": false,
+    "mediaCount": 512,
+    "statusesCount": 696,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "arlexospina21",
+    "url": "https://x.com/arlexospina21",
+    "twitterUrl": "https://twitter.com/arlexospina21",
+    "id": "1424047771091341320",
+    "name": "arlex ospina",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1561507247183859712/3QxgZgcg_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1424047771091341320/1647228161",
+    "description": "",
+    "location": "",
+    "followers": 5,
+    "following": 193,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Aug 07 16:40:49 +0000 2021",
+    "entities": {
+      "description": {}
+    },
+    "favouritesCount": 324,
+    "isTranslator": false,
+    "mediaCount": 18,
+    "statusesCount": 195,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "LuisVela1980",
+    "url": "https://x.com/LuisVela1980",
+    "twitterUrl": "https://twitter.com/LuisVela1980",
+    "id": "1445115521733644302",
+    "name": "Yessica Paola Huerta Solis",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2015594418963619842/rUuS6TDa_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1445115521733644302/1735908354",
+    "description": "Algun dia regalaras plumas a aquellos que no creyeron en tus alas de Angel",
+    "location": "Aguascalientes, México",
+    "followers": 320,
+    "following": 3959,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Mon Oct 04 19:56:27 +0000 2021",
+    "entities": {
+      "description": {}
+    },
+    "favouritesCount": 14,
+    "isTranslator": false,
+    "mediaCount": 0,
+    "statusesCount": 0,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "Abacocol",
+    "url": "https://x.com/Abacocol",
+    "twitterUrl": "https://twitter.com/Abacocol",
+    "id": "1393208529130082309",
+    "name": "AbacoCol",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1722758136300269568/qM4jHRG1_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1393208529130082309/1753046706",
+    "description": "Los Bancos de Alimentos de Colombia 🇨🇴 rescatamos, reaprovechamos y distribuimos alimentos, bienes y servicios para la población más vulnerable. 💚🧡",
+    "location": "Colombia",
+    "followers": 10510,
+    "following": 285,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Fri May 14 14:16:26 +0000 2021",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "abaco.org.co",
+            "expanded_url": "https://abaco.org.co/",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/IHQwkGsIOo"
+          }
+        ]
+      }
+    },
+    "favouritesCount": 1062,
+    "isTranslator": false,
+    "mediaCount": 1935,
+    "statusesCount": 2939,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "professional": {
+      "category": [
+        {
+          "icon_name": "IconBriefcaseStroke",
+          "id": 1009,
+          "name": "Community"
+        }
+      ],
+      "professional_type": "Business",
+      "rest_id": "1599908467724140546"
+    },
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AlimentosZenu",
+    "followerOf": "AlimentosZenu",
+    "type": "user",
+    "userName": "lanotacom",
+    "url": "https://x.com/lanotacom",
+    "twitterUrl": "https://twitter.com/lanotacom",
+    "id": "76118047",
+    "name": "Jorge Ospina Sardi",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/472450418220351488/vO3ytRcZ_normal.jpeg",
+    "coverPicture": "",
+    "description": "Análisis económicos | Confidencias | Proyecciones económicas | Ranking Mercados Colombia | http://t.co/NTqDuxJvKP ®",
+    "location": "",
+    "followers": 711,
+    "following": 4731,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Mon Sep 21 19:32:56 +0000 2009",
+    "entities": {
+      "description": {
+        "urls": [
+          {
+            "display_url": "LaNota.com",
+            "expanded_url": "http://LaNota.com",
+            "indices": [
+              91,
+              113
+            ],
+            "url": "http://t.co/NTqDuxJvKP"
+          }
+        ]
+      },
+      "url": {
+        "urls": [
+          {
+            "display_url": "lanota.com",
+            "expanded_url": "http://www.lanota.com",
+            "indices": [
+              0,
+              22
+            ],
+            "url": "http://t.co/4nOy5GzDh9"
+          }
+        ]
+      }
+    },
+    "favouritesCount": 12,
+    "isTranslator": false,
+    "mediaCount": 11,
+    "statusesCount": 7256,
+    "translatorTypeEnum": "none",
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Zenú",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "type": "user",
+    "userName": "AtunIsabelCol",
+    "url": "https://x.com/AtunIsabelCol",
+    "twitterUrl": "https://twitter.com/AtunIsabelCol",
+    "id": "1111031794151886850",
+    "name": "Atún Isabel Colombia",
+    "isVerified": false,
+    "hasNftAvatar": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1111033165467000834/X2gWtF_p_normal.png",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1111031794151886850/1595463217",
+    "description": "Aliméntate sanamente con las nuevas formas de comer atún: ¡Saludable, fácil y divertido!",
+    "location": "Bogotá, D.C., Colombia",
+    "followers": 7,
+    "following": 0,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Wed Mar 27 22:26:36 +0000 2019",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "isabelcolombia.com.co",
+            "expanded_url": "http://isabelcolombia.com.co/",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/LXGqX0fz3P"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 0,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 2,
+    "statusesCount": 15,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "EdwardStiv8515",
+    "url": "https://x.com/EdwardStiv8515",
+    "twitterUrl": "https://twitter.com/EdwardStiv8515",
+    "id": "1636453693481443328",
+    "name": "Edward Stiven parra Ramos✌️✨",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2088281557366714368/UcWhLEji_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1636453693481443328/1786720152",
+    "description": "XI XXII MCMXCVII",
+    "location": "Madrid cundinamarca",
+    "followers": 209,
+    "following": 7509,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Thu Mar 16 19:46:16 +0000 2023",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 129302,
+    "listedCount": 5,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 45,
+    "statusesCount": 489,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "Woyd15609773",
+    "url": "https://x.com/Woyd15609773",
+    "twitterUrl": "https://twitter.com/Woyd15609773",
+    "id": "1591537715585105924",
+    "name": "Tirando del peloton.",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/2075402160825626624/OIrfMLyy_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1591537715585105924/1720731079",
+    "description": "Aquí comentando y analizando el ciclismo, sin habernos subido a una bicicleta 😃",
+    "location": "",
+    "followers": 409,
+    "following": 993,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Sat Nov 12 21:06:04 +0000 2022",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 2968,
+    "listedCount": 1,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 148,
+    "statusesCount": 3183,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "JessGuarn2",
+    "url": "https://x.com/JessGuarn2",
+    "twitterUrl": "https://twitter.com/JessGuarn2",
+    "id": "1099860876327301120",
+    "name": "Jesús Guarín",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1692790321120235520/mn9FS1HK_normal.jpg",
+    "coverPicture": "",
+    "description": "Honestidad, perdón y personalidad para vivir algo de paz.",
+    "location": "",
+    "followers": 121,
+    "following": 638,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Mon Feb 25 02:37:22 +0000 2019",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 10319,
+    "listedCount": 0,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 3,
+    "statusesCount": 1385,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "HarrisonCedric1",
+    "url": "https://x.com/HarrisonCedric1",
+    "twitterUrl": "https://twitter.com/HarrisonCedric1",
+    "id": "1053204368714072064",
+    "name": "Harrison Cedrick",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1053209309981655040/AB8MBMay_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/1053204368714072064/1611190013",
+    "description": "I AM EASY GOING AND CARING, I LIKE MATTER WHEN IT'S COME TO THE MATTER OF HEART.",
+    "location": "Yemen",
+    "followers": 712,
+    "following": 4483,
+    "protected": false,
+    "status": "",
+    "canDm": true,
+    "canMediaTag": true,
+    "createdAt": "Fri Oct 19 08:41:03 +0000 2018",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 228,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 22,
+    "statusesCount": 351,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "Gaboramognr",
+    "url": "https://x.com/Gaboramognr",
+    "twitterUrl": "https://twitter.com/Gaboramognr",
+    "id": "357796205",
+    "name": "Gabriel Ramirez M.",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1973159292258734080/p6OtSYJM_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/357796205/1612028599",
+    "description": "Soy de esas personas que piensan (A) dicen (B) y hacen (C)",
+    "location": "Bogotá - Colombia",
+    "followers": 102,
+    "following": 187,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Thu Aug 18 22:38:23 +0000 2011",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 22,
+    "listedCount": 0,
+    "hasCustomTimelines": false,
+    "isTranslator": false,
+    "mediaCount": 19,
+    "statusesCount": 480,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "263263177645625344"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "Edw4rd_Smith",
+    "url": "https://x.com/Edw4rd_Smith",
+    "twitterUrl": "https://twitter.com/Edw4rd_Smith",
+    "id": "116222320",
+    "name": "Edward Smith",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/1398369032563273730/x_WnPsaJ_normal.jpg",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/116222320/1602307733",
+    "description": "Dr Alvaro Uribe Vélez sinónimo de Libertad y Democracia en Colombia 💯 Uribista, el legado de mi Patria",
+    "location": "Sarajevo",
+    "followers": 339,
+    "following": 4613,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": false,
+    "createdAt": "Sun Feb 21 16:57:23 +0000 2010",
+    "entities": {
+      "description": {}
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 22043,
+    "listedCount": 0,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 1554,
+    "statusesCount": 16498,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  },
+  {
+    "inputSource": "https://x.com/AtunIsabelCol",
+    "followerOf": "AtunIsabelCol",
+    "type": "user",
+    "userName": "elbisnet",
+    "url": "https://x.com/elbisnet",
+    "twitterUrl": "https://twitter.com/elbisnet",
+    "id": "17161750",
+    "name": "Elbis Estid Bonilla",
+    "isVerified": false,
+    "profilePicture": "https://pbs.twimg.com/profile_images/378800000532081140/d4d67ae7d1361c82806593371098437e_normal.png",
+    "coverPicture": "https://pbs.twimg.com/profile_banners/17161750/1404392921",
+    "description": "Diseñador Gráfico\nBogotano, Geek, Emprendedor, coffee lover, Fotógrafo aficionado\nApasionado por: el Branding, la lustración.\nColeccionista. Toys, libros",
+    "location": "Colombia",
+    "followers": 1382,
+    "following": 1884,
+    "protected": false,
+    "status": "",
+    "canDm": false,
+    "canMediaTag": true,
+    "createdAt": "Tue Nov 04 17:20:13 +0000 2008",
+    "entities": {
+      "description": {},
+      "url": {
+        "urls": [
+          {
+            "display_url": "elbisnet.com",
+            "expanded_url": "http://www.elbisnet.com",
+            "indices": [
+              0,
+              23
+            ],
+            "url": "https://t.co/gn4LT2zBQz"
+          }
+        ]
+      }
+    },
+    "fastFollowersCount": 0,
+    "favouritesCount": 3021,
+    "listedCount": 95,
+    "hasCustomTimelines": true,
+    "isTranslator": false,
+    "mediaCount": 771,
+    "statusesCount": 10950,
+    "affiliatesHighlightedLabel": {},
+    "possiblySensitive": false,
+    "pinnedTweetIds": [
+      "1367884597766291464"
+    ],
+    "profileInterstitialType": "",
+    "hasGraduatedAccess": true,
+    "_brand": "Isabel",
+    "_type": "comp-atun"
+  }
+]
