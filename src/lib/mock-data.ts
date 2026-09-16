@@ -89,8 +89,8 @@ export interface MentionVolume {
 }
 
 // ─── Datos reales desde Apify (sep 2026) ───
-// Fuente: Instagram Profile Scraper + Instagram Post Scraper
-// 11 cuentas, 216 posts, scrapeado 2026-09-16
+// Fuente: Instagram + Facebook Scrapers (Apify)
+// 11 cuentas IG (216 posts) + 10 páginas FB (200 posts), scrapeado 2026-09-16
 
 export const brands: BrandData[] = [
   {
@@ -99,6 +99,7 @@ export const brands: BrandData[] = [
     productLine: "pasta",
     networks: {
       instagram: { username: "harinapancolombia", followers: 50388, posts: 1809, engagementRate: 0.17, growth: 0, avgLikes: 78, avgComments: 8, avgShares: 0 },
+      facebook: { username: "HarinaPANColombia", followers: 175278, posts: 0, engagementRate: 0.01, growth: 0, avgLikes: 11, avgComments: 1, avgShares: 3 },
     },
   },
   {
@@ -107,6 +108,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "alimentospolarcolombia", followers: 1173, posts: 64, engagementRate: 8.9, growth: 0, avgLikes: 99, avgComments: 5, avgShares: 0 },
+      facebook: { username: "AlimentosPolarColombia", followers: 25309, posts: 0, engagementRate: 0.19, growth: 0, avgLikes: 41, avgComments: 1, avgShares: 6 },
     },
   },
   {
@@ -115,6 +117,7 @@ export const brands: BrandData[] = [
     productLine: "pasta",
     networks: {
       instagram: { username: "alimentosdoria", followers: 60338, posts: 1284, engagementRate: 1.37, growth: 0, avgLikes: 786, avgComments: 38, avgShares: 0 },
+      facebook: { username: "alimentosdoria", followers: 145074, posts: 0, engagementRate: 0.22, growth: 0, avgLikes: 295, avgComments: 5, avgShares: 20 },
     },
   },
   {
@@ -123,6 +126,7 @@ export const brands: BrandData[] = [
     productLine: "pasta",
     networks: {
       instagram: { username: "pastaslamuneca", followers: 45432, posts: 1215, engagementRate: 0.30, growth: 0, avgLikes: 127, avgComments: 8, avgShares: 0 },
+      facebook: { username: "PastasLamunecaOficial", followers: 81915, posts: 0, engagementRate: 0.02, growth: 0, avgLikes: 12, avgComments: 1, avgShares: 2 },
     },
   },
   {
@@ -131,6 +135,7 @@ export const brands: BrandData[] = [
     productLine: "pasta",
     networks: {
       instagram: { username: "productoscomarrico", followers: 5054, posts: 194, engagementRate: 4.55, growth: 0, avgLikes: 213, avgComments: 18, avgShares: 0 },
+      facebook: { username: "productoscomarrico", followers: 1694, posts: 0, engagementRate: 1.28, growth: 0, avgLikes: 19, avgComments: 1, avgShares: 1 },
     },
   },
   {
@@ -147,6 +152,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "atunvancamps", followers: 146983, posts: 2530, engagementRate: 0.11, growth: 0, avgLikes: 165, avgComments: 4, avgShares: 0 },
+      facebook: { username: "AtunVanCamps", followers: 783832, posts: 0, engagementRate: 0.01, growth: 0, avgLikes: 90, avgComments: 2, avgShares: 9 },
     },
   },
   {
@@ -155,6 +161,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "zenuoficial", followers: 94623, posts: 1156, engagementRate: 1.06, growth: 0, avgLikes: 966, avgComments: 41, avgShares: 0 },
+      facebook: { username: "AlimentosZenu", followers: 227819, posts: 0, engagementRate: 0.14, growth: 0, avgLikes: 319, avgComments: 2, avgShares: 4 },
     },
   },
   {
@@ -163,6 +170,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "lasoberanacol", followers: 31934, posts: 1379, engagementRate: 25.75, growth: 0, avgLikes: 8134, avgComments: 88, avgShares: 0 },
+      facebook: { username: "lasoberanacol", followers: 24188, posts: 0, engagementRate: 0.04, growth: 0, avgLikes: 10, avgComments: 0, avgShares: 1 },
     },
   },
   {
@@ -171,6 +179,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "atunisabelcol", followers: 8064, posts: 1019, engagementRate: 18.22, growth: 0, avgLikes: 1453, avgComments: 16, avgShares: 0 },
+      facebook: { username: "atunisabelcolombia", followers: 13736, posts: 0, engagementRate: 0.02, growth: 0, avgLikes: 2, avgComments: 0, avgShares: 0 },
     },
   },
   {
@@ -179,6 +188,7 @@ export const brands: BrandData[] = [
     productLine: "pasta_atun",
     networks: {
       instagram: { username: "la_espanola_comoninguna", followers: 19844, posts: 798, engagementRate: 0.13, growth: 0, avgLikes: 26, avgComments: 0, avgShares: 0 },
+      facebook: { username: "atunlaespanola", followers: 550, posts: 0, engagementRate: 0.15, growth: 0, avgLikes: 1, avgComments: 0, avgShares: 0 },
     },
   },
 ];
@@ -232,7 +242,8 @@ export const growthTrend = [
 ];
 
 export const mentionsByNetwork = [
-  { network: "Instagram", mentions: 12168, percentage: 100 },
+  { network: "Instagram", mentions: 12168, percentage: 75.2 },
+  { network: "Facebook", mentions: 4018, percentage: 24.8 },
 ];
 
 // Posts reales scrapeados — mejores y peores por engagement (Instagram, sep 2026)
@@ -270,6 +281,12 @@ export const topPosts: TopPostData[] = [
   // ─── La Española ───
   { brand: "La Española", network: "instagram", caption: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", likes: 35, comments: 0, shares: 0, views: 0, date: "2026-07-14", url: "https://www.instagram.com/p/DayKi6tE0nb/", ranking: "best" },
   { brand: "La Española", network: "instagram", caption: "Domingos que saben a verano. ☀️💦 Aperitivo al sol, bebida bien fría y el sabor del mar.", likes: 18, comments: 1, shares: 0, views: 0, date: "2026-07-05", url: "https://www.instagram.com/p/DaZ8elxj8o-/", ranking: "worst" },
+  // ─── Facebook: mejores posts por marca ───
+  { brand: "Doria", network: "facebook", caption: "¿Tú ya sabes por qué no es lo mismo si es Doria? 🤔 Aquí te lo contamos.", likes: 4218, comments: 74, shares: 70, views: 0, date: "2026-08-21", url: "https://www.facebook.com/alimentosdoria/", ranking: "best" },
+  { brand: "Zenú", network: "facebook", caption: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", likes: 3823, comments: 25, shares: 13, views: 0, date: "2026-09-02", url: "https://www.facebook.com/AlimentosZenu/", ranking: "best" },
+  { brand: "Van Camp's", network: "facebook", caption: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", likes: 464, comments: 5, shares: 42, views: 0, date: "2026-08-25", url: "https://www.facebook.com/AtunVanCamps/", ranking: "best" },
+  { brand: "Comarrico", network: "facebook", caption: "😋 ¿Quién dijo hambre? Con Comarrico te armas el almuerzo pa' toda la familia.", likes: 261, comments: 11, shares: 9, views: 0, date: "2025-10-03", url: "https://www.facebook.com/productoscomarrico/", ranking: "best" },
+  { brand: "Alimentos Polar", network: "facebook", caption: "30 años de sabor, tradición y compromiso con Colombia. Gracias por ser parte de nuestra historia.", likes: 156, comments: 8, shares: 22, views: 0, date: "2026-09-03", url: "https://www.facebook.com/AlimentosPolarColombia/", ranking: "best" },
 ];
 
 // Menciones destacadas — extraídas de posts reales scrapeados
