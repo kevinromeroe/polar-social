@@ -14,11 +14,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
-  Legend,
   Cell,
-  ReferenceDot,
 } from "recharts";
 import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
@@ -36,7 +32,7 @@ const severityIcons = {
 };
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, growthTrend, alerts, clientDescription, brandColors, chartAnnotations } = useClientData();
+  const { ownBrands, sovData, alerts, clientDescription, brandColors } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -48,11 +44,8 @@ export default function DashboardPage() {
 
   const sovChartData = sovData.slice(0, 8).map((s) => ({
     ...s,
-    fill: ownBrands.some((b) => b.brand === s.brand) ? (brandColors[s.brand] || "#0d9488") : "#94a3b8",
+    fill: brandColors[s.brand] || "#64748b",
   }));
-
-  const ownBrandNames = ownBrands.map((b) => b.brand);
-  const fallbackLineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
 
   return (
     <ProtectedLayout>
@@ -149,82 +142,53 @@ export default function DashboardPage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-1">
-            Crecimiento de seguidores
+            Seguidores por red social
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Marcas propias — total consolidado por mes
+            Marcas propias — comparativa Instagram vs Facebook
           </p>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart
-              data={growthTrend}
-              margin={{ left: 10, right: 20, top: 0, bottom: 0 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis
-                dataKey="date"
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
-              />
-              <YAxis
-                tick={{ fontSize: 11, fill: "#94a3b8" }}
-                tickFormatter={(v) => formatNumber(v)}
-              />
-              <Tooltip
-                formatter={(value) => [
-                  Number(value).toLocaleString("es-CO"),
-                  "",
-                ]}
-                contentStyle={{
-                  fontSize: 12,
-                  borderRadius: 8,
-                  border: "1px solid #e2e8f0",
-                }}
-              />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              {ownBrandNames.map((name, i) => (
-                <Line
-                  key={name}
-                  type="monotone"
-                  dataKey={name}
-                  stroke={brandColors[name] || fallbackLineColors[i]}
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                  activeDot={{ r: 5 }}
-                />
-              ))}
-              {chartAnnotations.map((ann, i) => {
-                const point = growthTrend.find((d) => d.date === ann.date);
-                const val = point?.[ann.brand];
-                if (val == null) return null;
-                return (
-                  <ReferenceDot
-                    key={i}
-                    x={ann.date}
-                    y={Number(val)}
-                    r={6}
-                    fill={brandColors[ann.brand] || "#0d9488"}
-                    stroke="#fff"
-                    strokeWidth={2}
-                  />
-                );
-              })}
-            </LineChart>
-          </ResponsiveContainer>
-          {chartAnnotations.length > 0 && (
-            <div className="mt-4 space-y-2">
-              {chartAnnotations.map((ann, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <span
-                    className="w-3 h-3 rounded-full shrink-0 mt-0.5 border-2 border-white"
-                    style={{ background: brandColors[ann.brand] || "#0d9488", boxShadow: "0 0 0 1px " + (brandColors[ann.brand] || "#0d9488") }}
-                  />
-                  <p className="text-xs text-gray-600 leading-relaxed">
-                    <span className="font-semibold" style={{ color: brandColors[ann.brand] || "#0d9488" }}>{ann.date}</span>
-                    {" — "}{ann.text}
-                  </p>
+          <div className="space-y-4">
+            {ownBrands.map((brand) => {
+              const ig = brand.networks.instagram;
+              const fb = brand.networks.facebook;
+              const totalF = (ig?.followers ?? 0) + (fb?.followers ?? 0);
+              return (
+                <div key={brand.brand}>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm font-medium" style={{ color: brandColors[brand.brand] || "#334155" }}>{brand.brand}</span>
+                    <span className="text-sm font-bold text-gray-900">{formatNumber(totalF)}</span>
+                  </div>
+                  <div className="flex gap-2 text-xs text-gray-500">
+                    {ig && (
+                      <div className="flex-1">
+                        <div className="flex justify-between mb-0.5">
+                          <span>Instagram</span>
+                          <span className="font-medium text-gray-700">{formatNumber(ig.followers)}</span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full bg-pink-500" style={{ width: `${Math.min((ig.followers / (totalF || 1)) * 100, 100)}%` }} />
+                        </div>
+                      </div>
+                    )}
+                    {fb && (
+                      <div className="flex-1">
+                        <div className="flex justify-between mb-0.5">
+                          <span>Facebook</span>
+                          <span className="font-medium text-gray-700">{formatNumber(fb.followers)}</span>
+                        </div>
+                        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <div className="h-full rounded-full bg-blue-600" style={{ width: `${Math.min((fb.followers / (totalF || 1)) * 100, 100)}%` }} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+            Snapshot sep 2026 — se actualizará con scraping quincenal para mostrar tendencia de crecimiento.
+          </p>
         </div>
       </div>
 
