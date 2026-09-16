@@ -65,7 +65,7 @@ const polarDataset: ClientDataset = {
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
-  clientDescription: "Buena Mesa y Pasta P.A.N.",
+  clientDescription: "Pasta P.A.N. y Alimentos Polar",
 };
 
 const havolineDataset: ClientDataset = {

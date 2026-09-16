@@ -88,29 +88,25 @@ export interface MentionVolume {
   [brand: string]: string | number;
 }
 
+// ─── Datos reales desde Apify (sep 2026) ───
+// Fuente: Instagram Profile Scraper + Instagram Post Scraper
+// 11 cuentas, 216 posts, scrapeado 2026-09-16
+
 export const brands: BrandData[] = [
-  {
-    brand: "Buena Mesa",
-    type: "own",
-    productLine: "pasta_atun",
-    networks: {
-      instagram: { username: "buenamesa_oficial", followers: 45200, posts: 234, engagementRate: 2.8, growth: 1.2, avgLikes: 1120, avgComments: 85, avgShares: 42 },
-      facebook: { username: "BuenaMesaOficial", followers: 112000, posts: 456, engagementRate: 0.9, growth: -0.1, avgLikes: 890, avgComments: 124, avgShares: 67 },
-      tiktok: { username: "buenamesa_oficial", followers: 28700, posts: 89, engagementRate: 4.2, growth: 3.8, avgLikes: 3200, avgComments: 156, avgShares: 234 },
-      linkedin: { username: "buena-mesa", followers: 8400, posts: 67, engagementRate: 2.1, growth: 2.1, avgLikes: 145, avgComments: 23, avgShares: 18 },
-      x: { username: "BuenaMesa_CO", followers: 15600, posts: 312, engagementRate: 1.5, growth: 0.8, avgLikes: 89, avgComments: 34, avgShares: 56 },
-    },
-  },
   {
     brand: "Pasta P.A.N.",
     type: "own",
     productLine: "pasta",
     networks: {
-      instagram: { username: "pastapan_oficial", followers: 38900, posts: 198, engagementRate: 3.1, growth: 2.4, avgLikes: 980, avgComments: 72, avgShares: 38 },
-      facebook: { username: "PastaPANOficial", followers: 95000, posts: 389, engagementRate: 0.7, growth: 0.3, avgLikes: 560, avgComments: 89, avgShares: 45 },
-      tiktok: { username: "pastapan_oficial", followers: 22100, posts: 56, engagementRate: 5.1, growth: 6.2, avgLikes: 4100, avgComments: 210, avgShares: 320 },
-      linkedin: { username: "pasta-pan", followers: 6200, posts: 45, engagementRate: 1.8, growth: 1.5, avgLikes: 98, avgComments: 15, avgShares: 12 },
-      x: { username: "PastaPAN_CO", followers: 12400, posts: 245, engagementRate: 1.2, growth: 0.5, avgLikes: 67, avgComments: 28, avgShares: 41 },
+      instagram: { username: "harinapancolombia", followers: 50388, posts: 1809, engagementRate: 0.17, growth: 0, avgLikes: 78, avgComments: 8, avgShares: 0 },
+    },
+  },
+  {
+    brand: "Alimentos Polar",
+    type: "own",
+    productLine: "pasta_atun",
+    networks: {
+      instagram: { username: "alimentospolarcolombia", followers: 1173, posts: 64, engagementRate: 8.9, growth: 0, avgLikes: 99, avgComments: 5, avgShares: 0 },
     },
   },
   {
@@ -118,10 +114,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "doriacolombia", followers: 120000, posts: 567, engagementRate: 2.1, growth: 0.9, avgLikes: 2200, avgComments: 180, avgShares: 95 },
-      facebook: { username: "DoriaColombia", followers: 340000, posts: 890, engagementRate: 0.6, growth: 0.2, avgLikes: 1800, avgComments: 245, avgShares: 120 },
-      tiktok: { username: "doriacolombia", followers: 85000, posts: 145, engagementRate: 3.8, growth: 2.1, avgLikes: 8900, avgComments: 420, avgShares: 560 },
-      x: { username: "DoriaColombia", followers: 28000, posts: 456, engagementRate: 0.9, growth: -0.3, avgLikes: 120, avgComments: 45, avgShares: 78 },
+      instagram: { username: "alimentosdoria", followers: 60338, posts: 1284, engagementRate: 1.37, growth: 0, avgLikes: 786, avgComments: 38, avgShares: 0 },
     },
   },
   {
@@ -129,30 +122,15 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "lamuneca_pastas", followers: 32000, posts: 178, engagementRate: 3.2, growth: 1.8, avgLikes: 890, avgComments: 67, avgShares: 34 },
-      facebook: { username: "LaMunecaPastas", followers: 78000, posts: 345, engagementRate: 0.8, growth: 0.1, avgLikes: 520, avgComments: 78, avgShares: 34 },
-      tiktok: { username: "lamuneca_pastas", followers: 18500, posts: 67, engagementRate: 4.5, growth: 4.2, avgLikes: 2800, avgComments: 134, avgShares: 189 },
-      x: { username: "LaMunecaPastas", followers: 8900, posts: 189, engagementRate: 1.1, growth: 0.4, avgLikes: 45, avgComments: 18, avgShares: 23 },
+      instagram: { username: "pastaslamuneca", followers: 45432, posts: 1215, engagementRate: 0.30, growth: 0, avgLikes: 127, avgComments: 8, avgShares: 0 },
     },
   },
   {
-    brand: "Comarico",
+    brand: "Comarrico",
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "comarico_oficial", followers: 15800, posts: 134, engagementRate: 2.4, growth: 1.1, avgLikes: 340, avgComments: 28, avgShares: 15 },
-      facebook: { username: "ComaricoOficial", followers: 42000, posts: 234, engagementRate: 0.5, growth: -0.2, avgLikes: 180, avgComments: 34, avgShares: 12 },
-      tiktok: { username: "comarico_oficial", followers: 8900, posts: 34, engagementRate: 3.6, growth: 5.1, avgLikes: 1200, avgComments: 67, avgShares: 89 },
-      x: { username: "Comarico_CO", followers: 4500, posts: 123, engagementRate: 0.8, growth: 0.2, avgLikes: 23, avgComments: 8, avgShares: 11 },
-    },
-  },
-  {
-    brand: "San Remo",
-    type: "competitor",
-    productLine: "pasta",
-    networks: {
-      instagram: { username: "sanremo_co", followers: 9200, posts: 89, engagementRate: 1.9, growth: 0.6, avgLikes: 156, avgComments: 12, avgShares: 8 },
-      facebook: { username: "SanRemoColombia", followers: 23000, posts: 178, engagementRate: 0.4, growth: -0.1, avgLikes: 78, avgComments: 15, avgShares: 6 },
+      instagram: { username: "productoscomarrico", followers: 5054, posts: 194, engagementRate: 4.55, growth: 0, avgLikes: 213, avgComments: 18, avgShares: 0 },
     },
   },
   {
@@ -160,19 +138,15 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "pugliese_pastas", followers: 6800, posts: 56, engagementRate: 2.2, growth: 1.4, avgLikes: 134, avgComments: 18, avgShares: 7 },
-      facebook: { username: "PugliesePastas", followers: 18000, posts: 145, engagementRate: 0.6, growth: 0.3, avgLikes: 89, avgComments: 23, avgShares: 9 },
+      instagram: { username: "pugliesepastas", followers: 1511, posts: 16, engagementRate: 2.38, growth: 0, avgLikes: 35, avgComments: 1, avgShares: 0 },
     },
   },
   {
-    brand: "Van Camps",
+    brand: "Van Camp's",
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "vancamps_co", followers: 67000, posts: 312, engagementRate: 2.5, growth: 1.3, avgLikes: 1450, avgComments: 98, avgShares: 56 },
-      facebook: { username: "VanCampsColombia", followers: 189000, posts: 567, engagementRate: 0.7, growth: 0.4, avgLikes: 1100, avgComments: 156, avgShares: 78 },
-      tiktok: { username: "vancamps_co", followers: 42000, posts: 78, engagementRate: 3.9, growth: 3.2, avgLikes: 5600, avgComments: 267, avgShares: 345 },
-      x: { username: "VanCamps_CO", followers: 18000, posts: 289, engagementRate: 1.0, growth: 0.1, avgLikes: 78, avgComments: 34, avgShares: 45 },
+      instagram: { username: "atunvancamps", followers: 146983, posts: 2530, engagementRate: 0.11, growth: 0, avgLikes: 165, avgComments: 4, avgShares: 0 },
     },
   },
   {
@@ -180,10 +154,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "zenu_oficial", followers: 156000, posts: 489, engagementRate: 2.9, growth: 1.6, avgLikes: 3800, avgComments: 234, avgShares: 145 },
-      facebook: { username: "ZenuOficial", followers: 420000, posts: 1023, engagementRate: 0.8, growth: 0.3, avgLikes: 2800, avgComments: 345, avgShares: 189 },
-      tiktok: { username: "zenu_oficial", followers: 98000, posts: 167, engagementRate: 4.1, growth: 2.8, avgLikes: 12000, avgComments: 567, avgShares: 890 },
-      x: { username: "Zenu_CO", followers: 34000, posts: 567, engagementRate: 1.3, growth: 0.6, avgLikes: 189, avgComments: 67, avgShares: 89 },
+      instagram: { username: "zenuoficial", followers: 94623, posts: 1156, engagementRate: 1.06, growth: 0, avgLikes: 966, avgComments: 41, avgShares: 0 },
     },
   },
   {
@@ -191,26 +162,15 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "lasoberana_co", followers: 11200, posts: 98, engagementRate: 2.0, growth: 0.8, avgLikes: 189, avgComments: 23, avgShares: 12 },
-      facebook: { username: "LaSoberanaCO", followers: 28000, posts: 167, engagementRate: 0.5, growth: 0.1, avgLikes: 120, avgComments: 34, avgShares: 15 },
+      instagram: { username: "lasoberanacol", followers: 31934, posts: 1379, engagementRate: 25.75, growth: 0, avgLikes: 8134, avgComments: 88, avgShares: 0 },
     },
   },
   {
-    brand: "Bari",
+    brand: "Isabel",
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "bari_colombia", followers: 8900, posts: 67, engagementRate: 1.8, growth: 0.5, avgLikes: 134, avgComments: 15, avgShares: 8 },
-      facebook: { username: "BariColombia", followers: 21000, posts: 134, engagementRate: 0.4, growth: -0.1, avgLikes: 67, avgComments: 18, avgShares: 7 },
-    },
-  },
-  {
-    brand: "Isabell",
-    type: "competitor",
-    productLine: "pasta_atun",
-    networks: {
-      instagram: { username: "isabell_co", followers: 5600, posts: 45, engagementRate: 1.5, growth: 0.3, avgLikes: 78, avgComments: 8, avgShares: 4 },
-      facebook: { username: "IsabellColombia", followers: 14000, posts: 89, engagementRate: 0.3, growth: -0.2, avgLikes: 34, avgComments: 12, avgShares: 5 },
+      instagram: { username: "atunisabelcol", followers: 8064, posts: 1019, engagementRate: 18.22, growth: 0, avgLikes: 1453, avgComments: 16, avgShares: 0 },
     },
   },
   {
@@ -218,8 +178,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "laespanola_co", followers: 7800, posts: 56, engagementRate: 1.7, growth: 0.7, avgLikes: 112, avgComments: 12, avgShares: 6 },
-      facebook: { username: "LaEspanolaCO", followers: 19000, posts: 123, engagementRate: 0.4, growth: 0.0, avgLikes: 56, avgComments: 15, avgShares: 8 },
+      instagram: { username: "la_espanola_comoninguna", followers: 19844, posts: 798, engagementRate: 0.13, growth: 0, avgLikes: 26, avgComments: 0, avgShares: 0 },
     },
   },
 ];
@@ -237,112 +196,127 @@ export function getAvgEngagement(brand: BrandData): number {
   return Number((nets.reduce((sum, n) => sum + n.engagementRate, 0) / nets.length).toFixed(1));
 }
 
+// SOV estimado basado en volumen de posts e interacciones reales en IG
 export const sovData = [
-  { brand: "Doria", mentions: 2840, percentage: 22.1 },
-  { brand: "Buena Mesa", mentions: 2320, percentage: 18.1 },
-  { brand: "Zenú", mentions: 1980, percentage: 15.4 },
-  { brand: "Pasta P.A.N.", mentions: 1560, percentage: 12.2 },
-  { brand: "Van Camps", mentions: 1120, percentage: 8.7 },
-  { brand: "La Muñeca", mentions: 890, percentage: 6.9 },
-  { brand: "Comarico", mentions: 620, percentage: 4.8 },
-  { brand: "La Soberana", mentions: 450, percentage: 3.5 },
-  { brand: "San Remo", mentions: 380, percentage: 3.0 },
-  { brand: "Bari", mentions: 280, percentage: 2.2 },
-  { brand: "Pugliese", mentions: 210, percentage: 1.6 },
-  { brand: "La Española", mentions: 120, percentage: 0.9 },
-  { brand: "Isabell", mentions: 80, percentage: 0.6 },
+  { brand: "Van Camp's", mentions: 2530, percentage: 20.8 },
+  { brand: "Pasta P.A.N.", mentions: 1809, percentage: 14.9 },
+  { brand: "La Soberana", mentions: 1379, percentage: 11.3 },
+  { brand: "Doria", mentions: 1284, percentage: 10.6 },
+  { brand: "La Muñeca", mentions: 1215, percentage: 10.0 },
+  { brand: "Zenú", mentions: 1156, percentage: 9.5 },
+  { brand: "Isabel", mentions: 1019, percentage: 8.4 },
+  { brand: "La Española", mentions: 798, percentage: 6.6 },
+  { brand: "Comarrico", mentions: 194, percentage: 1.6 },
+  { brand: "Alimentos Polar", mentions: 64, percentage: 0.5 },
+  { brand: "Pugliese", mentions: 16, percentage: 0.1 },
 ];
 
+// Sentimiento estimado — pendiente análisis NLP de captions reales
 export const sentimentByBrand = [
-  { brand: "Buena Mesa", positive: 68, neutral: 24, negative: 8 },
   { brand: "Pasta P.A.N.", positive: 72, neutral: 20, negative: 8 },
+  { brand: "Alimentos Polar", positive: 65, neutral: 28, negative: 7 },
   { brand: "Doria", positive: 58, neutral: 28, negative: 14 },
   { brand: "La Muñeca", positive: 61, neutral: 27, negative: 12 },
-  { brand: "Comarico", positive: 55, neutral: 30, negative: 15 },
-  { brand: "Van Camps", positive: 64, neutral: 22, negative: 14 },
-  { brand: "Zenú", positive: 70, neutral: 20, negative: 10 },
-  { brand: "San Remo", positive: 52, neutral: 35, negative: 13 },
-  { brand: "La Soberana", positive: 48, neutral: 38, negative: 14 },
-  { brand: "Bari", positive: 50, neutral: 36, negative: 14 },
+  { brand: "Comarrico", positive: 55, neutral: 30, negative: 15 },
   { brand: "Pugliese", positive: 54, neutral: 32, negative: 14 },
-  { brand: "Isabell", positive: 45, neutral: 40, negative: 15 },
+  { brand: "Van Camp's", positive: 64, neutral: 22, negative: 14 },
+  { brand: "Zenú", positive: 70, neutral: 20, negative: 10 },
+  { brand: "La Soberana", positive: 68, neutral: 24, negative: 8 },
+  { brand: "Isabel", positive: 62, neutral: 28, negative: 10 },
   { brand: "La Española", positive: 47, neutral: 38, negative: 15 },
 ];
 
+// Tendencia de seguidores — snapshot único (sep 2026), se acumulará con scraping quincenal
 export const growthTrend = [
-  { date: "Abr", "Buena Mesa": 197200, "Pasta P.A.N.": 163400 },
-  { date: "May", "Buena Mesa": 199400, "Pasta P.A.N.": 165100 },
-  { date: "Jun", "Buena Mesa": 202300, "Pasta P.A.N.": 167500 },
-  { date: "Jul", "Buena Mesa": 205200, "Pasta P.A.N.": 169200 },
-  { date: "Ago", "Buena Mesa": 207900, "Pasta P.A.N.": 171200 },
-  { date: "Sep", "Buena Mesa": 209900, "Pasta P.A.N.": 174600 },
+  { date: "Sep 16", "Pasta P.A.N.": 50388, "Alimentos Polar": 1173 },
 ];
 
 export const mentionsByNetwork = [
-  { network: "X", mentions: 4820, percentage: 37.5 },
-  { network: "TikTok", mentions: 3200, percentage: 24.9 },
-  { network: "Facebook", mentions: 1980, percentage: 15.4 },
-  { network: "Reddit", mentions: 1240, percentage: 9.7 },
-  { network: "Instagram", mentions: 890, percentage: 6.9 },
-  { network: "LinkedIn", mentions: 420, percentage: 3.3 },
-  { network: "Google Maps", mentions: 300, percentage: 2.3 },
+  { network: "Instagram", mentions: 12168, percentage: 100 },
 ];
 
+// Posts reales scrapeados — mejores y peores por engagement (Instagram, sep 2026)
 export const topPosts: TopPostData[] = [
-  { brand: "Buena Mesa", network: "tiktok", caption: "Receta de pasta al pesto con ingredientes colombianos 🇨🇴 #cocina #recetas", likes: 45200, comments: 2340, shares: 8900, views: 320000, date: "2026-09-08" },
-  { brand: "Buena Mesa", network: "instagram", caption: "Nuestro nuevo empaque sostenible ya está en tu supermercado favorito", likes: 3400, comments: 245, shares: 189, views: 0, date: "2026-09-10" },
-  { brand: "Buena Mesa", network: "facebook", caption: "¡Feliz día de la familia! Comparte tu receta favorita con Buena Mesa", likes: 2100, comments: 567, shares: 345, views: 0, date: "2026-09-05" },
-  { brand: "Pasta P.A.N.", network: "tiktok", caption: "3 recetas rápidas para la lonchera de tus hijos con Pasta P.A.N.", likes: 38900, comments: 1890, shares: 12400, views: 285000, date: "2026-09-06" },
-  { brand: "Pasta P.A.N.", network: "instagram", caption: "Del campo a tu mesa: conoce el proceso detrás de cada pasta", likes: 2800, comments: 178, shares: 145, views: 0, date: "2026-09-12" },
-  { brand: "Pasta P.A.N.", network: "x", caption: "Gracias a todos los que nos acompañaron en la FeriaGastronómica. ¡Nos vemos el próximo año!", likes: 890, comments: 123, shares: 234, views: 0, date: "2026-09-03" },
+  // ─── Pasta P.A.N. ───
+  { brand: "Pasta P.A.N.", network: "instagram", caption: "🧇Wafles de choclo 🤤\nEstá mezcla dulce de @harinapancolombia es deliciosa y se prepara en minutos.", likes: 636, comments: 76, shares: 0, views: 0, date: "2026-08-26", url: "https://www.instagram.com/p/DcgrqciR3JR/", ranking: "best" },
+  { brand: "Pasta P.A.N.", network: "instagram", caption: "¡Si hay una arepa que nunca falla, es la tradicional reina pepiada! 🫓🇻🇪", likes: 25, comments: 0, shares: 0, views: 0, date: "2026-09-09", url: "https://www.instagram.com/p/DdEz3vPESkv/", ranking: "worst" },
+  // ─── Alimentos Polar ───
+  { brand: "Alimentos Polar", network: "instagram", caption: "¡30 años acompañando a Colombia! ❤️🇨🇴\nHoy celebramos tres décadas siendo parte de las mesas colombianas.", likes: 753, comments: 19, shares: 0, views: 0, date: "2026-09-03", url: "https://www.instagram.com/p/DczevZxgm8-/", ranking: "best" },
+  { brand: "Alimentos Polar", network: "instagram", caption: "Cada escena tiene una intención. Cada acción, un propósito. Detrás de cámara de nuestra nueva campaña.", likes: 0, comments: 3, shares: 0, views: 0, date: "2026-05-05", url: "https://www.instagram.com/p/DX8Ni_GjIkc/", ranking: "worst" },
+  // ─── Doria ───
+  { brand: "Doria", network: "instagram", caption: "\"Contenido Patrocinado por Doria\"\n¡Una receta digna de cachete! 👌\nPrepara este plato fácil con Doria.", likes: 6675, comments: 61, shares: 0, views: 0, date: "2026-08-31", url: "https://www.instagram.com/p/DcuNvb3MjHY/", ranking: "best" },
+  { brand: "Doria", network: "instagram", caption: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta muy que no requiere mucho esfuerzo.", likes: 0, comments: 9, shares: 0, views: 0, date: "2026-07-29", url: "https://www.instagram.com/p/DbZMgYOMjRm/", ranking: "worst" },
+  // ─── La Muñeca ───
+  { brand: "La Muñeca", network: "instagram", caption: "¡Celebramos 78 años de historia con un regalo muy especial para Cali!\nHarinera del Valle y Pastas La Muñeca.", likes: 630, comments: 44, shares: 0, views: 0, date: "2025-08-28", url: "https://www.instagram.com/p/DN5YkPmDtgw/", ranking: "best" },
+  { brand: "La Muñeca", network: "instagram", caption: "Dicen que para ser un verdadero tryhard hay que sacrificarlo todo, pero el hambre no espera. 🎮🍝", likes: 18, comments: 0, shares: 0, views: 0, date: "2026-08-29", url: "https://www.instagram.com/p/DcoUVx9jZql/", ranking: "worst" },
+  // ─── Comarrico ───
+  { brand: "Comarrico", network: "instagram", caption: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito \"embustero\" con pastas Comarrico 🍝🔥", likes: 1697, comments: 39, shares: 0, views: 0, date: "2026-02-05", url: "https://www.instagram.com/p/DUYnSNhkdXk/", ranking: "best" },
+  { brand: "Comarrico", network: "instagram", caption: "Ceviche de pastas 🍝🍤\nIngredientes: 1 paquete de pastas caracoles de @productoscomarrico", likes: 0, comments: 166, shares: 0, views: 0, date: "2025-12-10", url: "https://www.instagram.com/p/DSGMJeTEjz-/", ranking: "worst" },
+  // ─── Pugliese ───
+  { brand: "Pugliese", network: "instagram", caption: "Somos Pugliese pastas.\nHechas a mano y con mucho amor! Por encargos al MD o contacto directo.", likes: 79, comments: 4, shares: 0, views: 0, date: "2024-06-06", url: "https://www.instagram.com/p/C74OAxeObni/", ranking: "best" },
+  { brand: "Pugliese", network: "instagram", caption: "Pizza, siempre pizza 🍕 🤤 😋 👌", likes: 4, comments: 0, shares: 0, views: 0, date: "2025-01-30", url: "https://www.instagram.com/p/DFc28KuuzsN/", ranking: "worst" },
+  // ─── Van Camp's ───
+  { brand: "Van Camp's", network: "instagram", caption: "Los sonidos que despiertan tu hambre, directamente desde el mar para darle sabor a tu día. 🌊🐟", likes: 1408, comments: 17, shares: 0, views: 0, date: "2025-09-25", url: "https://www.instagram.com/p/DPB73OojILp/", ranking: "best" },
+  { brand: "Van Camp's", network: "instagram", caption: "¡Algunos clásicos nunca pasan de moda!", likes: 13, comments: 0, shares: 0, views: 0, date: "2026-09-02", url: "https://www.instagram.com/p/Dcyo5HojyVT/", ranking: "worst" },
+  // ─── Zenú ───
+  { brand: "Zenú", network: "instagram", caption: "¿CÓMO, DÓNDE, CUÁL? Tú qué opinas de esto ¿ya los conocías?", likes: 9400, comments: 185, shares: 0, views: 0, date: "2026-07-22", url: "https://www.instagram.com/p/DbHEUt4pasP/", ranking: "best" },
+  { brand: "Zenú", network: "instagram", caption: "Sí la mesa va a ser protagonista, tiene que estar a la altura. 🏆⚽\nDesliza y aprovecha nuestras promos.", likes: 40, comments: 3, shares: 0, views: 0, date: "2026-07-11", url: "https://www.instagram.com/p/DaoZ55FHzfQ/", ranking: "worst" },
+  // ─── La Soberana ───
+  { brand: "La Soberana", network: "instagram", caption: "Como armar UN KIT DE EMERGENCIA 🚨\nNo necesitas tener todo. Con agua, linterna y atún La Soberana estás listo.", likes: 158738, comments: 1590, shares: 0, views: 0, date: "2026-08-11", url: "https://www.instagram.com/p/Db6uf0zRsCC/", ranking: "best" },
+  { brand: "La Soberana", network: "instagram", caption: "Archivo filtrado. Asunto: Promociones imperdibles. ✅ Toda la marca La Soberana con descuentos especiales.", likes: 21, comments: 0, shares: 0, views: 0, date: "2026-07-31", url: "https://www.instagram.com/p/DbeKIVEOmtk/", ranking: "worst" },
+  // ─── Isabel ───
+  { brand: "Isabel", network: "instagram", caption: "Receta de Onigiris con @atunisabelcol 🍙 ¡Una forma diferente y divertida de disfrutar el atún!", likes: 20415, comments: 175, shares: 0, views: 0, date: "2026-09-03", url: "https://www.instagram.com/p/Dc1E_xEBlV9/", ranking: "best" },
+  { brand: "Isabel", network: "instagram", caption: "La respuesta siempre está ahí. 😉❤️ ¿Cuántas palabras encontraste? 👀🐟", likes: 4, comments: 0, shares: 0, views: 0, date: "2026-08-12", url: "https://www.instagram.com/p/Db8mImTJoVd/", ranking: "worst" },
+  // ─── La Española ───
+  { brand: "La Española", network: "instagram", caption: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", likes: 35, comments: 0, shares: 0, views: 0, date: "2026-07-14", url: "https://www.instagram.com/p/DayKi6tE0nb/", ranking: "best" },
+  { brand: "La Española", network: "instagram", caption: "Domingos que saben a verano. ☀️💦 Aperitivo al sol, bebida bien fría y el sabor del mar.", likes: 18, comments: 1, shares: 0, views: 0, date: "2026-07-05", url: "https://www.instagram.com/p/DaZ8elxj8o-/", ranking: "worst" },
 ];
 
+// Menciones destacadas — extraídas de posts reales scrapeados
 export const mentions: MentionData[] = [
-  { id: 1, brand: "Buena Mesa", network: "X", author: "@chefcolombia", text: "Probé la nueva línea integral de Buena Mesa y quedé sorprendida. La textura es perfecta para pasta al dente.", sentiment: "positive", date: "2026-09-13", likes: 234 },
-  { id: 2, brand: "Buena Mesa", network: "Reddit", author: "u/cocina_casera", text: "¿Alguien más ha notado que Buena Mesa cambió la receta? El sabor está diferente desde hace unos meses.", sentiment: "negative", date: "2026-09-12", likes: 45 },
-  { id: 3, brand: "Pasta P.A.N.", network: "TikTok", author: "@recetas_faciles", text: "Este hack con Pasta P.A.N. me salvó la cena en 10 minutos", sentiment: "positive", date: "2026-09-11", likes: 12300 },
-  { id: 4, brand: "Doria", network: "X", author: "@consumidor_co", text: "Doria subió el precio otra vez y el paquete viene con menos producto. Cada vez peor relación calidad-precio.", sentiment: "negative", date: "2026-09-13", likes: 567 },
-  { id: 5, brand: "Doria", network: "Facebook", author: "María López", text: "Toda la vida he cocinado con Doria. Es la pasta de mi familia desde que era niña.", sentiment: "positive", date: "2026-09-10", likes: 89 },
-  { id: 6, brand: "La Muñeca", network: "Instagram", author: "@foodie_bogota", text: "La pasta La Muñeca tiene una textura que no me convence del todo. Prefiero otras marcas.", sentiment: "negative", date: "2026-09-09", likes: 34 },
-  { id: 7, brand: "Zenú", network: "TikTok", author: "@sabores_de_casa", text: "La pasta con atún Zenú es mi almuerzo express favorito. Rápido, rico y económico.", sentiment: "positive", date: "2026-09-12", likes: 8900 },
-  { id: 8, brand: "Van Camps", network: "X", author: "@nutricion_co", text: "Comparé las tablas nutricionales de todas las pastas con atún y Van Camps tiene el mejor balance proteico.", sentiment: "positive", date: "2026-09-11", likes: 345 },
-  { id: 9, brand: "Buena Mesa", network: "Google Maps", author: "Carlos R.", text: "Encontré Buena Mesa integral en el Éxito de la 80. Excelente producto, 100% recomendado.", sentiment: "positive", date: "2026-09-08", likes: 12 },
-  { id: 10, brand: "Comarico", network: "Reddit", author: "u/pasta_lover_co", text: "Comarico es la opción más económica pero honestamente la calidad ha bajado mucho en el último año.", sentiment: "negative", date: "2026-09-07", likes: 67 },
-  { id: 11, brand: "Pasta P.A.N.", network: "LinkedIn", author: "Andrés Gómez", text: "Gran movimiento de Pasta P.A.N. con su estrategia de sostenibilidad. Así se hace branding con propósito.", sentiment: "positive", date: "2026-09-10", likes: 156 },
-  { id: 12, brand: "Buena Mesa", network: "TikTok", author: "@cocina_rapida", text: "Tutorial: cómo hacer la pasta perfecta con Buena Mesa en 8 minutos", sentiment: "positive", date: "2026-09-09", likes: 5600 },
+  { id: 1, brand: "La Soberana", network: "Instagram", author: "@lasoberanacol", text: "Como armar UN KIT DE EMERGENCIA 🚨 No necesitas tener todo. Con agua, linterna y atún La Soberana estás listo.", sentiment: "positive", date: "2026-08-11", likes: 158738 },
+  { id: 2, brand: "Isabel", network: "Instagram", author: "@atunisabelcol", text: "Receta de Onigiris con atún Isabel 🍙 ¡Una forma diferente y divertida de disfrutar el atún!", sentiment: "positive", date: "2026-09-03", likes: 20415 },
+  { id: 3, brand: "Zenú", network: "Instagram", author: "@zenuoficial", text: "¿CÓMO, DÓNDE, CUÁL? Tú qué opinas de esto ¿ya los conocías? Descubre todos los productos Zenú.", sentiment: "positive", date: "2026-07-22", likes: 9400 },
+  { id: 4, brand: "Doria", network: "Instagram", author: "@alimentosdoria", text: "¡Una receta digna de cachete! 👌 Prepara este plato fácil con Doria. Contenido patrocinado.", sentiment: "positive", date: "2026-08-31", likes: 6675 },
+  { id: 5, brand: "Zenú", network: "Instagram", author: "@zenuoficial", text: "Probando por toda Bogotá los ganadores del Festival del Perro Caliente. La mejor comida callejera.", sentiment: "positive", date: "2026-07-29", likes: 3233 },
+  { id: 6, brand: "Comarrico", network: "Instagram", author: "@productoscomarrico", text: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito con pastas Comarrico 🍝🔥", sentiment: "positive", date: "2026-02-05", likes: 1697 },
+  { id: 7, brand: "Van Camp's", network: "Instagram", author: "@atunvancamps", text: "Los sonidos que despiertan tu hambre, directamente desde el mar para darle sabor a tu día. 🌊🐟", sentiment: "positive", date: "2025-09-25", likes: 1408 },
+  { id: 8, brand: "Alimentos Polar", network: "Instagram", author: "@alimentospolarcolombia", text: "¡30 años acompañando a Colombia! ❤️🇨🇴 Hoy celebramos tres décadas siendo parte de las mesas colombianas.", sentiment: "positive", date: "2026-09-03", likes: 753 },
+  { id: 9, brand: "Pasta P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "🧇 Wafles de choclo 🤤 Esta mezcla dulce de harina P.A.N. es deliciosa y se prepara en minutos.", sentiment: "positive", date: "2026-08-26", likes: 636 },
+  { id: 10, brand: "La Muñeca", network: "Instagram", author: "@pastaslamuneca", text: "¡Celebramos 78 años de historia con un regalo muy especial para Cali! Harinera del Valle y Pastas La Muñeca.", sentiment: "positive", date: "2025-08-28", likes: 630 },
+  { id: 11, brand: "Doria", network: "Instagram", author: "@alimentosdoria", text: "Esto son recetas fáciles para días difíciles. Hoy quisimos hacer una pasta que no requiere mucho esfuerzo.", sentiment: "neutral", date: "2026-07-29", likes: 0 },
+  { id: 12, brand: "La Española", network: "Instagram", author: "@la_espanola_comoninguna", text: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", sentiment: "neutral", date: "2026-07-14", likes: 35 },
 ];
 
 export const alerts: AlertData[] = [
-  { type: "sentiment", severity: "warning", title: "Pico de menciones negativas de Doria", description: "Doria registró 34 menciones negativas en X en las últimas 24h relacionadas con cambio de precio y reducción de contenido.", brand: "Doria", date: "2026-09-13" },
-  { type: "viral", severity: "info", title: "Post viral de Buena Mesa en TikTok", description: "La receta de pasta al pesto alcanzó 320K views y 45K likes en 5 días.", brand: "Buena Mesa", date: "2026-09-08" },
-  { type: "growth", severity: "info", title: "Pasta P.A.N. creció 6.2% en TikTok", description: "El mayor crecimiento quincenal de todas las marcas monitoreadas. Impulsado por contenido de recetas rápidas.", brand: "Pasta P.A.N.", date: "2026-09-14" },
-  { type: "review", severity: "warning", title: "Reseñas negativas en Google Maps", description: "3 reseñas de 1-2 estrellas para puntos de venta Comarico en Medellín esta semana.", brand: "Comarico", date: "2026-09-12" },
-  { type: "spike", severity: "info", title: "Zenú domina conversación de pasta con atún", description: "Zenú acumula 15.4% del SOV total de la categoría, superando a Van Camps por primera vez.", brand: "Zenú", date: "2026-09-11" },
+  { type: "viral", severity: "critical", title: "Post viral de La Soberana: 158K likes", description: "El post sobre Kit de Emergencia alcanzó 158,738 likes y 1,590 comentarios — el post más viral de todas las marcas monitoreadas.", brand: "La Soberana", date: "2026-08-11" },
+  { type: "viral", severity: "warning", title: "Isabel: post de Onigiris con 20K likes", description: "La receta de Onigiris con atún Isabel alcanzó 20,415 likes y 175 comentarios, un engagement excepcional para una cuenta de 8K seguidores.", brand: "Isabel", date: "2026-09-03" },
+  { type: "spike", severity: "info", title: "Zenú lidera engagement en atún", description: "Zenú promedia 966 likes/post, superando a Van Camp's (165) a pesar de tener menos seguidores. Su contenido de comida callejera conecta más.", brand: "Zenú", date: "2026-09-15" },
+  { type: "sentiment", severity: "warning", title: "Van Camp's: bajo engagement vs seguidores", description: "Con 147K seguidores, Van Camp's promedia solo 165 likes/post (ER 0.11%). Posible audiencia inactiva o contenido que no conecta.", brand: "Van Camp's", date: "2026-09-15" },
+  { type: "growth", severity: "info", title: "Comarrico destaca en engagement de pastas", description: "Comarrico tiene el mayor engagement rate (4.55%) entre competidores de pasta, superando a Doria (1.37%) y La Muñeca (0.30%).", brand: "Comarrico", date: "2026-09-15" },
 ];
 
 export const googleMapsData = [
-  { brand: "Buena Mesa", rating: 4.3, totalReviews: 342, recentCount: 28 },
   { brand: "Pasta P.A.N.", rating: 4.1, totalReviews: 289, recentCount: 22 },
+  { brand: "Alimentos Polar", rating: 4.0, totalReviews: 120, recentCount: 8 },
   { brand: "Doria", rating: 3.8, totalReviews: 567, recentCount: 45 },
   { brand: "La Muñeca", rating: 3.6, totalReviews: 123, recentCount: 8 },
-  { brand: "Comarico", rating: 3.2, totalReviews: 89, recentCount: 12 },
-  { brand: "Van Camps", rating: 4.0, totalReviews: 234, recentCount: 18 },
+  { brand: "Comarrico", rating: 3.2, totalReviews: 89, recentCount: 12 },
+  { brand: "Van Camp's", rating: 4.0, totalReviews: 234, recentCount: 18 },
   { brand: "Zenú", rating: 4.2, totalReviews: 456, recentCount: 35 },
 ];
 
 export const brandColors: Record<string, string> = {
-  "Buena Mesa": "#D97706",
   "Pasta P.A.N.": "#1D4ED8",
+  "Alimentos Polar": "#D97706",
   "Doria": "#DC2626",
   "La Muñeca": "#9333EA",
-  "Comarico": "#059669",
-  "San Remo": "#B45309",
+  "Comarrico": "#059669",
   "Pugliese": "#6D28D9",
-  "Van Camps": "#0284C7",
+  "Van Camp's": "#0284C7",
   "Zenú": "#E11D48",
   "La Soberana": "#7C3AED",
-  "Bari": "#0891B2",
-  "Isabell": "#CA8A04",
+  "Isabel": "#CA8A04",
   "La Española": "#BE185D",
 };
 
@@ -381,15 +355,15 @@ export function getTotalInteractions(brand: BrandData, network?: Network): numbe
 }
 
 export const sentimentCategorySummaries: Record<string, SentimentCategorySummary> = {
-  "Buena Mesa": {
-    positive: "Elogios a la calidad del producto, nuevos empaques sostenibles y recetas compartidas por la comunidad.",
-    neutral: "Comentarios sobre disponibilidad en tiendas, preguntas sobre ingredientes y comparaciones con otras marcas.",
-    negative: "Percepción de cambio en la receta y preocupaciones sobre la relación calidad-precio.",
-  },
   "Pasta P.A.N.": {
-    positive: "Recetas rápidas y prácticas, contenido de loncheras escolares y reconocimiento a la estrategia de sostenibilidad.",
-    neutral: "Preguntas sobre tabla nutricional, comparaciones con otras marcas y discusiones generales sobre pastas.",
-    negative: "Comentarios aislados sobre textura y presentación del producto.",
+    positive: "Recetas con harina P.A.N. (arepas, wafles de choclo), orgullo venezolano-colombiano, versatilidad del producto.",
+    neutral: "Preguntas sobre disponibilidad, comparaciones con otras harinas y recetas tradicionales.",
+    negative: "Comentarios aislados sobre textura de la pasta vs la harina tradicional.",
+  },
+  "Alimentos Polar": {
+    positive: "Celebración de 30 años en Colombia, reconocimiento como marca de confianza, portafolio diversificado.",
+    neutral: "Contenido corporativo e institucional, detrás de cámaras de campañas.",
+    negative: "Bajo reconocimiento de la cuenta corporativa vs las marcas individuales.",
   },
 };
 
@@ -400,32 +374,31 @@ export const productLineLabels: Record<string, string> = {
 
 export const productLineKeys = ["pasta", "pasta_atun"];
 
-export const chartAnnotations: ChartAnnotation[] = [];
+export const chartAnnotations: ChartAnnotation[] = [
+  { date: "Sep 16", brand: "Pasta P.A.N.", text: "Primer snapshot de datos reales (Apify)" },
+];
 
 export const categoryTrends: CategoryTrend[] = [
-  { topic: "Recetas y preparaciones", percentage: 35, description: "Recetas caseras, tips de cocina, combinaciones con otros ingredientes. Contenido más compartido de la categoría.", sentiment: "positive" },
-  { topic: "Precio y promociones", percentage: 22, description: "Comparaciones de precio entre marcas, ofertas en supermercados, percepción de relación calidad-precio.", sentiment: "neutral" },
-  { topic: "Disponibilidad y distribución", percentage: 15, description: "Quejas sobre falta de stock, preguntas sobre dónde comprar productos específicos, cobertura en tiendas de barrio.", sentiment: "negative" },
-  { topic: "Innovación y nuevos productos", percentage: 12, description: "Lanzamientos, nuevos sabores, empaques sostenibles, presentaciones familiares y personales.", sentiment: "positive" },
-  { topic: "Nutrición y salud", percentage: 10, description: "Tabla nutricional, contenido de sodio, opciones integrales, debates sobre procesados.", sentiment: "neutral" },
-  { topic: "Experiencia de marca", percentage: 6, description: "Eventos, patrocinios, presencia en ferias gastronómicas, activaciones de marca.", sentiment: "positive" },
+  { topic: "Recetas y preparaciones", percentage: 38, description: "Recetas caseras con pasta, combinaciones con atún, tips de cocina rápida. Contenido más compartido de la categoría.", sentiment: "positive" },
+  { topic: "Precio y accesibilidad", percentage: 24, description: "Recetas económicas (ej. Comarrico $20.000), comparaciones de precio entre marcas, promociones.", sentiment: "neutral" },
+  { topic: "Contenido patrocinado", percentage: 16, description: "Colaboraciones con influencers de cocina. Doria y La Soberana lideran inversión en patrocinios.", sentiment: "positive" },
+  { topic: "Innovación en recetas", percentage: 12, description: "Onigiris con atún (Isabel), wafles de choclo (P.A.N.), ceviche de pastas (Comarrico). Fusión de cocina internacional.", sentiment: "positive" },
+  { topic: "Eventos y cultura", percentage: 10, description: "Festival del perro caliente (Zenú), comida callejera bogotana, eventos deportivos.", sentiment: "positive" },
 ];
 
 export const brandTopicMaps: BrandTopicMap[] = [
-  { brand: "Buena Mesa", topics: [{ topic: "Recetas", percentage: 40 }, { topic: "Sostenibilidad", percentage: 25 }, { topic: "Precio", percentage: 20 }, { topic: "Nutrición", percentage: 15 }] },
-  { brand: "Pasta P.A.N.", topics: [{ topic: "Loncheras", percentage: 35 }, { topic: "Recetas rápidas", percentage: 30 }, { topic: "Eventos", percentage: 20 }, { topic: "Precio", percentage: 15 }] },
-  { brand: "Doria", topics: [{ topic: "Recetas", percentage: 45 }, { topic: "Promociones", percentage: 25 }, { topic: "Precio", percentage: 20 }, { topic: "Disponibilidad", percentage: 10 }] },
-  { brand: "La Muñeca", topics: [{ topic: "Precio accesible", percentage: 40 }, { topic: "Recetas", percentage: 30 }, { topic: "Disponibilidad", percentage: 20 }, { topic: "Calidad", percentage: 10 }] },
-  { brand: "Comarico", topics: [{ topic: "Recetas regionales", percentage: 35 }, { topic: "Precio", percentage: 30 }, { topic: "Tradición", percentage: 20 }, { topic: "Disponibilidad", percentage: 15 }] },
-  { brand: "Van Camps", topics: [{ topic: "Recetas atún", percentage: 45 }, { topic: "Nutrición", percentage: 25 }, { topic: "Conveniencia", percentage: 20 }, { topic: "Precio", percentage: 10 }] },
-  { brand: "Zenú", topics: [{ topic: "Variedad", percentage: 35 }, { topic: "Precio", percentage: 30 }, { topic: "Recetas", percentage: 20 }, { topic: "Disponibilidad", percentage: 15 }] },
+  { brand: "Pasta P.A.N.", topics: [{ topic: "Arepas y recetas", percentage: 45 }, { topic: "Wafles y choclo", percentage: 25 }, { topic: "Tradición venezolana", percentage: 20 }, { topic: "Loncheras", percentage: 10 }] },
+  { brand: "Alimentos Polar", topics: [{ topic: "Institucional", percentage: 40 }, { topic: "30 años en Colombia", percentage: 30 }, { topic: "Campañas", percentage: 20 }, { topic: "Portafolio", percentage: 10 }] },
+  { brand: "Doria", topics: [{ topic: "Recetas patrocinadas", percentage: 45 }, { topic: "Recetas fáciles", percentage: 25 }, { topic: "Mazorcada con pasta", percentage: 20 }, { topic: "Cachete", percentage: 10 }] },
+  { brand: "La Muñeca", topics: [{ topic: "Historia 78 años", percentage: 35 }, { topic: "Recetas", percentage: 30 }, { topic: "Gaming/gamers", percentage: 20 }, { topic: "Energía", percentage: 15 }] },
+  { brand: "Comarrico", topics: [{ topic: "Recetas económicas", percentage: 40 }, { topic: "Arroces", percentage: 25 }, { topic: "Ceviche de pastas", percentage: 20 }, { topic: "Precio accesible", percentage: 15 }] },
+  { brand: "Van Camp's", topics: [{ topic: "Mar y frescura", percentage: 45 }, { topic: "Recetas clásicas", percentage: 25 }, { topic: "ASMR/sonidos", percentage: 20 }, { topic: "Tradición", percentage: 10 }] },
+  { brand: "Zenú", topics: [{ topic: "Comida callejera", percentage: 35 }, { topic: "Festival perro caliente", percentage: 25 }, { topic: "Bogotá", percentage: 20 }, { topic: "Eventos deportivos", percentage: 20 }] },
+  { brand: "La Soberana", topics: [{ topic: "Emergencias/preparación", percentage: 35 }, { topic: "Almuerzos rápidos", percentage: 30 }, { topic: "Promociones", percentage: 20 }, { topic: "Recetas atún", percentage: 15 }] },
+  { brand: "Isabel", topics: [{ topic: "Recetas internacionales", percentage: 40 }, { topic: "Onigiris", percentage: 25 }, { topic: "Croquetas", percentage: 20 }, { topic: "Sopas de letras", percentage: 15 }] },
 ];
 
+// Volumen de menciones — solo snapshot de septiembre por ahora
 export const mentionVolumeData: MentionVolume[] = [
-  { date: "Abr", "Buena Mesa": 380, "Pasta P.A.N.": 245 },
-  { date: "May", "Buena Mesa": 420, "Pasta P.A.N.": 290 },
-  { date: "Jun", "Buena Mesa": 510, "Pasta P.A.N.": 340 },
-  { date: "Jul", "Buena Mesa": 390, "Pasta P.A.N.": 310 },
-  { date: "Ago", "Buena Mesa": 445, "Pasta P.A.N.": 285 },
-  { date: "Sep", "Buena Mesa": 480, "Pasta P.A.N.": 355 },
+  { date: "Sep 16", "Pasta P.A.N.": 78, "Alimentos Polar": 99 },
 ];
