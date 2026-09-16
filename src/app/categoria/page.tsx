@@ -9,11 +9,9 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { formatNumber, getTotalInteractions } from "@/lib/mock-data";
+import { formatNumber, getTotalInteractions, networkColors } from "@/lib/mock-data";
 import type { Network, NetworkIntelligence, CompetitorStrategy } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
-
-const pieColors = ["#1DA1F2", "#000000", "#1877F2", "#FF4500", "#E4405F", "#0A66C2", "#34A853"];
 
 const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
   dominante: { label: "Dominante", bg: "bg-emerald-100", text: "text-emerald-800" },
@@ -197,12 +195,12 @@ export default function EscuchaActivaPage() {
 
   const sovChartData = sovData.map((s) => ({
     ...s,
-    fill: ownBrands.some((b) => b.brand === s.brand) ? (brandColors[s.brand] || "#0d9488") : "#94a3b8",
+    fill: brandColors[s.brand] || "#64748b",
   }));
 
-  const networkPieData = mentionsByNetwork.map((m, i) => ({
+  const networkPieData = mentionsByNetwork.map((m) => ({
     ...m,
-    color: pieColors[i % pieColors.length],
+    color: networkColors[m.network.toLowerCase()] || "#6b7280",
   }));
 
   const availableNetworks = useMemo(() => {
@@ -231,7 +229,7 @@ export default function EscuchaActivaPage() {
         .map((b) => ({
           brand: b.brand,
           interactions: getTotalInteractions(b, net),
-          fill: ownBrands.some((o) => o.brand === b.brand) ? (brandColors[b.brand] || "#0d9488") : "#94a3b8",
+          fill: brandColors[b.brand] || "#64748b",
         }))
         .sort((a, b) => b.interactions - a.interactions);
 
@@ -461,29 +459,22 @@ export default function EscuchaActivaPage() {
           <p className="text-xs text-gray-400 mb-4">
             De qué habla la audiencia — temas principales identificados por escucha activa
           </p>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {categoryTrends.map((t) => {
               const sentColor = t.sentiment === "positive" ? "#10b981" : t.sentiment === "negative" ? "#ef4444" : "#f59e0b";
               return (
                 <div key={t.topic}>
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold text-gray-800">{t.topic}</span>
-                      <span
-                        className="w-2 h-2 rounded-full"
-                        style={{ background: sentColor }}
-                        title={t.sentiment === "positive" ? "Sentimiento positivo" : t.sentiment === "negative" ? "Sentimiento negativo" : "Sentimiento neutro"}
-                      />
+                      <span className="text-xs font-semibold text-gray-800">{t.topic}</span>
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: sentColor }} />
                     </div>
-                    <span className="text-sm font-bold text-gray-900">{t.percentage}%</span>
+                    <span className="text-xs font-bold text-gray-900">{t.percentage}%</span>
                   </div>
-                  <div className="flex h-3 rounded-full overflow-hidden bg-gray-100 mb-1.5">
-                    <div
-                      className="rounded-full"
-                      style={{ width: t.percentage + "%", background: sentColor, opacity: 0.7 }}
-                    />
+                  <div className="flex h-2 rounded-full overflow-hidden bg-gray-100 mb-1">
+                    <div className="rounded-full" style={{ width: t.percentage + "%", background: sentColor, opacity: 0.7 }} />
                   </div>
-                  <p className="text-xs text-gray-500 leading-relaxed">{t.description}</p>
+                  <p className="text-[11px] text-gray-500 leading-snug">{t.description}</p>
                 </div>
               );
             })}
