@@ -27,6 +27,7 @@ export interface MentionData {
   sentiment: "positive" | "neutral" | "negative";
   date: string;
   likes: number;
+  productLine?: string;
 }
 
 export interface AlertData {
@@ -94,21 +95,12 @@ export interface MentionVolume {
 
 export const brands: BrandData[] = [
   {
-    brand: "Pasta P.A.N.",
+    brand: "P.A.N.",
     type: "own",
-    productLine: "pasta",
+    productLine: null,
     networks: {
       instagram: { username: "harinapancolombia", followers: 50388, posts: 1809, engagementRate: 0.17, growth: 0, avgLikes: 78, avgComments: 8, avgShares: 0 },
       facebook: { username: "HarinaPANColombia", followers: 175278, posts: 0, engagementRate: 0.01, growth: 0, avgLikes: 11, avgComments: 1, avgShares: 3 },
-    },
-  },
-  {
-    brand: "Alimentos Polar",
-    type: "own",
-    productLine: "pasta_atun",
-    networks: {
-      instagram: { username: "alimentospolarcolombia", followers: 1173, posts: 64, engagementRate: 8.9, growth: 0, avgLikes: 99, avgComments: 5, avgShares: 0 },
-      facebook: { username: "AlimentosPolarColombia", followers: 25309, posts: 0, engagementRate: 0.19, growth: 0, avgLikes: 41, avgComments: 1, avgShares: 6 },
     },
   },
   {
@@ -208,23 +200,21 @@ export function getAvgEngagement(brand: BrandData): number {
 
 // SOV estimado basado en volumen de posts e interacciones reales en IG
 export const sovData = [
-  { brand: "Van Camp's", mentions: 2530, percentage: 20.8 },
-  { brand: "Pasta P.A.N.", mentions: 1809, percentage: 14.9 },
-  { brand: "La Soberana", mentions: 1379, percentage: 11.3 },
-  { brand: "Doria", mentions: 1284, percentage: 10.6 },
-  { brand: "La Muñeca", mentions: 1215, percentage: 10.0 },
-  { brand: "Zenú", mentions: 1156, percentage: 9.5 },
-  { brand: "Isabel", mentions: 1019, percentage: 8.4 },
-  { brand: "La Española", mentions: 798, percentage: 6.6 },
+  { brand: "Van Camp's", mentions: 2530, percentage: 21.1 },
+  { brand: "P.A.N.", mentions: 1809, percentage: 15.1 },
+  { brand: "La Soberana", mentions: 1379, percentage: 11.5 },
+  { brand: "Doria", mentions: 1284, percentage: 10.7 },
+  { brand: "La Muñeca", mentions: 1215, percentage: 10.1 },
+  { brand: "Zenú", mentions: 1156, percentage: 9.6 },
+  { brand: "Isabel", mentions: 1019, percentage: 8.5 },
+  { brand: "La Española", mentions: 798, percentage: 6.7 },
   { brand: "Comarrico", mentions: 194, percentage: 1.6 },
-  { brand: "Alimentos Polar", mentions: 64, percentage: 0.5 },
   { brand: "Pugliese", mentions: 16, percentage: 0.1 },
 ];
 
 // Sentimiento estimado — pendiente análisis NLP de captions reales
 export const sentimentByBrand = [
-  { brand: "Pasta P.A.N.", positive: 72, neutral: 20, negative: 8 },
-  { brand: "Alimentos Polar", positive: 65, neutral: 28, negative: 7 },
+  { brand: "P.A.N.", positive: 70, neutral: 22, negative: 8 },
   { brand: "Doria", positive: 58, neutral: 28, negative: 14 },
   { brand: "La Muñeca", positive: 61, neutral: 27, negative: 12 },
   { brand: "Comarrico", positive: 55, neutral: 30, negative: 15 },
@@ -238,7 +228,7 @@ export const sentimentByBrand = [
 
 // Tendencia de seguidores — snapshot único (sep 2026), se acumulará con scraping quincenal
 export const growthTrend = [
-  { date: "Sep 16", "Pasta P.A.N.": 50388, "Alimentos Polar": 1173 },
+  { date: "Sep 16", "P.A.N.": 50388 },
 ];
 
 export const mentionsByNetwork = [
@@ -248,12 +238,9 @@ export const mentionsByNetwork = [
 
 // Posts reales scrapeados — mejores y peores por engagement (Instagram, sep 2026)
 export const topPosts: TopPostData[] = [
-  // ─── Pasta P.A.N. ───
-  { brand: "Pasta P.A.N.", network: "instagram", caption: "🧇Wafles de choclo 🤤\nEstá mezcla dulce de @harinapancolombia es deliciosa y se prepara en minutos.", likes: 636, comments: 76, shares: 0, views: 0, date: "2026-08-26", url: "https://www.instagram.com/p/DcgrqciR3JR/", ranking: "best" },
-  { brand: "Pasta P.A.N.", network: "instagram", caption: "¡Si hay una arepa que nunca falla, es la tradicional reina pepiada! 🫓🇻🇪", likes: 25, comments: 0, shares: 0, views: 0, date: "2026-09-09", url: "https://www.instagram.com/p/DdEz3vPESkv/", ranking: "worst" },
-  // ─── Alimentos Polar ───
-  { brand: "Alimentos Polar", network: "instagram", caption: "¡30 años acompañando a Colombia! ❤️🇨🇴\nHoy celebramos tres décadas siendo parte de las mesas colombianas.", likes: 753, comments: 19, shares: 0, views: 0, date: "2026-09-03", url: "https://www.instagram.com/p/DczevZxgm8-/", ranking: "best" },
-  { brand: "Alimentos Polar", network: "instagram", caption: "Cada escena tiene una intención. Cada acción, un propósito. Detrás de cámara de nuestra nueva campaña.", likes: 0, comments: 3, shares: 0, views: 0, date: "2026-05-05", url: "https://www.instagram.com/p/DX8Ni_GjIkc/", ranking: "worst" },
+  // ─── P.A.N. ───
+  { brand: "P.A.N.", network: "instagram", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor y la máxima calidad.", likes: 31, comments: 2, shares: 0, views: 0, date: "2026-09-12", url: "https://www.instagram.com/p/DdHxxx/", ranking: "best" },
+  { brand: "P.A.N.", network: "facebook", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor.", likes: 15, comments: 1, shares: 2, views: 0, date: "2026-09-12", url: "https://www.facebook.com/HarinaPANColombia/", ranking: "worst" },
   // ─── Doria ───
   { brand: "Doria", network: "instagram", caption: "\"Contenido Patrocinado por Doria\"\n¡Una receta digna de cachete! 👌\nPrepara este plato fácil con Doria.", likes: 6675, comments: 61, shares: 0, views: 0, date: "2026-08-31", url: "https://www.instagram.com/p/DcuNvb3MjHY/", ranking: "best" },
   { brand: "Doria", network: "instagram", caption: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta muy que no requiere mucho esfuerzo.", likes: 0, comments: 9, shares: 0, views: 0, date: "2026-07-29", url: "https://www.instagram.com/p/DbZMgYOMjRm/", ranking: "worst" },
@@ -286,36 +273,34 @@ export const topPosts: TopPostData[] = [
   { brand: "Zenú", network: "facebook", caption: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", likes: 3823, comments: 25, shares: 13, views: 0, date: "2026-09-02", url: "https://www.facebook.com/AlimentosZenu/", ranking: "best" },
   { brand: "Van Camp's", network: "facebook", caption: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", likes: 464, comments: 5, shares: 42, views: 0, date: "2026-08-25", url: "https://www.facebook.com/AtunVanCamps/", ranking: "best" },
   { brand: "Comarrico", network: "facebook", caption: "😋 ¿Quién dijo hambre? Con Comarrico te armas el almuerzo pa' toda la familia.", likes: 261, comments: 11, shares: 9, views: 0, date: "2025-10-03", url: "https://www.facebook.com/productoscomarrico/", ranking: "best" },
-  { brand: "Alimentos Polar", network: "facebook", caption: "30 años de sabor, tradición y compromiso con Colombia. Gracias por ser parte de nuestra historia.", likes: 156, comments: 8, shares: 22, views: 0, date: "2026-09-03", url: "https://www.facebook.com/AlimentosPolarColombia/", ranking: "best" },
 ];
 
 // Menciones destacadas — extraídas de posts reales scrapeados (IG + FB)
+// productLine en menciones de P.A.N. permite filtrar por categoría
 export const mentions: MentionData[] = [
-  // ─── Pasta P.A.N. ───
-  { id: 1, brand: "Pasta P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "🧇 Wafles de choclo 🤤 Esta mezcla dulce de harina P.A.N. es deliciosa y se prepara en minutos.", sentiment: "positive", date: "2026-08-26", likes: 636 },
-  { id: 2, brand: "Pasta P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "¡Llegó el Mes de la Arepa! 💛 Un mes para crear nuevas historias, sabores y momentos alrededor de ella.", sentiment: "positive", date: "2026-09-01", likes: 37 },
-  { id: 3, brand: "Pasta P.A.N.", network: "Facebook", author: "Harina PAN Colombia", text: "¿Sabías que P.A.N. tiene todo para tus comidas? 🌽 Harina blanca para las arepas de siempre, harina dulce, semillas nutritivas.", sentiment: "neutral", date: "2026-09-08", likes: 17 },
-  { id: 4, brand: "Pasta P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "Hay señas que uno aprende sin querer y que entendemos en cualquier idioma, en cualquier mesa.", sentiment: "positive", date: "2026-09-12", likes: 143 },
-  { id: 5, brand: "Pasta P.A.N.", network: "Facebook", author: "Harina PAN Colombia", text: "Volver a los 80 es recordar la moda, la música, los peinados… y también esos sabores que siguen siendo los mismos.", sentiment: "neutral", date: "2026-09-08", likes: 16 },
-  { id: 6, brand: "Pasta P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "¡Si hay una arepa que nunca falla, es la tradicional reina pepiada! 🫓🇻🇪 Su mezcla de pollo, aguacate y mayonesa.", sentiment: "positive", date: "2026-09-09", likes: 25 },
-  // ─── Alimentos Polar ───
-  { id: 7, brand: "Alimentos Polar", network: "Instagram", author: "@alimentospolarcolombia", text: "¡30 años acompañando a Colombia! ❤️🇨🇴 Hoy celebramos tres décadas siendo parte de las mesas colombianas.", sentiment: "positive", date: "2026-09-03", likes: 753 },
-  { id: 8, brand: "Alimentos Polar", network: "Facebook", author: "Alimentos Polar Colombia", text: "Cada arepa que llega a tu mesa es el resultado del trabajo y compromiso de muchas personas.", sentiment: "positive", date: "2026-09-12", likes: 62 },
-  { id: 9, brand: "Alimentos Polar", network: "Instagram", author: "@alimentospolarcolombia", text: "Detrás de cada paquete de Harina P.A.N. y de Promasa hay historias de esfuerzo y dedicación.", sentiment: "neutral", date: "2026-09-10", likes: 16 },
-  { id: 10, brand: "Alimentos Polar", network: "Facebook", author: "Alimentos Polar Colombia", text: "¿Te imaginas solucionar un reto real de Alimentos Polar Colombia en solo 24 horas siendo estudiante?", sentiment: "neutral", date: "2026-09-11", likes: 12 },
-  { id: 11, brand: "Alimentos Polar", network: "Instagram", author: "@alimentospolarcolombia", text: "@colombiaesbuena porque está llena de tradición, sabor y orgullo. En Alimentos Polar creemos en el poder de lo nuestro.", sentiment: "positive", date: "2026-06-10", likes: 3 },
-  { id: 12, brand: "Alimentos Polar", network: "Facebook", author: "Alimentos Polar Colombia", text: "En Alimentos Polar Colombia, el corazón de nuestra compañía es su gente. Nos unimos para impulsar el talento colombiano.", sentiment: "positive", date: "2026-07-02", likes: 50 },
-  // ─── Competidores ───
+  // ─── P.A.N. — contenido sobre pasta ───
+  { id: 1, brand: "P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor y la máxima calidad.", sentiment: "positive", date: "2026-09-12", likes: 31, productLine: "pasta" },
+  { id: 2, brand: "P.A.N.", network: "Facebook", author: "Harina PAN Colombia", text: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Son prácticos, nutritivos y resuelven comidas en minutos.", sentiment: "positive", date: "2026-09-12", likes: 15, productLine: "pasta" },
+  { id: 3, brand: "P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "P.A.N. tiene todo para tus comidas: harina blanca, amarilla, y ahora también pasta y atún. La versatilidad que necesitas en tu cocina.", sentiment: "neutral", date: "2026-09-08", likes: 17, productLine: "pasta" },
+  // ─── P.A.N. — contenido sobre atún ───
+  { id: 4, brand: "P.A.N.", network: "Instagram", author: "@alimentospolarcolombia", text: "¿Sin ideas para el almuerzo? 🍽️ Nuestro atún P.A.N. es súper versátil: arroz cremoso con atún y maíz dulce. Sigue estos pasos.", sentiment: "positive", date: "2026-09-10", likes: 23, productLine: "pasta_atun" },
+  { id: 5, brand: "P.A.N.", network: "Instagram", author: "@harinapancolombia", text: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor.", sentiment: "positive", date: "2026-09-12", likes: 31, productLine: "pasta_atun" },
+  { id: 6, brand: "P.A.N.", network: "Facebook", author: "Harina PAN Colombia", text: "P.A.N. tiene todo para tus comidas: pasta, atún y harina. La calidad que tu familia merece en cada plato.", sentiment: "neutral", date: "2026-09-08", likes: 15, productLine: "pasta_atun" },
+  // ─── Competidores pasta ───
+  { id: 7, brand: "Doria", network: "Instagram", author: "@alimentosdoria", text: "¡Una receta digna de cachete! 👌 Prepara este plato fácil con Doria. Contenido patrocinado.", sentiment: "positive", date: "2026-08-31", likes: 6675 },
+  { id: 8, brand: "Doria", network: "Facebook", author: "Alimentos Doria", text: "¿Tú ya sabes por qué no es lo mismo si es Doria? 🤔 Aquí te lo contamos.", sentiment: "positive", date: "2026-08-21", likes: 4218 },
+  { id: 9, brand: "Doria", network: "Instagram", author: "@alimentosdoria", text: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta que no requiere mucho esfuerzo.", sentiment: "neutral", date: "2026-07-29", likes: 0 },
+  { id: 10, brand: "La Muñeca", network: "Instagram", author: "@pastaslamuneca", text: "¡Celebramos 78 años de historia con un regalo muy especial para Cali! Harinera del Valle y Pastas La Muñeca.", sentiment: "positive", date: "2025-08-28", likes: 630 },
+  { id: 11, brand: "Comarrico", network: "Instagram", author: "@productoscomarrico", text: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito con pastas Comarrico 🍝🔥", sentiment: "positive", date: "2026-02-05", likes: 1697 },
+  { id: 12, brand: "Comarrico", network: "Facebook", author: "Productos Comarrico", text: "😋 ¿Quién dijo hambre? Con Comarrico te armas el almuerzo pa' toda la familia.", sentiment: "positive", date: "2025-10-03", likes: 261 },
+  // ─── Competidores atún ───
   { id: 13, brand: "La Soberana", network: "Instagram", author: "@lasoberanacol", text: "Como armar UN KIT DE EMERGENCIA 🚨 No necesitas tener todo. Con agua, linterna y atún La Soberana estás listo.", sentiment: "positive", date: "2026-08-11", likes: 158738 },
   { id: 14, brand: "Isabel", network: "Instagram", author: "@atunisabelcol", text: "Receta de Onigiris con atún Isabel 🍙 ¡Una forma diferente y divertida de disfrutar el atún!", sentiment: "positive", date: "2026-09-03", likes: 20415 },
   { id: 15, brand: "Zenú", network: "Instagram", author: "@zenuoficial", text: "¿CÓMO, DÓNDE, CUÁL? Tú qué opinas de esto ¿ya los conocías? Descubre todos los productos Zenú.", sentiment: "positive", date: "2026-07-22", likes: 9400 },
-  { id: 16, brand: "Doria", network: "Instagram", author: "@alimentosdoria", text: "¡Una receta digna de cachete! 👌 Prepara este plato fácil con Doria. Contenido patrocinado.", sentiment: "positive", date: "2026-08-31", likes: 6675 },
-  { id: 17, brand: "Doria", network: "Facebook", author: "Alimentos Doria", text: "¿Tú ya sabes por qué no es lo mismo si es Doria? 🤔 Aquí te lo contamos.", sentiment: "positive", date: "2026-08-21", likes: 4218 },
-  { id: 18, brand: "Zenú", network: "Facebook", author: "Zenú", text: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", sentiment: "positive", date: "2026-09-02", likes: 3823 },
-  { id: 19, brand: "Comarrico", network: "Instagram", author: "@productoscomarrico", text: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito con pastas Comarrico 🍝🔥", sentiment: "positive", date: "2026-02-05", likes: 1697 },
-  { id: 20, brand: "Van Camp's", network: "Facebook", author: "Atún Van Camp's", text: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", sentiment: "positive", date: "2026-08-25", likes: 464 },
-  { id: 21, brand: "La Muñeca", network: "Instagram", author: "@pastaslamuneca", text: "¡Celebramos 78 años de historia con un regalo muy especial para Cali! Harinera del Valle y Pastas La Muñeca.", sentiment: "positive", date: "2025-08-28", likes: 630 },
-  { id: 22, brand: "La Española", network: "Instagram", author: "@la_espanola_comoninguna", text: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", sentiment: "neutral", date: "2026-07-14", likes: 35 },
+  { id: 16, brand: "Zenú", network: "Facebook", author: "Zenú", text: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", sentiment: "positive", date: "2026-09-02", likes: 3823 },
+  { id: 17, brand: "Van Camp's", network: "Facebook", author: "Atún Van Camp's", text: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", sentiment: "positive", date: "2026-08-25", likes: 464 },
+  { id: 18, brand: "Van Camp's", network: "Instagram", author: "@atunvancamps", text: "Los sonidos que despiertan tu hambre, directamente desde el mar para darle sabor a tu día. 🌊🐟", sentiment: "positive", date: "2025-09-25", likes: 1408 },
+  { id: 19, brand: "La Española", network: "Instagram", author: "@la_espanola_comoninguna", text: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", sentiment: "neutral", date: "2026-07-14", likes: 35 },
 ];
 
 export const alerts: AlertData[] = [
@@ -327,8 +312,7 @@ export const alerts: AlertData[] = [
 ];
 
 export const googleMapsData = [
-  { brand: "Pasta P.A.N.", rating: 4.1, totalReviews: 289, recentCount: 22 },
-  { brand: "Alimentos Polar", rating: 4.0, totalReviews: 120, recentCount: 8 },
+  { brand: "P.A.N.", rating: 4.1, totalReviews: 289, recentCount: 22 },
   { brand: "Doria", rating: 3.8, totalReviews: 567, recentCount: 45 },
   { brand: "La Muñeca", rating: 3.6, totalReviews: 123, recentCount: 8 },
   { brand: "Comarrico", rating: 3.2, totalReviews: 89, recentCount: 12 },
@@ -337,8 +321,7 @@ export const googleMapsData = [
 ];
 
 export const brandColors: Record<string, string> = {
-  "Pasta P.A.N.": "#1D4ED8",
-  "Alimentos Polar": "#D97706",
+  "P.A.N.": "#1D4ED8",
   "Doria": "#DC2626",
   "La Muñeca": "#7C3AED",
   "Comarrico": "#059669",
@@ -385,15 +368,10 @@ export function getTotalInteractions(brand: BrandData, network?: Network): numbe
 }
 
 export const sentimentCategorySummaries: Record<string, SentimentCategorySummary> = {
-  "Pasta P.A.N.": {
-    positive: "Recetas con harina P.A.N. (arepas, wafles de choclo), orgullo venezolano-colombiano, versatilidad del producto.",
-    neutral: "Preguntas sobre disponibilidad, comparaciones con otras harinas y recetas tradicionales.",
-    negative: "Comentarios aislados sobre textura de la pasta vs la harina tradicional.",
-  },
-  "Alimentos Polar": {
-    positive: "Celebración de 30 años en Colombia, reconocimiento como marca de confianza, portafolio diversificado.",
-    neutral: "Contenido corporativo e institucional, detrás de cámaras de campañas.",
-    negative: "Bajo reconocimiento de la cuenta corporativa vs las marcas individuales.",
+  "P.A.N.": {
+    positive: "Recetas versátiles con pasta y atún P.A.N., practicidad para resolver comidas en minutos, calidad reconocida.",
+    neutral: "Contenido de portafolio general (harina, arepa, pasta, atún) sin diferenciación de producto. Bajo volumen dedicado a pasta y atún.",
+    negative: "Poca presencia dedicada a pasta y atún en redes — el contenido se diluye entre arepas y harina. Oportunidad de diferenciación.",
   },
 };
 
@@ -405,7 +383,7 @@ export const productLineLabels: Record<string, string> = {
 export const productLineKeys = ["pasta", "pasta_atun"];
 
 export const chartAnnotations: ChartAnnotation[] = [
-  { date: "Sep 16", brand: "Pasta P.A.N.", text: "Primer snapshot de datos reales (Apify)" },
+  { date: "Sep 16", brand: "P.A.N.", text: "Primer snapshot de datos reales (Apify)" },
 ];
 
 export const categoryTrends: CategoryTrend[] = [
@@ -417,8 +395,7 @@ export const categoryTrends: CategoryTrend[] = [
 ];
 
 export const brandTopicMaps: BrandTopicMap[] = [
-  { brand: "Pasta P.A.N.", topics: [{ topic: "Arepas y recetas", percentage: 45 }, { topic: "Wafles y choclo", percentage: 25 }, { topic: "Tradición venezolana", percentage: 20 }, { topic: "Loncheras", percentage: 10 }] },
-  { brand: "Alimentos Polar", topics: [{ topic: "Institucional", percentage: 40 }, { topic: "30 años en Colombia", percentage: 30 }, { topic: "Campañas", percentage: 20 }, { topic: "Portafolio", percentage: 10 }] },
+  { brand: "P.A.N.", topics: [{ topic: "Pasta y atún P.A.N.", percentage: 15 }, { topic: "Arepas y harina (no relevante)", percentage: 50 }, { topic: "Recetas versátiles", percentage: 20 }, { topic: "Portafolio general", percentage: 15 }] },
   { brand: "Doria", topics: [{ topic: "Recetas patrocinadas", percentage: 45 }, { topic: "Recetas fáciles", percentage: 25 }, { topic: "Mazorcada con pasta", percentage: 20 }, { topic: "Cachete", percentage: 10 }] },
   { brand: "La Muñeca", topics: [{ topic: "Historia 78 años", percentage: 35 }, { topic: "Recetas", percentage: 30 }, { topic: "Gaming/gamers", percentage: 20 }, { topic: "Energía", percentage: 15 }] },
   { brand: "Comarrico", topics: [{ topic: "Recetas económicas", percentage: 40 }, { topic: "Arroces", percentage: 25 }, { topic: "Ceviche de pastas", percentage: 20 }, { topic: "Precio accesible", percentage: 15 }] },
@@ -430,5 +407,5 @@ export const brandTopicMaps: BrandTopicMap[] = [
 
 // Volumen de menciones — solo snapshot de septiembre por ahora
 export const mentionVolumeData: MentionVolume[] = [
-  { date: "Sep 16", "Pasta P.A.N.": 78, "Alimentos Polar": 99 },
+  { date: "Sep 16", "P.A.N.": 78 },
 ];

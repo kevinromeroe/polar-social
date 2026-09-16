@@ -65,7 +65,7 @@ const polarDataset: ClientDataset = {
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
-  clientDescription: "Pasta P.A.N. y Alimentos Polar",
+  clientDescription: "P.A.N. (Pasta y Atún)",
 };
 
 const havolineDataset: ClientDataset = {
@@ -98,7 +98,7 @@ const clients: Record<string, ClientDataset> = {
 };
 
 function filterDatasetByProductLine(dataset: ClientDataset, productLine: string): ClientDataset {
-  const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine);
+  const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine || b.productLine === null);
   const filteredCompetitors = dataset.competitors.filter(b => b.productLine === productLine);
   const brandNamesInLine = new Set(
     [...filteredOwnBrands, ...filteredCompetitors].map(b => b.brand)
@@ -131,7 +131,9 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
     sentimentByBrand: dataset.sentimentByBrand.filter(s => brandNamesInLine.has(s.brand)),
     growthTrend: filteredGrowth,
     topPosts: dataset.topPosts.filter(p => brandNamesInLine.has(p.brand)),
-    mentions: dataset.mentions.filter(m => brandNamesInLine.has(m.brand)),
+    mentions: dataset.mentions.filter(m =>
+      brandNamesInLine.has(m.brand) && (!m.productLine || m.productLine === productLine)
+    ),
     alerts: dataset.alerts.filter(a => brandNamesInLine.has(a.brand)),
     clientDescription: filteredOwnBrands.map(b => b.brand).join(" y "),
   };
@@ -156,18 +158,13 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
   }, [user?.email]);
 
   const productLineOptions = useMemo<ProductLineOption[]>(() => {
-    const seen = new Set<string>();
-    return baseDataset.ownBrands
-      .filter(b => {
-        if (!b.productLine || seen.has(b.productLine)) return false;
-        seen.add(b.productLine);
-        return true;
-      })
-      .map(b => ({
-        key: b.productLine!,
-        brandName: b.brand,
-        label: baseDataset.productLineLabels[b.productLine!] || b.productLine!,
-      }));
+    if (baseDataset.productLineKeys.length <= 1) return [];
+    const ownBrandName = baseDataset.ownBrands[0]?.brand ?? "";
+    return baseDataset.productLineKeys.map(key => ({
+      key,
+      brandName: ownBrandName,
+      label: baseDataset.productLineLabels[key] || key,
+    }));
   }, [baseDataset]);
 
   const [selectedProductLine, setSelectedProductLine] = useState<string>("");
