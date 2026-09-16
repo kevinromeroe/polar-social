@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Star,
@@ -24,10 +24,11 @@ export function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
   const { selectedProductLine, setSelectedProductLine, productLineOptions, hasMultipleProductLines } = useClientData();
+  const router = useRouter();
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = "/login";
+    router.replace("/login");
   };
 
   return (

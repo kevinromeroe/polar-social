@@ -46,7 +46,6 @@ export interface Post {
   post_url: string | null;
   post_type: string | null;
   caption: string | null;
-  hashtags: string[] | null;
   mentions: string[] | null;
   likes: number;
   comments: number;

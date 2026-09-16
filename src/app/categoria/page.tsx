@@ -58,7 +58,7 @@ function MentionCard({ mention, brandColor }: { mention: MentionData; brandColor
       <div className="flex items-center justify-between mt-3">
         <span className="text-xs text-gray-400">{mention.date}</span>
         <span className="text-xs text-gray-400">
-          {mention.likes > 0 && `${formatNumber(mention.likes)} likes`}
+          {mention.likes > 0 && `${formatNumber(mention.likes)} me gusta`}
         </span>
       </div>
     </div>

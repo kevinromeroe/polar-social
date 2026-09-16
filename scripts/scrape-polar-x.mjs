@@ -1,17 +1,11 @@
 #!/usr/bin/env node
-import { readFileSync, mkdirSync, writeFileSync } from "fs";
+import { mkdirSync, writeFileSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
+import { getEnv } from "./load-env.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const envPath = resolve(__dirname, "..", ".env.local");
-const envContent = readFileSync(envPath, "utf8");
-const env = {};
-for (const line of envContent.split("\n")) {
-  const m = line.match(/^([^#=]+)=(.*)$/);
-  if (m) env[m[1].trim()] = m[2].trim();
-}
-const TOKEN = env.APIFY_API_TOKEN;
+const TOKEN = getEnv("APIFY_API_TOKEN");
 if (!TOKEN) { console.error("Missing APIFY_API_TOKEN"); process.exit(1); }
 
 const OUT = resolve(__dirname, "..", "data", "scraped", "polar");

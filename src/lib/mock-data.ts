@@ -218,15 +218,15 @@ export function getAvgEngagement(brand: BrandData): number {
 
 // SOV estimado basado en volumen de posts e interacciones reales en IG
 export const sovData = [
-  { brand: "Van Camp's", mentions: 2530, percentage: 21.1 },
-  { brand: "P.A.N.", mentions: 1809, percentage: 15.1 },
-  { brand: "La Soberana", mentions: 1379, percentage: 11.5 },
-  { brand: "Doria", mentions: 1284, percentage: 10.7 },
-  { brand: "La Muñeca", mentions: 1215, percentage: 10.1 },
-  { brand: "Zenú", mentions: 1156, percentage: 9.6 },
-  { brand: "Isabel", mentions: 1019, percentage: 8.5 },
-  { brand: "La Española", mentions: 798, percentage: 6.7 },
-  { brand: "Comarrico", mentions: 194, percentage: 1.6 },
+  { brand: "Van Camp's", mentions: 2530, percentage: 22.2 },
+  { brand: "P.A.N.", mentions: 1809, percentage: 15.9 },
+  { brand: "La Soberana", mentions: 1379, percentage: 12.1 },
+  { brand: "Doria", mentions: 1284, percentage: 11.3 },
+  { brand: "La Muñeca", mentions: 1215, percentage: 10.7 },
+  { brand: "Zenú", mentions: 1156, percentage: 10.1 },
+  { brand: "Isabel", mentions: 1019, percentage: 8.9 },
+  { brand: "La Española", mentions: 798, percentage: 7.0 },
+  { brand: "Comarrico", mentions: 194, percentage: 1.7 },
   { brand: "Pugliese", mentions: 16, percentage: 0.1 },
 ];
 
@@ -268,13 +268,13 @@ export const topPosts: TopPostData[] = [
   { brand: "P.A.N.", network: "instagram", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor y la máxima calidad.", likes: 31, comments: 2, shares: 0, views: 0, date: "2026-09-12", url: "https://www.instagram.com/p/DdHxxx/", ranking: "best", imageUrl: "/images/posts/pan-instagram-1.jpg" },
   { brand: "P.A.N.", network: "facebook", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor.", likes: 15, comments: 1, shares: 2, views: 0, date: "2026-09-12", url: "https://www.facebook.com/HarinaPANColombia/", ranking: "worst", imageUrl: "/images/posts/pan-facebook-1.jpg" },
   // ─── Doria ───
-  { brand: "Doria", network: "instagram", caption: "\"Contenido Patrocinado por Doria\"\n¡Una receta digna de cachete! 👌\nPrepara este plato fácil con Doria.", likes: 6675, comments: 61, shares: 0, views: 0, date: "2026-08-31", url: "https://www.instagram.com/p/DcuNvb3MjHY/", ranking: "best" },
+  { brand: "Doria", network: "instagram", caption: "\"Contenido Patrocinado por Doria\"\n¡Una receta digna de cachete! 👌\nPrepara este plato fácil con Doria.", likes: 6675, comments: 61, shares: 0, views: 0, date: "2026-08-31", url: "https://www.instagram.com/p/DcuNvb3MjHY/", ranking: "best", imageUrl: "/images/posts/doria-instagram-2.jpg" },
   { brand: "Doria", network: "instagram", caption: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta muy que no requiere mucho esfuerzo.", likes: 0, comments: 9, shares: 0, views: 0, date: "2026-07-29", url: "https://www.instagram.com/p/DbZMgYOMjRm/", ranking: "worst", imageUrl: "/images/posts/doria-instagram-2.jpg" },
   // ─── La Muñeca ───
   { brand: "La Muñeca", network: "instagram", caption: "¡Celebramos 78 años de historia con un regalo muy especial para Cali!\nHarinera del Valle y Pastas La Muñeca.", likes: 630, comments: 44, shares: 0, views: 0, date: "2025-08-28", url: "https://www.instagram.com/p/DN5YkPmDtgw/", ranking: "best", imageUrl: "/images/posts/la-muneca-instagram-1.jpg" },
   { brand: "La Muñeca", network: "instagram", caption: "Dicen que para ser un verdadero tryhard hay que sacrificarlo todo, pero el hambre no espera. 🎮🍝", likes: 18, comments: 0, shares: 0, views: 0, date: "2026-08-29", url: "https://www.instagram.com/p/DcoUVx9jZql/", ranking: "worst", imageUrl: "/images/posts/la-muneca-instagram-2.jpg" },
   // ─── Comarrico ───
-  { brand: "Comarrico", network: "instagram", caption: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito \"embustero\" con pastas Comarrico 🍝🔥", likes: 1697, comments: 39, shares: 0, views: 0, date: "2026-02-05", url: "https://www.instagram.com/p/DUYnSNhkdXk/", ranking: "best" },
+  { brand: "Comarrico", network: "instagram", caption: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito \"embustero\" con pastas Comarrico 🍝🔥", likes: 1697, comments: 39, shares: 0, views: 0, date: "2026-02-05", url: "https://www.instagram.com/p/DUYnSNhkdXk/", ranking: "best", imageUrl: "/images/posts/comarrico-instagram-2.jpg" },
   { brand: "Comarrico", network: "instagram", caption: "Ceviche de pastas 🍝🍤\nIngredientes: 1 paquete de pastas caracoles de @productoscomarrico", likes: 0, comments: 166, shares: 0, views: 0, date: "2025-12-10", url: "https://www.instagram.com/p/DSGMJeTEjz-/", ranking: "worst", imageUrl: "/images/posts/comarrico-instagram-2.jpg" },
   // ─── Pugliese ───
   { brand: "Pugliese", network: "instagram", caption: "Somos Pugliese pastas.\nHechas a mano y con mucho amor! Por encargos al MD o contacto directo.", likes: 79, comments: 4, shares: 0, views: 0, date: "2024-06-06", url: "https://www.instagram.com/p/C74OAxeObni/", ranking: "best", imageUrl: "/images/posts/pugliese-instagram-1.jpg" },
@@ -455,6 +455,51 @@ export const sentimentCategorySummaries: Record<string, SentimentCategorySummary
     neutral: "Contenido de portafolio general (harina, arepa, pasta, atún) sin diferenciación de producto. Bajo volumen dedicado a pasta y atún.",
     negative: "Poca presencia dedicada a pasta y atún en redes — el contenido se diluye entre arepas y harina. Oportunidad de diferenciación.",
   },
+  "Doria": {
+    positive: "Recetas patrocinadas con influencers, tradición y calidad reconocida ('no es lo mismo si es Doria'), alta viralidad en TikTok.",
+    neutral: "Contenido de recetas básicas y preparaciones sencillas sin diferenciación clara. Publicaciones informativas sin engagement destacado.",
+    negative: "Sin quejas significativas detectadas. El sentimiento negativo es prácticamente nulo en el período analizado.",
+  },
+  "La Muñeca": {
+    positive: "Tradición de 78 años, orgullo caleño, recetas creativas como churro bites de pasta. Conexión emocional con la marca.",
+    neutral: "Contenido de gaming y estilo de vida joven que no siempre conecta con la audiencia principal de pastas.",
+    negative: "Bajo engagement en publicaciones orientadas a gamers. Desconexión entre tono juvenil y audiencia tradicional de pastas.",
+  },
+  "Comarrico": {
+    positive: "Recetas económicas y accesibles ($20.000), cocina creativa con ingredientes simples, ceviche de pastas como innovación.",
+    neutral: "Contenido de recetas estándar sin diferenciación especial. Publicaciones de portafolio general.",
+    negative: "Sin quejas relevantes detectadas. Marca con percepción positiva entre consumidores de precio accesible.",
+  },
+  "Pugliese": {
+    positive: "Pastas artesanales hechas a mano, producto premium diferenciado, imagen de calidad casera.",
+    neutral: "Contenido limitado y poco frecuente. Publicaciones genéricas de portafolio sin estrategia clara de contenido.",
+    negative: "Sin quejas detectadas, pero la baja frecuencia de publicación limita la visibilidad de la marca.",
+  },
+  "Van Camp's": {
+    positive: "Frescura del mar, recetas clásicas de atún, contenido ASMR atractivo. Liderazgo en volumen de publicaciones.",
+    neutral: "Contenido repetitivo sobre recetas tradicionales sin innovación. Publicaciones que no generan conversación.",
+    negative: "Bajo engagement relativo a su base de seguidores (ER 0.11%). Posible audiencia inactiva o desconectada del contenido.",
+  },
+  "Zenú": {
+    positive: "Comida callejera bogotana, festival del perro caliente, contenido deportivo que conecta emocionalmente.",
+    neutral: "Publicaciones promocionales estándar y contenido de producto sin diferenciación. Bajo engagement en promos genéricas.",
+    negative: "Sin quejas significativas. El 30% de contenido neutral refleja publicaciones corporativas sin engagement destacado.",
+  },
+  "La Soberana": {
+    positive: "Contenido viral sobre kits de emergencia, almuerzos rápidos con atún, engagement excepcional (ER 25.75%).",
+    neutral: "Promociones y descuentos que no generan conversación más allá de la transacción.",
+    negative: "Sin quejas relevantes. La marca mantiene percepción positiva consistente en todas las redes.",
+  },
+  "Isabel": {
+    positive: "Recetas internacionales innovadoras (onigiris, croquetas), contenido 100% positivo, alta viralidad en recetas creativas.",
+    neutral: "Sin contenido neutral significativo en el período analizado.",
+    negative: "Sin quejas ni sentimiento negativo detectado. La marca disfruta de percepción uniformemente positiva.",
+  },
+  "La Española": {
+    positive: "Contenido aspiracional de estilo de vida (verano, aperitivos, fútbol), tono emocional y nacionalista.",
+    neutral: "Sin contenido neutral significativo en el período analizado.",
+    negative: "Bajo engagement general y comunidad reducida. Contenido que no genera conversación ni interacción significativa.",
+  },
 };
 
 export const productLineLabels: Record<string, string> = {
@@ -485,15 +530,17 @@ export const brandTopicMaps: BrandTopicMap[] = [
   { brand: "Zenú", topics: [{ topic: "Comida callejera", percentage: 35 }, { topic: "Festival perro caliente", percentage: 25 }, { topic: "Bogotá", percentage: 20 }, { topic: "Eventos deportivos", percentage: 20 }] },
   { brand: "La Soberana", topics: [{ topic: "Emergencias/preparación", percentage: 35 }, { topic: "Almuerzos rápidos", percentage: 30 }, { topic: "Promociones", percentage: 20 }, { topic: "Recetas atún", percentage: 15 }] },
   { brand: "Isabel", topics: [{ topic: "Recetas internacionales", percentage: 40 }, { topic: "Onigiris", percentage: 25 }, { topic: "Croquetas", percentage: 20 }, { topic: "Sopas de letras", percentage: 15 }] },
+  { brand: "Pugliese", topics: [{ topic: "Pastas artesanales", percentage: 40 }, { topic: "Hecho a mano", percentage: 30 }, { topic: "Pizza y panadería", percentage: 20 }, { topic: "Encargos y pedidos", percentage: 10 }] },
+  { brand: "La Española", topics: [{ topic: "Estilo de vida", percentage: 35 }, { topic: "Eventos deportivos", percentage: 25 }, { topic: "Aperitivos y verano", percentage: 25 }, { topic: "Sabor del mar", percentage: 15 }] },
 ];
 
 // Volumen de menciones — proyección basada en cadencia de publicación real (sep 2026)
 // Se reemplazará con datos reales tras cada scraping quincenal
 export const mentionVolumeData: MentionVolume[] = [
-  { date: "Abr", "P.A.N.": 62, "Doria": 48, "Van Camp's": 55, "Zenú": 42 },
-  { date: "May", "P.A.N.": 58, "Doria": 52, "Van Camp's": 60, "Zenú": 45 },
-  { date: "Jun", "P.A.N.": 65, "Doria": 55, "Van Camp's": 58, "Zenú": 50 },
-  { date: "Jul", "P.A.N.": 70, "Doria": 50, "Van Camp's": 62, "Zenú": 48 },
-  { date: "Ago", "P.A.N.": 74, "Doria": 58, "Van Camp's": 65, "Zenú": 52 },
-  { date: "Sep", "P.A.N.": 78, "Doria": 60, "Van Camp's": 68, "Zenú": 55 },
+  { date: "Abr", "P.A.N.": 62, "Doria": 48, "Van Camp's": 55, "Zenú": 42, "La Muñeca": 38, "Comarrico": 6, "Pugliese": 1, "La Soberana": 48, "Isabel": 34, "La Española": 26 },
+  { date: "May", "P.A.N.": 58, "Doria": 52, "Van Camp's": 60, "Zenú": 45, "La Muñeca": 40, "Comarrico": 7, "Pugliese": 1, "La Soberana": 50, "Isabel": 36, "La Española": 28 },
+  { date: "Jun", "P.A.N.": 65, "Doria": 55, "Van Camp's": 58, "Zenú": 50, "La Muñeca": 42, "Comarrico": 8, "Pugliese": 1, "La Soberana": 52, "Isabel": 38, "La Española": 30 },
+  { date: "Jul", "P.A.N.": 70, "Doria": 50, "Van Camp's": 62, "Zenú": 48, "La Muñeca": 44, "Comarrico": 7, "Pugliese": 2, "La Soberana": 55, "Isabel": 40, "La Española": 32 },
+  { date: "Ago", "P.A.N.": 74, "Doria": 58, "Van Camp's": 65, "Zenú": 52, "La Muñeca": 46, "Comarrico": 9, "Pugliese": 1, "La Soberana": 58, "Isabel": 42, "La Española": 34 },
+  { date: "Sep", "P.A.N.": 78, "Doria": 60, "Van Camp's": 68, "Zenú": 55, "La Muñeca": 48, "Comarrico": 10, "Pugliese": 2, "La Soberana": 60, "Isabel": 45, "La Española": 36 },
 ];

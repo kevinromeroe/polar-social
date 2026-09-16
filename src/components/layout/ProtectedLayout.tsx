@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "./AuthProvider";
 import { Sidebar } from "./Sidebar";
 
 export function ProtectedLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
-      window.location.href = "/login";
+      router.replace("/login");
     }
-  }, [user, loading]);
+  }, [user, loading, router]);
 
   if (loading) {
     return (

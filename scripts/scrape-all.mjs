@@ -14,27 +14,14 @@
  *   SUPABASE_SERVICE_ROLE_KEY
  */
 
-import { readFileSync } from "fs";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
+import { getEnv } from "./load-env.mjs";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// ── Cargar .env.local ──
-const envPath = resolve(__dirname, "..", ".env.local");
-const envContent = readFileSync(envPath, "utf8");
-const env = {};
-for (const line of envContent.split("\n")) {
-  const match = line.match(/^([^#=]+)=(.*)$/);
-  if (match) env[match[1].trim()] = match[2].trim();
-}
-
-const APIFY_TOKEN = env.APIFY_API_TOKEN;
-const SUPABASE_URL = env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
+const APIFY_TOKEN = getEnv("APIFY_API_TOKEN");
+const SUPABASE_URL = getEnv("NEXT_PUBLIC_SUPABASE_URL");
+const SUPABASE_KEY = getEnv("SUPABASE_SERVICE_ROLE_KEY");
 
 if (!APIFY_TOKEN || !SUPABASE_URL || !SUPABASE_KEY) {
-  console.error("❌ Faltan variables en .env.local (APIFY_API_TOKEN, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)");
+  console.error("❌ Faltan variables de entorno (APIFY_API_TOKEN, NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)");
   process.exit(1);
 }
 
@@ -224,20 +211,26 @@ async function main() {
   if (networkFilter) console.log(`   Red: ${networkFilter}`);
 
   // Obtener cuentas
-  let query = "is_active=eq.true&select=id,brand_name,network,account_type,username,client_id";
+  let query = "is_active=eq.true&select=id,brand_name,network,account_type,username";
   if (networkFilter) query += `&network=eq.${networkFilter}`;
   const accounts = await supabaseGet("accounts", query);
 
   // Filtrar por cliente si aplica
   let filteredAccounts = accounts;
   if (clientFilter) {
-    const clients = await supabaseGet("clients", `slug=eq.${clientFilter}&select=id`);
-    if (clients.length === 0) {
-      console.error(`❌ Cliente "${clientFilter}" no encontrado`);
-      process.exit(1);
+    try {
+      const clients = await supabaseGet("clients", `slug=eq.${clientFilter}&select=id`);
+      if (clients.length === 0) {
+        console.error(`❌ Cliente "${clientFilter}" no encontrado`);
+        process.exit(1);
+      }
+      const clientId = clients[0].id;
+      filteredAccounts = accounts.filter((a) => a.client_id === clientId);
+    } catch {
+      // La tabla clients no existe — usar todas las cuentas
+      console.log(`   ⚠️  Tabla "clients" no disponible, usando todas las cuentas`);
+      filteredAccounts = accounts;
     }
-    const clientId = clients[0].id;
-    filteredAccounts = accounts.filter((a) => a.client_id === clientId);
   }
 
   console.log(`   Cuentas a scrapear: ${filteredAccounts.length}\n`);

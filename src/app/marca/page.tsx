@@ -389,12 +389,12 @@ export default function MarcaPage() {
                             {post.caption}
                           </p>
                           <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                            <span>{formatNumber(post.likes)} likes</span>
+                            <span>{formatNumber(post.likes)} me gusta</span>
                             <span>{formatNumber(post.comments)} comentarios</span>
                             <span>{formatNumber(post.shares)} compartidos</span>
                             {post.views > 0 && (
                               <span className="font-medium text-gray-900">
-                                {formatNumber(post.views)} views
+                                {formatNumber(post.views)} vistas
                               </span>
                             )}
                             {post.url && (
@@ -532,7 +532,7 @@ export default function MarcaPage() {
                                           <span className="text-xs font-medium text-gray-700">{m.author}</span>
                                         </div>
                                         <div className="flex items-center gap-3">
-                                          {m.likes > 0 && <span className="text-[10px] text-gray-500">{formatNumber(m.likes)} likes</span>}
+                                          {m.likes > 0 && <span className="text-[10px] text-gray-500">{formatNumber(m.likes)} me gusta</span>}
                                           <span className="text-[10px] text-gray-400">{m.date}</span>
                                         </div>
                                       </div>

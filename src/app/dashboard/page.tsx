@@ -39,7 +39,7 @@ const severityIcons = {
 };
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, alerts, clientDescription, brandColors } = useClientData();
+  const { ownBrands, sovData, alerts, clientDescription, brandColors, mentionsByNetwork } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -51,6 +51,9 @@ export default function DashboardPage() {
   const ownSentimentAvg = ownSentimentData.length > 0
     ? Math.round(ownSentimentData.reduce((sum, s) => sum + s.positive - s.negative, 0) / ownSentimentData.length)
     : 70;
+
+  const totalAnalyzedPosts = mentionsByNetwork.reduce((sum: number, n: { mentions: number }) => sum + n.mentions, 0);
+  const getNetworkMentions = (name: string) => mentionsByNetwork.find((n: { network: string }) => n.network === name)?.mentions ?? 0;
 
   const sovChartData = sovData.slice(0, 8).map((s) => ({
     ...s,
@@ -146,7 +149,7 @@ export default function DashboardPage() {
             </BarChart>
           </ResponsiveContainer>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Cálculo: total de menciones públicas de cada marca en X, TikTok, Facebook, Instagram, LinkedIn, Reddit y Google Maps durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
+            Cálculo: total de menciones públicas de cada marca en Instagram, Facebook, TikTok y X durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
           </p>
         </div>
 
@@ -207,7 +210,7 @@ export default function DashboardPage() {
           Insights ejecutivos
         </h3>
         <p className="text-xs text-gray-400 mb-4">
-          Hallazgos accionables basados en el análisis de 498 publicaciones reales
+          Hallazgos accionables basados en el análisis de {formatNumber(totalAnalyzedPosts)} publicaciones reales
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {executiveInsights.map((insight, i) => {
@@ -239,7 +242,7 @@ export default function DashboardPage() {
           })}
         </div>
         <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-          Basado en análisis de sentimiento y engagement de 216 posts de Instagram, 200 de Facebook y 82 de TikTok. Período: últimos 3 meses.
+          Basado en análisis de sentimiento y engagement de {formatNumber(getNetworkMentions("Instagram"))} publicaciones en Instagram, {formatNumber(getNetworkMentions("Facebook"))} en Facebook y {formatNumber(getNetworkMentions("TikTok"))} en TikTok. Periodo: ultimos 3 meses.
         </p>
       </div>
 

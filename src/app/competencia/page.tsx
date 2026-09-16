@@ -313,7 +313,7 @@ function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Recor
             </div>
             <p className="text-sm text-gray-700 mb-2 line-clamp-3">{post.caption}</p>
             <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-              <span>{formatNumber(post.likes)} likes</span>
+              <span>{formatNumber(post.likes)} me gusta</span>
               <span>{formatNumber(post.comments)} comentarios</span>
               <span>{formatNumber(post.shares)} compartidos</span>
               {post.url && (
@@ -332,7 +332,7 @@ function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Recor
                 <div className="flex items-center gap-2 mb-0.5">
                   <span className="text-[10px] font-semibold text-gray-600">Comentario destacado</span>
                   <span className="text-[10px] text-gray-400">{post.topComment.author}</span>
-                  {post.topComment.likes > 0 && <span className="text-[10px] text-gray-400">{post.topComment.likes} likes</span>}
+                  {post.topComment.likes > 0 && <span className="text-[10px] text-gray-400">{post.topComment.likes} me gusta</span>}
                 </div>
                 <p className="text-xs text-gray-600 italic leading-relaxed">&ldquo;{post.topComment.text}&rdquo;</p>
               </div>
