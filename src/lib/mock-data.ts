@@ -544,3 +544,281 @@ export const mentionVolumeData: MentionVolume[] = [
   { date: "Ago", "P.A.N.": 74, "Doria": 58, "Van Camp's": 65, "Zenú": 52, "La Muñeca": 46, "Comarrico": 9, "Pugliese": 1, "La Soberana": 58, "Isabel": 42, "La Española": 34 },
   { date: "Sep", "P.A.N.": 78, "Doria": 60, "Van Camp's": 68, "Zenú": 55, "La Muñeca": 48, "Comarrico": 10, "Pugliese": 2, "La Soberana": 60, "Isabel": 45, "La Española": 36 },
 ];
+
+// ─── Inteligencia de contenido por red ───
+
+export interface ContentFormat {
+  format: string;
+  share: number;
+  avgEngagement: number;
+  topBrand: string;
+  proof: string;
+}
+
+export interface NetworkIntelligence {
+  network: Network;
+  label: string;
+  color: string;
+  totalBrands: number;
+  categoryAvgER: number;
+  leader: { brand: string; er: number; followers: number; secret: string };
+  contentFormats: ContentFormat[];
+  panStatus: "dominante" | "competitivo" | "rezagado" | "ausente";
+  panER: number;
+  panFollowers: number;
+  panGap: string;
+  keyInsight: string;
+  recommendation: string;
+}
+
+export const networkIntelligence: NetworkIntelligence[] = [
+  {
+    network: "instagram",
+    label: "Instagram",
+    color: "#E4405F",
+    totalBrands: 10,
+    categoryAvgER: 5.4,
+    leader: {
+      brand: "La Soberana",
+      er: 25.75,
+      followers: 31934,
+      secret: "Contenido de utilidad real (kits de emergencia, almuerzos rápidos) que la audiencia guarda y comparte. No vende producto, resuelve problemas.",
+    },
+    contentFormats: [
+      { format: "Contenido de utilidad", share: 32, avgEngagement: 8134, topBrand: "La Soberana", proof: "Post de kit de emergencia: 158K likes con solo 32K seguidores" },
+      { format: "Recetas internacionales", share: 24, avgEngagement: 1453, topBrand: "Isabel", proof: "Onigiris con atún: 20K likes, ER 18.2% — la innovación conecta" },
+      { format: "Recetas patrocinadas", share: 22, avgEngagement: 786, topBrand: "Doria", proof: "'Cachete' con influencers: 6.7K likes, contenido aspiracional" },
+      { format: "Portafolio genérico", share: 22, avgEngagement: 52, topBrand: "P.A.N.", proof: "Posts de catálogo: 78 likes promedio — no generan conversación" },
+    ],
+    panStatus: "rezagado",
+    panER: 0.17,
+    panFollowers: 50388,
+    panGap: "P.A.N. tiene más seguidores que La Soberana (50K vs 32K) pero 150x menos engagement. El problema no es audiencia, es contenido.",
+    keyInsight: "Las marcas que lideran no venden producto — resuelven problemas o inspiran. El contenido de utilidad genera 100x más engagement que los posts de portafolio.",
+    recommendation: "Dejar de publicar catálogo de productos. Crear series de contenido utilitario: 'Comidas de emergencia con P.A.N.', 'Lonchera en 5 minutos', 'Cena express para 4'. Formato: video corto + receta paso a paso.",
+  },
+  {
+    network: "tiktok",
+    label: "TikTok",
+    color: "#000000",
+    totalBrands: 6,
+    categoryAvgER: 4.5,
+    leader: {
+      brand: "Doria",
+      er: 13.24,
+      followers: 61000,
+      secret: "Personaje propio 'El Bambino' + contenido de entretenimiento puro. No parece publicidad. 75M views en un solo video.",
+    },
+    contentFormats: [
+      { format: "Personaje/entretenimiento", share: 35, avgEngagement: 47000, topBrand: "Doria", proof: "Video del Bambino: 75.2M views, 47K likes, 2K shares" },
+      { format: "Recetas rápidas ASMR", share: 30, avgEngagement: 39700, topBrand: "Van Camp's", proof: "Ceviche en 10 min: 39.7K likes, 10.6K shares — formato replicable" },
+      { format: "Challenges/cultura", share: 20, avgEngagement: 2514, topBrand: "Zenú", proof: "Festival perro caliente: 2.5K likes — conecta con lo local" },
+      { format: "Contenido corporativo", share: 15, avgEngagement: 233, topBrand: "La Muñeca", proof: "Posts de marca: 233 likes promedio — TikTok castiga lo corporativo" },
+    ],
+    panStatus: "ausente",
+    panER: 0,
+    panFollowers: 2,
+    panGap: "P.A.N. tiene 2 seguidores en TikTok. Doria tiene 61K y Van Camp's 222K. La brecha es total y cada día crece.",
+    keyInsight: "TikTok es la red con mayor engagement de la categoría (ER promedio 4.5% vs 0.2% en Facebook). Es donde están los consumidores de 18-34 y donde Doria domina con contenido que no parece publicidad.",
+    recommendation: "Prioridad crítica: crear cuenta TikTok con estrategia de personaje o serie propia. Formato: videos de 15-30s de recetas rápidas con P.A.N., estilo 'receta de emergencia'. Referencia: Van Camp's logra 39K likes con recetas simples — no necesitas producción cara.",
+  },
+  {
+    network: "facebook",
+    label: "Facebook",
+    color: "#1877F2",
+    totalBrands: 9,
+    categoryAvgER: 0.21,
+    leader: {
+      brand: "Comarrico",
+      er: 1.28,
+      followers: 1694,
+      secret: "Recetas económicas que resuenan con su audiencia ($20.000 para el almuerzo). Autenticidad por encima de producción.",
+    },
+    contentFormats: [
+      { format: "Recetas económicas", share: 30, avgEngagement: 261, topBrand: "Comarrico", proof: "Almuerzo familiar por $20K: 261 likes — la asequibilidad conecta" },
+      { format: "Recetas con video", share: 28, avgEngagement: 464, topBrand: "Van Camp's", proof: "Arroz con atún: 464 likes — el video funciona mejor que imagen estática" },
+      { format: "Comida callejera", share: 22, avgEngagement: 3823, topBrand: "Zenú", proof: "Sanduches y perros: 3.8K likes — lo cotidiano supera lo aspiracional" },
+      { format: "Posts informativos", share: 20, avgEngagement: 11, topBrand: "P.A.N.", proof: "Contenido de marca: 11 likes promedio — Facebook penaliza lo corporativo" },
+    ],
+    panStatus: "rezagado",
+    panER: 0.01,
+    panFollowers: 175278,
+    panGap: "P.A.N. tiene la segunda mayor audiencia en Facebook (175K) pero el engagement más bajo (ER 0.01%). 175K personas no interactúan con el contenido.",
+    keyInsight: "Facebook tiene el ER más bajo de todas las redes para la categoría (0.21% promedio). Las marcas que funcionan usan contenido cotidiano y accesible, no aspiracional.",
+    recommendation: "No invertir recursos adicionales en Facebook. Reutilizar el mejor contenido de Instagram adaptado al formato. Enfocarse en recetas económicas y familiares que generen shares orgánicos.",
+  },
+  {
+    network: "x",
+    label: "X (Twitter)",
+    color: "#1DA1F2",
+    totalBrands: 4,
+    categoryAvgER: 0.48,
+    leader: {
+      brand: "Doria",
+      er: 0.8,
+      followers: 7543,
+      secret: "Presencia mínima. Ninguna marca de alimentos ha encontrado la fórmula en X para esta categoría.",
+    },
+    contentFormats: [
+      { format: "Respuestas a usuarios", share: 45, avgEngagement: 5, topBrand: "Doria", proof: "Engagement casi nulo — la categoría no tiene conversación en X" },
+      { format: "Contenido replicado de IG", share: 40, avgEngagement: 4, topBrand: "Van Camp's", proof: "Cross-posting sin adaptación: 4 likes promedio" },
+      { format: "Noticias de marca", share: 15, avgEngagement: 1, topBrand: "Zenú", proof: "Contenido corporativo: 1 like promedio — la audiencia no existe" },
+    ],
+    panStatus: "ausente",
+    panER: 0,
+    panFollowers: 0,
+    panGap: "P.A.N. no tiene presencia en X, pero ningún competidor ha demostrado ROI en esta red.",
+    keyInsight: "X es irrelevante para la categoría de alimentos en Colombia. Las 4 marcas presentes tienen engagement cercano a cero. No hay audiencia activa.",
+    recommendation: "No entrar a X. El esfuerzo tiene mejor retorno en TikTok (donde P.A.N. está ausente) o en mejorar Instagram (donde tiene audiencia pero no engagement).",
+  },
+];
+
+// ─── Mapa estratégico competitivo ───
+
+export interface CompetitorStrategy {
+  brand: string;
+  threatLevel: "critica" | "alta" | "media" | "baja";
+  mainStrength: string;
+  strategy: string;
+  toCopy: { action: string; proof: string };
+  toAvoid: { action: string; proof: string };
+  networks: { network: string; status: "domina" | "fuerte" | "presente" | "debil" | "ausente"; er: number }[];
+}
+
+export const competitorStrategies: CompetitorStrategy[] = [
+  {
+    brand: "Doria",
+    threatLevel: "critica",
+    mainStrength: "Dominancia total en TikTok + marca más reconocida en pasta",
+    strategy: "Entretenimiento primero: personaje propio 'El Bambino' en TikTok, recetas patrocinadas con influencers en Instagram. No venden pasta — venden momentos.",
+    toCopy: {
+      action: "Crear un personaje o serie propia para TikTok. El contenido de entretenimiento genera 100x más engagement que el contenido de producto.",
+      proof: "El Bambino de Doria: 75M views, 47K likes en un solo video. ER de 13.24% en TikTok vs 1.37% en Instagram — el formato es el multiplicador.",
+    },
+    toAvoid: {
+      action: "No replicar su inversión en X/Twitter. Doria tiene 7.5K seguidores y 3,091 posts con solo 5 likes promedio — años de esfuerzo sin retorno.",
+      proof: "3,091 posts en X con ER 0.8%. El ROI es negativo. Esos recursos rinden más en TikTok o Instagram.",
+    },
+    networks: [
+      { network: "Instagram", status: "fuerte", er: 1.37 },
+      { network: "Facebook", status: "presente", er: 0.22 },
+      { network: "TikTok", status: "domina", er: 13.24 },
+      { network: "X", status: "debil", er: 0.8 },
+    ],
+  },
+  {
+    brand: "La Soberana",
+    threatLevel: "alta",
+    mainStrength: "Engagement más alto de toda la categoría en Instagram (ER 25.75%)",
+    strategy: "Contenido de utilidad real: kits de emergencia, almuerzos rápidos, soluciones concretas. Cada post resuelve un problema del día a día. La audiencia guarda y comparte porque les sirve.",
+    toCopy: {
+      action: "Adoptar el modelo de contenido utilitario. En vez de 'mira nuestra pasta', publicar 'resuelve tu cena en 10 minutos con esto'. El contenido que sirve se comparte solo.",
+      proof: "32K seguidores pero 8,134 likes promedio (ER 25.75%). Post viral de kit de emergencia: 158,738 likes. El contenido útil escala exponencialmente.",
+    },
+    toAvoid: {
+      action: "No copiar su ausencia en TikTok. La Soberana tiene 9 seguidores en TikTok — dejan la mitad del mercado joven desatendido.",
+      proof: "Toda su fuerza está en Instagram. Si TikTok crece (ya es la red con mayor ER de la categoría), La Soberana queda expuesta.",
+    },
+    networks: [
+      { network: "Instagram", status: "domina", er: 25.75 },
+      { network: "Facebook", status: "debil", er: 0.04 },
+      { network: "TikTok", status: "ausente", er: 0 },
+    ],
+  },
+  {
+    brand: "Van Camp's",
+    threatLevel: "alta",
+    mainStrength: "Mayor audiencia total (1.15M seguidores sumados) y líder en TikTok por volumen",
+    strategy: "Volumen y presencia masiva. Contenido clásico de recetas con atún, formato ASMR en TikTok. Apuestan a cantidad sobre calidad.",
+    toCopy: {
+      action: "Replicar su formato de recetas rápidas en TikTok. Videos cortos tipo 'Ceviche en 10 minutos' son simples de producir y generan alto engagement.",
+      proof: "Video de ceviche: 39.7K likes y 10.6K shares en TikTok. Producción simple, resultado masivo. 222K seguidores en TikTok con ER de 1.73%.",
+    },
+    toAvoid: {
+      action: "No acumular seguidores sin estrategia de engagement. Van Camp's demuestra que los seguidores sin contenido relevante no sirven.",
+      proof: "147K seguidores en Instagram pero ER de 0.11% (165 likes promedio). Posible audiencia comprada o inactiva. Es la peor relación seguidores/engagement de la categoría.",
+    },
+    networks: [
+      { network: "Instagram", status: "debil", er: 0.11 },
+      { network: "Facebook", status: "presente", er: 0.01 },
+      { network: "TikTok", status: "fuerte", er: 1.73 },
+      { network: "X", status: "debil", er: 0.6 },
+    ],
+  },
+  {
+    brand: "Zenú",
+    threatLevel: "media",
+    mainStrength: "Conexión cultural fuerte: comida callejera, eventos deportivos, identidad bogotana",
+    strategy: "Cultura y territorio. Zenú no vende atún — vende la experiencia de comer en la calle, del perro caliente del estadio, de lo colombiano. TikTok en crecimiento.",
+    toCopy: {
+      action: "Conectar la marca con momentos culturales colombianos. El contenido que toca identidad nacional genera engagement emocional que se comparte.",
+      proof: "Perro caliente + fútbol: 9.4K likes en Instagram. Festival del perro caliente genera conversación orgánica. ER de 1.06% con 95K seguidores.",
+    },
+    toAvoid: {
+      action: "No copiar su presencia en X. Zenú tiene 395 seguidores y 6 posts — abandonaron la plataforma.",
+      proof: "6 posts totales en X, ER 0.5%, 1 like promedio. Inversión desperdiciada.",
+    },
+    networks: [
+      { network: "Instagram", status: "fuerte", er: 1.06 },
+      { network: "Facebook", status: "presente", er: 0.14 },
+      { network: "TikTok", status: "fuerte", er: 5.33 },
+      { network: "X", status: "ausente", er: 0.5 },
+    ],
+  },
+  {
+    brand: "Isabel",
+    threatLevel: "media",
+    mainStrength: "Innovación en recetas: fusión internacional (onigiris, croquetas) con alto engagement",
+    strategy: "Diferenciación por creatividad. Isabel es la única marca que sale del recetario colombiano tradicional y explora cocina internacional. 100% sentimiento positivo.",
+    toCopy: {
+      action: "Crear una línea de contenido de 'recetas del mundo con P.A.N.' — onigiris, pasta thai, wrap mediterráneo. La fusión internacional diferencia y genera curiosidad.",
+      proof: "Onigiris con atún: 20,415 likes con solo 8K seguidores (ER 18.22%). La innovación en recetas es el formato con mejor ratio de la categoría después de utilidad.",
+    },
+    toAvoid: {
+      action: "No quedarse solo en Instagram como Isabel. Sin TikTok ni Facebook fuerte, el alcance es limitado.",
+      proof: "8K seguidores totales en Instagram, 13.7K en Facebook (ER 0.02%). Alto engagement pero audiencia pequeña.",
+    },
+    networks: [
+      { network: "Instagram", status: "fuerte", er: 18.22 },
+      { network: "Facebook", status: "debil", er: 0.02 },
+      { network: "X", status: "ausente", er: 0 },
+    ],
+  },
+  {
+    brand: "Comarrico",
+    threatLevel: "baja",
+    mainStrength: "Mayor ER en Instagram entre marcas de pasta (4.55%) con posicionamiento de precio accesible",
+    strategy: "Autenticidad y precio. Contenido sin producción elaborada, recetas que cuestan $20.000 para toda la familia. Conecta con la realidad económica del consumidor.",
+    toCopy: {
+      action: "Incluir el precio real en el contenido de recetas. Mostrar que se puede cocinar bien con P.A.N. por poco dinero conecta con la mayoría del mercado.",
+      proof: "'Me gasté solo $20.000 preparando este arrocito': 1,697 likes con 5K seguidores. Autenticidad + precio = engagement real.",
+    },
+    toAvoid: {
+      action: "No copiar su escala limitada. Comarrico solo está en Instagram y Facebook con audiencias pequeñas.",
+      proof: "5K seguidores IG + 1.7K FB. Alto engagement pero sin capacidad de escalar el alcance. No es un modelo a seguir en distribución.",
+    },
+    networks: [
+      { network: "Instagram", status: "fuerte", er: 4.55 },
+      { network: "Facebook", status: "presente", er: 1.28 },
+    ],
+  },
+  {
+    brand: "La Muñeca",
+    threatLevel: "baja",
+    mainStrength: "Herencia de marca (78 años) y conexión regional con Cali",
+    strategy: "Nostalgia y tradición. Usa su historia como diferenciador. Experimenta con audiencia gamer sin éxito claro.",
+    toCopy: {
+      action: "El storytelling de herencia funciona. Si P.A.N. tiene historia, usarla. Los posts de '78 años' generan conexión emocional.",
+      proof: "Post de aniversario 78 años: 630 likes con 45K seguidores. La nostalgia genera engagement superior al contenido genérico.",
+    },
+    toAvoid: {
+      action: "No mezclar gaming/esports con marcas de alimentos sin conexión clara. La audiencia gamer no convierte en engagement de comida.",
+      proof: "Contenido de gamers: bajo engagement. Desconexión entre audiencia de gaming y consumidores de pasta — no hay puente temático.",
+    },
+    networks: [
+      { network: "Instagram", status: "presente", er: 0.30 },
+      { network: "Facebook", status: "debil", er: 0.02 },
+      { network: "TikTok", status: "presente", er: 1.43 },
+    ],
+  },
+];

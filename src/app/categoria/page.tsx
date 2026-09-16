@@ -15,63 +15,189 @@ import {
   Cell,
 } from "recharts";
 import { formatNumber, getTotalInteractions } from "@/lib/mock-data";
-import type { MentionData, Network } from "@/lib/mock-data";
+import type { Network, NetworkIntelligence, CompetitorStrategy } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
-
-const sentimentLabels: Record<string, string> = {
-  positive: "Positivo",
-  neutral: "Neutral",
-  negative: "Negativo",
-};
 
 const pieColors = ["#1DA1F2", "#000000", "#1877F2", "#FF4500", "#E4405F", "#0A66C2", "#34A853"];
 
-function MentionCard({ mention, brandColor }: { mention: MentionData; brandColor?: string }) {
-  const sentColor =
-    mention.sentiment === "positive"
-      ? "text-emerald-600 bg-emerald-50"
-      : mention.sentiment === "negative"
-        ? "text-red-600 bg-red-50"
-        : "text-amber-600 bg-amber-50";
+const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
+  dominante: { label: "Dominante", bg: "bg-emerald-100", text: "text-emerald-800" },
+  competitivo: { label: "Competitivo", bg: "bg-blue-100", text: "text-blue-800" },
+  rezagado: { label: "Rezagado", bg: "bg-amber-100", text: "text-amber-800" },
+  ausente: { label: "Ausente", bg: "bg-red-100", text: "text-red-800" },
+};
+
+const threatConfig: Record<string, { label: string; color: string; bg: string }> = {
+  critica: { label: "Amenaza crítica", color: "text-red-700", bg: "bg-red-50" },
+  alta: { label: "Amenaza alta", color: "text-orange-700", bg: "bg-orange-50" },
+  media: { label: "Amenaza media", color: "text-amber-700", bg: "bg-amber-50" },
+  baja: { label: "Amenaza baja", color: "text-gray-600", bg: "bg-gray-50" },
+};
+
+const networkStatusDot: Record<string, string> = {
+  domina: "bg-emerald-500",
+  fuerte: "bg-blue-500",
+  presente: "bg-amber-400",
+  debil: "bg-orange-400",
+  ausente: "bg-gray-300",
+};
+
+function NetworkIntelligenceCard({ intel }: { intel: NetworkIntelligence }) {
+  const status = statusConfig[intel.panStatus];
+  const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          <span
-            className="text-xs font-bold"
-            style={{ color: brandColor || "#0d9488" }}
-          >
-            {mention.brand}
-          </span>
-          <span className="text-[10px] text-gray-300">|</span>
-          <span className="text-xs font-semibold text-gray-500">
-            {mention.network}
-          </span>
-          <span className="text-xs text-gray-400">{mention.author}</span>
+    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="p-5">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: intel.color + "15" }}>
+              <span className="text-sm font-bold" style={{ color: intel.color }}>{intel.label[0]}</span>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900">{intel.label}</h4>
+              <p className="text-[11px] text-gray-400">{intel.totalBrands} marcas activas &middot; ER promedio {intel.categoryAvgER}%</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${status.bg} ${status.text}`}>
+              P.A.N.: {status.label}
+            </span>
+            <p className="text-[10px] text-gray-400 mt-1">ER {intel.panER}% &middot; {formatNumber(intel.panFollowers)} seg.</p>
+          </div>
         </div>
-        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${sentColor}`}>
-          {sentimentLabels[mention.sentiment]}
-        </span>
+
+        <div className="bg-gray-50 rounded-lg p-3 mb-3">
+          <div className="flex items-start gap-2">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider shrink-0 mt-0.5">L&iacute;der:</span>
+            <div>
+              <span className="text-xs font-semibold text-gray-900">{intel.leader.brand}</span>
+              <span className="text-xs text-gray-500"> &middot; ER {intel.leader.er}% &middot; {formatNumber(intel.leader.followers)} seg.</span>
+              <p className="text-xs text-gray-600 mt-1 leading-relaxed">{intel.leader.secret}</p>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-sm text-gray-800 leading-relaxed font-medium mb-3">{intel.keyInsight}</p>
+
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-xs font-semibold text-teal-700 hover:text-teal-900 transition-colors"
+        >
+          {expanded ? "Ocultar detalle ▲" : "Ver formatos de contenido y recomendación ▼"}
+        </button>
+
+        {expanded && (
+          <div className="mt-4 space-y-4">
+            <div>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Qu&eacute; funciona en {intel.label}</p>
+              <div className="space-y-2">
+                {intel.contentFormats.map((f, i) => (
+                  <div key={i} className="flex gap-3">
+                    <div className="w-full">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-semibold text-gray-800">{f.format}</span>
+                        <span className="text-xs text-gray-500">{f.share}% del contenido</span>
+                      </div>
+                      <div className="flex h-2 rounded-full overflow-hidden bg-gray-100 mb-1">
+                        <div className="rounded-full" style={{ width: f.share + "%", background: intel.color, opacity: 0.6 }} />
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-gray-500">Avg. engagement: {formatNumber(f.avgEngagement)}</span>
+                        <span className="text-[10px] text-gray-400">L&iacute;der: {f.topBrand}</span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 mt-0.5 italic">&quot;{f.proof}&quot;</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-teal-50 rounded-lg p-3 border border-teal-100">
+              <p className="text-[10px] font-bold text-teal-700 uppercase tracking-wider mb-1">Recomendaci&oacute;n para P.A.N.</p>
+              <p className="text-xs text-teal-900 leading-relaxed">{intel.recommendation}</p>
+            </div>
+
+            <div className="bg-amber-50 rounded-lg p-3 border border-amber-100">
+              <p className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-1">Brecha actual</p>
+              <p className="text-xs text-amber-900 leading-relaxed">{intel.panGap}</p>
+            </div>
+          </div>
+        )}
       </div>
-      <p className="text-sm text-gray-700 leading-relaxed">{mention.text}</p>
-      <div className="flex items-center justify-between mt-3">
-        <span className="text-xs text-gray-400">{mention.date}</span>
-        <span className="text-xs text-gray-400">
-          {mention.likes > 0 && `${formatNumber(mention.likes)} me gusta`}
-        </span>
+    </div>
+  );
+}
+
+function CompetitorCard({ competitor, brandColor }: { competitor: CompetitorStrategy; brandColor?: string }) {
+  const threat = threatConfig[competitor.threatLevel];
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className={`rounded-xl border overflow-hidden ${competitor.threatLevel === "critica" ? "border-red-200" : "border-gray-200"}`}>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold" style={{ color: brandColor || "#334155" }}>{competitor.brand}</span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${threat.bg} ${threat.color}`}>{threat.label}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            {competitor.networks.map((n) => (
+              <div key={n.network} className="flex items-center gap-1" title={`${n.network}: ${n.status} (ER ${n.er}%)`}>
+                <span className={`w-2 h-2 rounded-full ${networkStatusDot[n.status]}`} />
+                <span className="text-[9px] text-gray-400">{n.network[0]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-500 mb-1">{competitor.mainStrength}</p>
+
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-[11px] font-semibold text-teal-700 hover:text-teal-900 transition-colors mt-1"
+        >
+          {expanded ? "Ocultar ▲" : "Ver estrategia, qué copiar y qué evitar ▼"}
+        </button>
+
+        {expanded && (
+          <div className="mt-3 space-y-3">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Estrategia</p>
+              <p className="text-xs text-gray-700 leading-relaxed">{competitor.strategy}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1">Copiar</p>
+                <p className="text-xs text-emerald-900 leading-relaxed mb-2">{competitor.toCopy.action}</p>
+                <p className="text-[10px] text-emerald-700 italic">{competitor.toCopy.proof}</p>
+              </div>
+              <div className="bg-red-50 rounded-lg p-3 border border-red-100">
+                <p className="text-[10px] font-bold text-red-700 uppercase tracking-wider mb-1">Evitar</p>
+                <p className="text-xs text-red-900 leading-relaxed mb-2">{competitor.toAvoid.action}</p>
+                <p className="text-[10px] text-red-700 italic">{competitor.toAvoid.proof}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 flex-wrap">
+              {competitor.networks.map((n) => (
+                <div key={n.network} className="flex items-center gap-1.5 bg-white border border-gray-100 rounded-lg px-2.5 py-1.5">
+                  <span className={`w-2 h-2 rounded-full ${networkStatusDot[n.status]}`} />
+                  <span className="text-[11px] font-medium text-gray-700">{n.network}</span>
+                  <span className="text-[10px] text-gray-400">ER {n.er}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 export default function EscuchaActivaPage() {
-  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands, competitors, brandColors, categoryTrends } = useClientData();
-
-  const [brandFilter, setBrandFilter] = useState<string>("all");
-  const [sentimentFilter, setSentimentFilter] = useState<string>("all");
-
-  const allBrandNames = sovData.map((s) => s.brand);
+  const { sovData, sentimentByBrand, mentionsByNetwork, ownBrands, competitors, brandColors, categoryTrends, networkIntelligence, competitorStrategies } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const sovChartData = sovData.map((s) => ({
@@ -122,12 +248,6 @@ export default function EscuchaActivaPage() {
     }
     return result;
   }, [allBrands, availableNetworks, ownBrands, brandColors]);
-
-  const filteredMentions = mentions.filter((m) => {
-    if (brandFilter !== "all" && m.brand !== brandFilter) return false;
-    if (sentimentFilter !== "all" && m.sentiment !== sentimentFilter) return false;
-    return true;
-  });
 
   return (
     <ProtectedLayout>
@@ -382,47 +502,60 @@ export default function EscuchaActivaPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900">
-              Menciones destacadas
-            </h3>
-            <p className="text-xs text-gray-400">
-              Conversaciones relevantes encontradas por keywords
-            </p>
+      {networkIntelligence.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Inteligencia de contenido por red
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Qu&eacute; funciona en cada plataforma, qui&eacute;n lidera y qu&eacute; deber&iacute;a hacer P.A.N. &mdash; basado en datos reales de engagement
+          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {networkIntelligence.map((intel) => (
+              <NetworkIntelligenceCard key={intel.network} intel={intel} />
+            ))}
           </div>
-          <div className="flex gap-2">
-            <select
-              value={brandFilter}
-              onChange={(e) => setBrandFilter(e.target.value)}
-              className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 bg-white"
-            >
-              <option value="all">Todas las marcas</option>
-              {allBrandNames.map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
-            <select
-              value={sentimentFilter}
-              onChange={(e) => setSentimentFilter(e.target.value)}
-              className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 text-gray-700 bg-white"
-            >
-              <option value="all">Todo sentimiento</option>
-              <option value="positive">Positivo</option>
-              <option value="neutral">Neutral</option>
-              <option value="negative">Negativo</option>
-            </select>
+          <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+            An&aacute;lisis basado en engagement rates, likes promedio y formatos de contenido de las 10 marcas monitoreadas. Los porcentajes de formato son estimaciones derivadas del an&aacute;lisis de contenido publicado.
+          </p>
+        </div>
+      )}
+
+      {competitorStrategies.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Mapa estrat&eacute;gico competitivo
+          </h3>
+          <p className="text-xs text-gray-400 mb-2">
+            Qu&eacute; copiar y qu&eacute; evitar de cada competidor &mdash; inteligencia accionable para tu estrategia de contenido
+          </p>
+          <div className="flex gap-3 mb-4 flex-wrap">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Domina
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-blue-500" /> Fuerte
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-amber-400" /> Presente
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-orange-400" /> D&eacute;bil
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-gray-300" /> Ausente
+            </div>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {competitorStrategies.map((c) => (
+              <CompetitorCard key={c.brand} competitor={c} brandColor={brandColors[c.brand]} />
+            ))}
+          </div>
+          <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+            Nivel de amenaza calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca.
+          </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filteredMentions.map((m) => (
-            <MentionCard key={m.id} mention={m} brandColor={brandColors[m.brand]} />
-          ))}
-        </div>
-      </div>
+      )}
     </ProtectedLayout>
   );
 }

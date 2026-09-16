@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, CategoryTrend, BrandTopicMap, MentionVolume } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, CategoryTrend, BrandTopicMap, MentionVolume, NetworkIntelligence, CompetitorStrategy } from "./mock-data";
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
@@ -25,6 +25,8 @@ export interface ClientDataset {
   categoryTrends: CategoryTrend[];
   brandTopicMaps: BrandTopicMap[];
   mentionVolumeData: MentionVolume[];
+  networkIntelligence: NetworkIntelligence[];
+  competitorStrategies: CompetitorStrategy[];
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -62,6 +64,8 @@ const polarDataset: ClientDataset = {
   categoryTrends: polarData.categoryTrends,
   brandTopicMaps: polarData.brandTopicMaps,
   mentionVolumeData: polarData.mentionVolumeData,
+  networkIntelligence: polarData.networkIntelligence,
+  competitorStrategies: polarData.competitorStrategies,
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -86,6 +90,8 @@ const havolineDataset: ClientDataset = {
   categoryTrends: havolineData.categoryTrends,
   brandTopicMaps: havolineData.brandTopicMaps,
   mentionVolumeData: havolineData.mentionVolumeData,
+  networkIntelligence: havolineData.networkIntelligence,
+  competitorStrategies: havolineData.competitorStrategies,
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",

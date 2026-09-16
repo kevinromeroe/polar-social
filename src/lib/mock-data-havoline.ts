@@ -1,4 +1,4 @@
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, TopComment, CategoryTrend, BrandTopicMap, MentionVolume } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, TopComment, CategoryTrend, BrandTopicMap, MentionVolume, NetworkIntelligence, CompetitorStrategy } from "./mock-data";
 
 export const brands: BrandData[] = [
   {
@@ -199,3 +199,6 @@ export const mentionVolumeData: MentionVolume[] = [
   { date: "Jul", Havoline: 5300 },
   { date: "Ago", Havoline: 210 },
 ];
+
+export const networkIntelligence: NetworkIntelligence[] = [];
+export const competitorStrategies: CompetitorStrategy[] = [];
