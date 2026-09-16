@@ -67,19 +67,23 @@ async function runActor(actorId, input, label) {
 }
 
 async function main() {
-  console.log(`\n🚀 Scraping X/Twitter Polar — ${new Date().toISOString().split("T")[0]}`);
+  console.log(`\n🚀 Scraping X/Twitter tweets — ${new Date().toISOString().split("T")[0]}`);
 
-  // ── Profiles + recent tweets per account ──
-  console.log("═══ Perfiles y tweets recientes ═══");
   const allTweets = [];
 
   for (const account of X_ACCOUNTS) {
     try {
-      const tweets = await runActor("apidojo~twitter-user-scraper", {
-        startUrls: [`https://x.com/${account.handle}`],
-        maxTweets: 20,
-        includeUserInfo: true,
+      const tweets = await runActor("apidojo~twitter-scraper-lite", {
+        handles: [account.handle],
+        tweetsDesired: 15,
+        proxyConfig: { useApifyProxy: true },
       }, `${account.brand} (@${account.handle})`);
+
+      // Show first result fields for debugging
+      if (tweets.length > 0) {
+        const keys = Object.keys(tweets[0]).filter(k => !k.startsWith('_')).slice(0, 10);
+        console.log(`   Fields: ${keys.join(', ')}`);
+      }
 
       const enriched = tweets.map(t => ({
         ...t,
