@@ -16,8 +16,15 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
+import { getTotalFollowers, getAvgEngagement, formatNumber, executiveInsights, sentimentByBrand } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
+
+const insightCategoryStyles = {
+  oportunidad: { border: "border-l-emerald-500", bg: "bg-emerald-50", label: "Oportunidad", color: "text-emerald-700" },
+  riesgo: { border: "border-l-red-500", bg: "bg-red-50", label: "Riesgo", color: "text-red-700" },
+  tendencia: { border: "border-l-blue-500", bg: "bg-blue-50", label: "Tendencia", color: "text-blue-700" },
+  accion: { border: "border-l-amber-500", bg: "bg-amber-50", label: "Acción requerida", color: "text-amber-700" },
+};
 
 const severityStyles = {
   info: "border-l-blue-400 bg-blue-50",
@@ -40,7 +47,10 @@ export default function DashboardPage() {
   const totalMentions = sovData
     .filter((s) => ownBrands.some((b) => b.brand === s.brand))
     .reduce((s, d) => s + d.mentions, 0);
-  const ownSentimentAvg = 70;
+  const ownSentimentData = sentimentByBrand.filter((s) => ownBrands.some((b) => b.brand === s.brand));
+  const ownSentimentAvg = ownSentimentData.length > 0
+    ? Math.round(ownSentimentData.reduce((sum, s) => sum + s.positive - s.negative, 0) / ownSentimentData.length)
+    : 70;
 
   const sovChartData = sovData.slice(0, 8).map((s) => ({
     ...s,
@@ -190,6 +200,47 @@ export default function DashboardPage() {
             Snapshot sep 2026 — se actualizará con scraping quincenal para mostrar tendencia de crecimiento.
           </p>
         </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-8">
+        <h3 className="text-sm font-semibold text-gray-900 mb-1">
+          Insights ejecutivos
+        </h3>
+        <p className="text-xs text-gray-400 mb-4">
+          Hallazgos accionables basados en el análisis de 498 publicaciones reales
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {executiveInsights.map((insight, i) => {
+            const style = insightCategoryStyles[insight.category];
+            return (
+              <div
+                key={i}
+                className={`border-l-4 ${style.border} ${style.bg} rounded-r-lg p-4`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className={`text-[10px] font-bold uppercase ${style.color}`}>
+                    {style.label}
+                  </span>
+                </div>
+                <p className="text-sm font-medium text-gray-900">{insight.title}</p>
+                <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
+                {insight.metric && (
+                  <p className="text-xs font-semibold text-gray-800 mt-2">{insight.metric}</p>
+                )}
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  {insight.brands.map((b) => (
+                    <span key={b} className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/70 text-gray-600">
+                      {b}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
+          Basado en análisis de sentimiento y engagement de 216 posts de Instagram, 200 de Facebook y 82 de TikTok. Período: últimos 3 meses.
+        </p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-200 p-5">

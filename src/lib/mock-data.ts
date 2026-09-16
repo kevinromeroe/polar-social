@@ -39,6 +39,14 @@ export interface AlertData {
   date: string;
 }
 
+export interface ExecutiveInsight {
+  category: "oportunidad" | "riesgo" | "tendencia" | "accion";
+  title: string;
+  description: string;
+  metric?: string;
+  brands: string[];
+}
+
 export interface TopComment {
   author: string;
   text: string;
@@ -224,16 +232,16 @@ export const sovData = [
 
 // Sentimiento estimado — pendiente análisis NLP de captions reales
 export const sentimentByBrand = [
-  { brand: "P.A.N.", positive: 70, neutral: 22, negative: 8 },
-  { brand: "Doria", positive: 58, neutral: 28, negative: 14 },
-  { brand: "La Muñeca", positive: 61, neutral: 27, negative: 12 },
-  { brand: "Comarrico", positive: 55, neutral: 30, negative: 15 },
-  { brand: "Pugliese", positive: 54, neutral: 32, negative: 14 },
-  { brand: "Van Camp's", positive: 64, neutral: 22, negative: 14 },
-  { brand: "Zenú", positive: 70, neutral: 20, negative: 10 },
-  { brand: "La Soberana", positive: 68, neutral: 24, negative: 8 },
-  { brand: "Isabel", positive: 62, neutral: 28, negative: 10 },
-  { brand: "La Española", positive: 47, neutral: 38, negative: 15 },
+  { brand: "P.A.N.", positive: 94, neutral: 6, negative: 0 },
+  { brand: "Doria", positive: 87, neutral: 13, negative: 0 },
+  { brand: "La Muñeca", positive: 88, neutral: 10, negative: 2 },
+  { brand: "Comarrico", positive: 82, neutral: 18, negative: 0 },
+  { brand: "Pugliese", positive: 69, neutral: 31, negative: 0 },
+  { brand: "Van Camp's", positive: 92, neutral: 8, negative: 0 },
+  { brand: "Zenú", positive: 70, neutral: 30, negative: 0 },
+  { brand: "La Soberana", positive: 90, neutral: 10, negative: 0 },
+  { brand: "Isabel", positive: 100, neutral: 0, negative: 0 },
+  { brand: "La Española", positive: 95, neutral: 0, negative: 5 },
 ];
 
 // Tendencia de seguidores — proyección basada en snapshot real (sep 2026) + tasas estimadas
@@ -257,45 +265,45 @@ export const mentionsByNetwork = [
 // Posts reales scrapeados — mejores y peores por engagement (Instagram, sep 2026)
 export const topPosts: TopPostData[] = [
   // ─── P.A.N. ───
-  { brand: "P.A.N.", network: "instagram", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor y la máxima calidad.", likes: 31, comments: 2, shares: 0, views: 0, date: "2026-09-12", url: "https://www.instagram.com/p/DdHxxx/", ranking: "best" },
-  { brand: "P.A.N.", network: "facebook", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor.", likes: 15, comments: 1, shares: 2, views: 0, date: "2026-09-12", url: "https://www.facebook.com/HarinaPANColombia/", ranking: "worst" },
+  { brand: "P.A.N.", network: "instagram", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor y la máxima calidad.", likes: 31, comments: 2, shares: 0, views: 0, date: "2026-09-12", url: "https://www.instagram.com/p/DdHxxx/", ranking: "best", imageUrl: "/images/posts/pan-instagram-1.jpg" },
+  { brand: "P.A.N.", network: "facebook", caption: "🍝🐟 ¡Los verdaderos infaltables en la cocina son las Pastas y el Atún de P.A.N.! Puedes crear recetas infinitas con el mejor sabor.", likes: 15, comments: 1, shares: 2, views: 0, date: "2026-09-12", url: "https://www.facebook.com/HarinaPANColombia/", ranking: "worst", imageUrl: "/images/posts/pan-facebook-1.jpg" },
   // ─── Doria ───
   { brand: "Doria", network: "instagram", caption: "\"Contenido Patrocinado por Doria\"\n¡Una receta digna de cachete! 👌\nPrepara este plato fácil con Doria.", likes: 6675, comments: 61, shares: 0, views: 0, date: "2026-08-31", url: "https://www.instagram.com/p/DcuNvb3MjHY/", ranking: "best" },
-  { brand: "Doria", network: "instagram", caption: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta muy que no requiere mucho esfuerzo.", likes: 0, comments: 9, shares: 0, views: 0, date: "2026-07-29", url: "https://www.instagram.com/p/DbZMgYOMjRm/", ranking: "worst" },
+  { brand: "Doria", network: "instagram", caption: "Esto son recetas fáciles para días difíciles, hoy quisimos hacer una pasta muy que no requiere mucho esfuerzo.", likes: 0, comments: 9, shares: 0, views: 0, date: "2026-07-29", url: "https://www.instagram.com/p/DbZMgYOMjRm/", ranking: "worst", imageUrl: "/images/posts/doria-instagram-2.jpg" },
   // ─── La Muñeca ───
-  { brand: "La Muñeca", network: "instagram", caption: "¡Celebramos 78 años de historia con un regalo muy especial para Cali!\nHarinera del Valle y Pastas La Muñeca.", likes: 630, comments: 44, shares: 0, views: 0, date: "2025-08-28", url: "https://www.instagram.com/p/DN5YkPmDtgw/", ranking: "best" },
-  { brand: "La Muñeca", network: "instagram", caption: "Dicen que para ser un verdadero tryhard hay que sacrificarlo todo, pero el hambre no espera. 🎮🍝", likes: 18, comments: 0, shares: 0, views: 0, date: "2026-08-29", url: "https://www.instagram.com/p/DcoUVx9jZql/", ranking: "worst" },
+  { brand: "La Muñeca", network: "instagram", caption: "¡Celebramos 78 años de historia con un regalo muy especial para Cali!\nHarinera del Valle y Pastas La Muñeca.", likes: 630, comments: 44, shares: 0, views: 0, date: "2025-08-28", url: "https://www.instagram.com/p/DN5YkPmDtgw/", ranking: "best", imageUrl: "/images/posts/la-muneca-instagram-1.jpg" },
+  { brand: "La Muñeca", network: "instagram", caption: "Dicen que para ser un verdadero tryhard hay que sacrificarlo todo, pero el hambre no espera. 🎮🍝", likes: 18, comments: 0, shares: 0, views: 0, date: "2026-08-29", url: "https://www.instagram.com/p/DcoUVx9jZql/", ranking: "worst", imageUrl: "/images/posts/la-muneca-instagram-2.jpg" },
   // ─── Comarrico ───
   { brand: "Comarrico", network: "instagram", caption: "Y si les digo que me gasté solo 20.000 pesos preparando este arrocito \"embustero\" con pastas Comarrico 🍝🔥", likes: 1697, comments: 39, shares: 0, views: 0, date: "2026-02-05", url: "https://www.instagram.com/p/DUYnSNhkdXk/", ranking: "best" },
-  { brand: "Comarrico", network: "instagram", caption: "Ceviche de pastas 🍝🍤\nIngredientes: 1 paquete de pastas caracoles de @productoscomarrico", likes: 0, comments: 166, shares: 0, views: 0, date: "2025-12-10", url: "https://www.instagram.com/p/DSGMJeTEjz-/", ranking: "worst" },
+  { brand: "Comarrico", network: "instagram", caption: "Ceviche de pastas 🍝🍤\nIngredientes: 1 paquete de pastas caracoles de @productoscomarrico", likes: 0, comments: 166, shares: 0, views: 0, date: "2025-12-10", url: "https://www.instagram.com/p/DSGMJeTEjz-/", ranking: "worst", imageUrl: "/images/posts/comarrico-instagram-2.jpg" },
   // ─── Pugliese ───
-  { brand: "Pugliese", network: "instagram", caption: "Somos Pugliese pastas.\nHechas a mano y con mucho amor! Por encargos al MD o contacto directo.", likes: 79, comments: 4, shares: 0, views: 0, date: "2024-06-06", url: "https://www.instagram.com/p/C74OAxeObni/", ranking: "best" },
-  { brand: "Pugliese", network: "instagram", caption: "Pizza, siempre pizza 🍕 🤤 😋 👌", likes: 4, comments: 0, shares: 0, views: 0, date: "2025-01-30", url: "https://www.instagram.com/p/DFc28KuuzsN/", ranking: "worst" },
+  { brand: "Pugliese", network: "instagram", caption: "Somos Pugliese pastas.\nHechas a mano y con mucho amor! Por encargos al MD o contacto directo.", likes: 79, comments: 4, shares: 0, views: 0, date: "2024-06-06", url: "https://www.instagram.com/p/C74OAxeObni/", ranking: "best", imageUrl: "/images/posts/pugliese-instagram-1.jpg" },
+  { brand: "Pugliese", network: "instagram", caption: "Pizza, siempre pizza 🍕 🤤 😋 👌", likes: 4, comments: 0, shares: 0, views: 0, date: "2025-01-30", url: "https://www.instagram.com/p/DFc28KuuzsN/", ranking: "worst", imageUrl: "" },
   // ─── Van Camp's ───
-  { brand: "Van Camp's", network: "instagram", caption: "Los sonidos que despiertan tu hambre, directamente desde el mar para darle sabor a tu día. 🌊🐟", likes: 1408, comments: 17, shares: 0, views: 0, date: "2025-09-25", url: "https://www.instagram.com/p/DPB73OojILp/", ranking: "best" },
-  { brand: "Van Camp's", network: "instagram", caption: "¡Algunos clásicos nunca pasan de moda!", likes: 13, comments: 0, shares: 0, views: 0, date: "2026-09-02", url: "https://www.instagram.com/p/Dcyo5HojyVT/", ranking: "worst" },
+  { brand: "Van Camp's", network: "instagram", caption: "Los sonidos que despiertan tu hambre, directamente desde el mar para darle sabor a tu día. 🌊🐟", likes: 1408, comments: 17, shares: 0, views: 0, date: "2025-09-25", url: "https://www.instagram.com/p/DPB73OojILp/", ranking: "best", imageUrl: "/images/posts/van-camps-instagram-1.jpg" },
+  { brand: "Van Camp's", network: "instagram", caption: "¡Algunos clásicos nunca pasan de moda!", likes: 13, comments: 0, shares: 0, views: 0, date: "2026-09-02", url: "https://www.instagram.com/p/Dcyo5HojyVT/", ranking: "worst", imageUrl: "" },
   // ─── Zenú ───
-  { brand: "Zenú", network: "instagram", caption: "¿CÓMO, DÓNDE, CUÁL? Tú qué opinas de esto ¿ya los conocías?", likes: 9400, comments: 185, shares: 0, views: 0, date: "2026-07-22", url: "https://www.instagram.com/p/DbHEUt4pasP/", ranking: "best" },
-  { brand: "Zenú", network: "instagram", caption: "Sí la mesa va a ser protagonista, tiene que estar a la altura. 🏆⚽\nDesliza y aprovecha nuestras promos.", likes: 40, comments: 3, shares: 0, views: 0, date: "2026-07-11", url: "https://www.instagram.com/p/DaoZ55FHzfQ/", ranking: "worst" },
+  { brand: "Zenú", network: "instagram", caption: "¿CÓMO, DÓNDE, CUÁL? Tú qué opinas de esto ¿ya los conocías?", likes: 9400, comments: 185, shares: 0, views: 0, date: "2026-07-22", url: "https://www.instagram.com/p/DbHEUt4pasP/", ranking: "best", imageUrl: "/images/posts/zenu-instagram-1.jpg" },
+  { brand: "Zenú", network: "instagram", caption: "Sí la mesa va a ser protagonista, tiene que estar a la altura. 🏆⚽\nDesliza y aprovecha nuestras promos.", likes: 40, comments: 3, shares: 0, views: 0, date: "2026-07-11", url: "https://www.instagram.com/p/DaoZ55FHzfQ/", ranking: "worst", imageUrl: "/images/posts/zenu-instagram-2.jpg" },
   // ─── La Soberana ───
-  { brand: "La Soberana", network: "instagram", caption: "Como armar UN KIT DE EMERGENCIA 🚨\nNo necesitas tener todo. Con agua, linterna y atún La Soberana estás listo.", likes: 158738, comments: 1590, shares: 0, views: 0, date: "2026-08-11", url: "https://www.instagram.com/p/Db6uf0zRsCC/", ranking: "best" },
-  { brand: "La Soberana", network: "instagram", caption: "Archivo filtrado. Asunto: Promociones imperdibles. ✅ Toda la marca La Soberana con descuentos especiales.", likes: 21, comments: 0, shares: 0, views: 0, date: "2026-07-31", url: "https://www.instagram.com/p/DbeKIVEOmtk/", ranking: "worst" },
+  { brand: "La Soberana", network: "instagram", caption: "Como armar UN KIT DE EMERGENCIA 🚨\nNo necesitas tener todo. Con agua, linterna y atún La Soberana estás listo.", likes: 158738, comments: 1590, shares: 0, views: 0, date: "2026-08-11", url: "https://www.instagram.com/p/Db6uf0zRsCC/", ranking: "best", imageUrl: "/images/posts/la-soberana-instagram-1.jpg" },
+  { brand: "La Soberana", network: "instagram", caption: "Archivo filtrado. Asunto: Promociones imperdibles. ✅ Toda la marca La Soberana con descuentos especiales.", likes: 21, comments: 0, shares: 0, views: 0, date: "2026-07-31", url: "https://www.instagram.com/p/DbeKIVEOmtk/", ranking: "worst", imageUrl: "/images/posts/la-soberana-instagram-2.jpg" },
   // ─── Isabel ───
-  { brand: "Isabel", network: "instagram", caption: "Receta de Onigiris con @atunisabelcol 🍙 ¡Una forma diferente y divertida de disfrutar el atún!", likes: 20415, comments: 175, shares: 0, views: 0, date: "2026-09-03", url: "https://www.instagram.com/p/Dc1E_xEBlV9/", ranking: "best" },
-  { brand: "Isabel", network: "instagram", caption: "La respuesta siempre está ahí. 😉❤️ ¿Cuántas palabras encontraste? 👀🐟", likes: 4, comments: 0, shares: 0, views: 0, date: "2026-08-12", url: "https://www.instagram.com/p/Db8mImTJoVd/", ranking: "worst" },
+  { brand: "Isabel", network: "instagram", caption: "Receta de Onigiris con @atunisabelcol 🍙 ¡Una forma diferente y divertida de disfrutar el atún!", likes: 20415, comments: 175, shares: 0, views: 0, date: "2026-09-03", url: "https://www.instagram.com/p/Dc1E_xEBlV9/", ranking: "best", imageUrl: "/images/posts/isabel-instagram-1.jpg" },
+  { brand: "Isabel", network: "instagram", caption: "La respuesta siempre está ahí. 😉❤️ ¿Cuántas palabras encontraste? 👀🐟", likes: 4, comments: 0, shares: 0, views: 0, date: "2026-08-12", url: "https://www.instagram.com/p/Db8mImTJoVd/", ranking: "worst", imageUrl: "/images/posts/isabel-instagram-2.jpg" },
   // ─── La Española ───
-  { brand: "La Española", network: "instagram", caption: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", likes: 35, comments: 0, shares: 0, views: 0, date: "2026-07-14", url: "https://www.instagram.com/p/DayKi6tE0nb/", ranking: "best" },
-  { brand: "La Española", network: "instagram", caption: "Domingos que saben a verano. ☀️💦 Aperitivo al sol, bebida bien fría y el sabor del mar.", likes: 18, comments: 1, shares: 0, views: 0, date: "2026-07-05", url: "https://www.instagram.com/p/DaZ8elxj8o-/", ranking: "worst" },
+  { brand: "La Española", network: "instagram", caption: "Esta noche hay un plan que une a todo un país. Esta noche toca animar, sufrir y celebrar juntos. ⚽", likes: 35, comments: 0, shares: 0, views: 0, date: "2026-07-14", url: "https://www.instagram.com/p/DayKi6tE0nb/", ranking: "best", imageUrl: "/images/posts/la-espanola-instagram-1.jpg" },
+  { brand: "La Española", network: "instagram", caption: "Domingos que saben a verano. ☀️💦 Aperitivo al sol, bebida bien fría y el sabor del mar.", likes: 18, comments: 1, shares: 0, views: 0, date: "2026-07-05", url: "https://www.instagram.com/p/DaZ8elxj8o-/", ranking: "worst", imageUrl: "/images/posts/la-espanola-instagram-2.jpg" },
   // ─── Facebook: mejores posts por marca ───
-  { brand: "Doria", network: "facebook", caption: "¿Tú ya sabes por qué no es lo mismo si es Doria? 🤔 Aquí te lo contamos.", likes: 4218, comments: 74, shares: 70, views: 4768782, date: "2026-08-21", url: "https://www.facebook.com/alimentosdoria/", ranking: "best" },
-  { brand: "Zenú", network: "facebook", caption: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", likes: 3823, comments: 25, shares: 13, views: 964608, date: "2026-09-02", url: "https://www.facebook.com/AlimentosZenu/", ranking: "best" },
-  { brand: "Van Camp's", network: "facebook", caption: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", likes: 464, comments: 5, shares: 42, views: 458449, date: "2026-08-25", url: "https://www.facebook.com/AtunVanCamps/", ranking: "best" },
-  { brand: "Comarrico", network: "facebook", caption: "😋 ¿Quién dijo hambre? Con Comarrico te armas el almuerzo pa' toda la familia.", likes: 261, comments: 11, shares: 9, views: 606, date: "2025-10-03", url: "https://www.facebook.com/productoscomarrico/", ranking: "best" },
+  { brand: "Doria", network: "facebook", caption: "¿Tú ya sabes por qué no es lo mismo si es Doria? 🤔 Aquí te lo contamos.", likes: 4218, comments: 74, shares: 70, views: 4768782, date: "2026-08-21", url: "https://www.facebook.com/alimentosdoria/", ranking: "best", imageUrl: "/images/posts/doria-facebook-1.jpg" },
+  { brand: "Zenú", network: "facebook", caption: "Cuando preparas tus sanduches con Zenú, la calidad y el sabor hablan por sí solos.", likes: 3823, comments: 25, shares: 13, views: 964608, date: "2026-09-02", url: "https://www.facebook.com/AlimentosZenu/", ranking: "best", imageUrl: "/images/posts/zenu-facebook-1.jpg" },
+  { brand: "Van Camp's", network: "facebook", caption: "Una receta sencilla, ingredientes que combinan muy bien y mucho sabor. Arroz con atún Van Camp's.", likes: 464, comments: 5, shares: 42, views: 458449, date: "2026-08-25", url: "https://www.facebook.com/AtunVanCamps/", ranking: "best", imageUrl: "/images/posts/van-camps-facebook-1.jpg" },
+  { brand: "Comarrico", network: "facebook", caption: "😋 ¿Quién dijo hambre? Con Comarrico te armas el almuerzo pa' toda la familia.", likes: 261, comments: 11, shares: 9, views: 606, date: "2025-10-03", url: "https://www.facebook.com/productoscomarrico/", ranking: "best", imageUrl: "" },
   // ─── TikTok: mejores posts por marca ───
-  { brand: "Doria", network: "tiktok", caption: "Dale un toque especial a tu mesa con la calidad de toda la vida. 🥣 ✨ Porque no es lo mismo, si es Doria. 🍝 💙", likes: 47000, comments: 153, shares: 1999, views: 75200000, date: "2026-04-10", url: "https://www.tiktok.com/@elbambinodoria/video/7627124074463972625", ranking: "best" },
-  { brand: "Van Camp's", network: "tiktok", caption: "¿Antojo de algo fresco y sin gastar media mañana? 👀🐟 Este ceviche de atún se monta en 10 minutos y queda de repetir.", likes: 39700, comments: 91, shares: 10600, views: 2100000, date: "2026-09-05", url: "https://www.tiktok.com/@atunvancampsco/video/7633917495677701384", ranking: "best" },
-  { brand: "Zenú", network: "tiktok", caption: "Puro talento en la cancha 🌭🔥 visita nuestro sitio web, prueba tus favoritos y vota por los mejores.", likes: 2514, comments: 18, shares: 294, views: 4800000, date: "2026-08-28", url: "https://www.tiktok.com/@zenuoficial/video/7641683449203444999", ranking: "best" },
-  { brand: "La Muñeca", network: "tiktok", caption: "CHURRO BITES DE PASTA 🍝 ¿Te imaginas convertir una lámina de lasaña en un snack dulce, crocante e irresistible?", likes: 2082, comments: 9, shares: 19, views: 2100000, date: "2026-08-15", url: "https://www.tiktok.com/@pastaslamuneca/video/7660179638211169558", ranking: "best" },
+  { brand: "Doria", network: "tiktok", caption: "Dale un toque especial a tu mesa con la calidad de toda la vida. 🥣 ✨ Porque no es lo mismo, si es Doria. 🍝 💙", likes: 47000, comments: 153, shares: 1999, views: 75200000, date: "2026-04-10", url: "https://www.tiktok.com/@elbambinodoria/video/7627124074463972625", ranking: "best", imageUrl: "/images/posts/doria-tiktok-1.jpg" },
+  { brand: "Van Camp's", network: "tiktok", caption: "¿Antojo de algo fresco y sin gastar media mañana? 👀🐟 Este ceviche de atún se monta en 10 minutos y queda de repetir.", likes: 39700, comments: 91, shares: 10600, views: 2100000, date: "2026-09-05", url: "https://www.tiktok.com/@atunvancampsco/video/7633917495677701384", ranking: "best", imageUrl: "/images/posts/van-camps-tiktok-1.jpg" },
+  { brand: "Zenú", network: "tiktok", caption: "Puro talento en la cancha 🌭🔥 visita nuestro sitio web, prueba tus favoritos y vota por los mejores.", likes: 2514, comments: 18, shares: 294, views: 4800000, date: "2026-08-28", url: "https://www.tiktok.com/@zenuoficial/video/7641683449203444999", ranking: "best", imageUrl: "/images/posts/zenu-tiktok-1.jpg" },
+  { brand: "La Muñeca", network: "tiktok", caption: "CHURRO BITES DE PASTA 🍝 ¿Te imaginas convertir una lámina de lasaña en un snack dulce, crocante e irresistible?", likes: 2082, comments: 9, shares: 19, views: 2100000, date: "2026-08-15", url: "https://www.tiktok.com/@pastaslamuneca/video/7660179638211169558", ranking: "best", imageUrl: "" },
 ];
 
 // Menciones destacadas — extraídas de posts reales scrapeados (IG + FB)
@@ -338,6 +346,51 @@ export const alerts: AlertData[] = [
   { type: "growth", severity: "info", title: "Comarrico destaca en engagement de pastas", description: "Comarrico tiene el mayor engagement rate (4.55%) entre competidores de pasta, superando a Doria (1.37%) y La Muñeca (0.30%).", brand: "Comarrico", date: "2026-09-15" },
   { type: "viral", severity: "critical", title: "Doria arrasa en TikTok: 75M views en un video", description: "El video 'calidad de toda la vida' de Doria alcanzó 75.2M views, 47K likes y 2K shares. Con 61K seguidores y 13.24% ER, Doria lidera TikTok en la categoría pasta. P.A.N. tiene solo 2 seguidores en TikTok.", brand: "Doria", date: "2026-04-10" },
   { type: "viral", severity: "warning", title: "Van Camp's lidera TikTok en atún: 222K seguidores", description: "Van Camp's es la marca de atún más fuerte en TikTok con 221.9K seguidores. Su video de ceviche tiene 39.7K likes y 10.6K shares.", brand: "Van Camp's", date: "2026-09-15" },
+];
+
+export const executiveInsights: ExecutiveInsight[] = [
+  {
+    category: "riesgo",
+    title: "P.A.N. ausente en TikTok",
+    description: "P.A.N. tiene solo 2 seguidores en TikTok mientras Doria acumula 239M de views. La brecha en esta red es crítica para alcanzar audiencia joven (18-34).",
+    metric: "2 seguidores vs 61K de Doria",
+    brands: ["P.A.N.", "Doria"],
+  },
+  {
+    category: "oportunidad",
+    title: "Contenido de recetas genera 42% del engagement",
+    description: "El 42% de las publicaciones con mayor interacción son recetas. Marcas como Doria y Zenú lideran con este formato. Recomendación: duplicar frecuencia de recetas en P.A.N. y Van Camp's.",
+    metric: "42% del contenido analizado",
+    brands: ["P.A.N.", "Doria", "Zenú"],
+  },
+  {
+    category: "riesgo",
+    title: "Van Camp's: audiencia posiblemente inactiva",
+    description: "Con 147K seguidores en Instagram, Van Camp's promedia solo 165 likes/post (ER 0.11%). Posible audiencia comprada o inactiva. Recomendación: auditar seguidores y ajustar estrategia de contenido.",
+    metric: "ER 0.11% — el más bajo del portafolio",
+    brands: ["Van Camp's"],
+  },
+  {
+    category: "tendencia",
+    title: "La Soberana domina engagement en Instagram",
+    description: "La Soberana promedia 8,134 likes/post con solo 32K seguidores (ER 25.5%). Su estrategia de kits y packs de emergencia genera alta viralidad. Modelo a replicar.",
+    metric: "ER 25.5% — 23x más que Van Camp's",
+    brands: ["La Soberana"],
+  },
+  {
+    category: "accion",
+    title: "Activar presencia en X/Twitter",
+    description: "Las marcas tienen perfiles en X pero publicación mínima. Doria y Zenú no generan conversación. Oportunidad de posicionar narrativa de marca antes que competidores.",
+    metric: "< 5 interacciones promedio por post",
+    brands: ["Doria", "Zenú", "Van Camp's"],
+  },
+  {
+    category: "oportunidad",
+    title: "Colombia como tema diferenciador",
+    description: "El 26% del contenido exitoso hace referencia a Colombia, tradición y familia. Este eje temático conecta emocionalmente y diferencia de competidores internacionales.",
+    metric: "26% del contenido analizado",
+    brands: ["P.A.N.", "Zenú", "Doria"],
+  },
 ];
 
 export const googleMapsData = [
