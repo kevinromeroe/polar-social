@@ -1,4 +1,4 @@
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, TopComment } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, TopComment, CategoryTrend, BrandTopicMap, MentionVolume } from "./mock-data";
 
 export const brands: BrandData[] = [
   {
@@ -169,4 +169,33 @@ export const productLineKeys = ["automotriz"];
 export const chartAnnotations: ChartAnnotation[] = [
   { date: "Mar", brand: "Havoline", text: "Post viral \"Puntos ciegos en moto\" — 25K interacciones en IG + 18K en FB" },
   { date: "Jul", brand: "Havoline", text: "Contenido seguridad vial (parrillero) con alto engagement en FB (4.4K interacciones)" },
+];
+
+export const categoryTrends: CategoryTrend[] = [
+  { topic: "Seguridad vial", percentage: 32, description: "Puntos ciegos, convivencia moto/carro/ciclista, tips de manejo defensivo. El tema con mayor viralidad de la categoría.", sentiment: "positive" },
+  { topic: "Motorsport y carreras", percentage: 25, description: "Gran Premio Mobil Delvac, carreras de tractomulas, patrocinios deportivos, pilotos colombianos.", sentiment: "positive" },
+  { topic: "Mantenimiento y tips técnicos", percentage: 18, description: "Cambio de aceite, flush de motor, frecuencia de mantenimiento, tipos de lubricante según vehículo.", sentiment: "neutral" },
+  { topic: "Producto y calidad", percentage: 12, description: "Comparaciones entre marcas, disponibilidad de productos específicos (sintético dorado), precios.", sentiment: "neutral" },
+  { topic: "Aventura y viajes en moto", percentage: 8, description: "Rutas, viajes largos, experiencias de motociclistas con lubricantes en condiciones extremas.", sentiment: "positive" },
+  { topic: "Credibilidad e influenciadores", percentage: 5, description: "Debates sobre publicidad pagada, autenticidad de recomendaciones, percepción de influencers.", sentiment: "negative" },
+];
+
+export const brandTopicMaps: BrandTopicMap[] = [
+  { brand: "Havoline", topics: [{ topic: "Seguridad vial", percentage: 45 }, { topic: "Mantenimiento", percentage: 25 }, { topic: "Producto", percentage: 20 }, { topic: "Aventura", percentage: 10 }] },
+  { brand: "Mobil", topics: [{ topic: "Motorsport", percentage: 55 }, { topic: "Producto", percentage: 20 }, { topic: "Mantenimiento", percentage: 15 }, { topic: "Eventos", percentage: 10 }] },
+  { brand: "Castrol", topics: [{ topic: "Motorsport / F1", percentage: 50 }, { topic: "Concursos", percentage: 25 }, { topic: "Producto", percentage: 15 }, { topic: "Mantenimiento", percentage: 10 }] },
+  { brand: "Liqui Moly", topics: [{ topic: "Mantenimiento", percentage: 45 }, { topic: "Producto", percentage: 30 }, { topic: "Tips técnicos", percentage: 15 }, { topic: "Precio", percentage: 10 }] },
+  { brand: "Motul", topics: [{ topic: "Aventura", percentage: 40 }, { topic: "Motorsport", percentage: 30 }, { topic: "Producto", percentage: 20 }, { topic: "Mantenimiento", percentage: 10 }] },
+];
+
+export const mentionVolumeData: MentionVolume[] = [
+  { date: "Dic", Havoline: 1200 },
+  { date: "Ene", Havoline: 450 },
+  { date: "Feb", Havoline: 3800 },
+  { date: "Mar", Havoline: 38000 },
+  { date: "Abr", Havoline: 720 },
+  { date: "May", Havoline: 4900 },
+  { date: "Jun", Havoline: 1100 },
+  { date: "Jul", Havoline: 5300 },
+  { date: "Ago", Havoline: 210 },
 ];

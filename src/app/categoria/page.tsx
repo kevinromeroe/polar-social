@@ -66,7 +66,7 @@ function MentionCard({ mention, brandColor }: { mention: MentionData; brandColor
 }
 
 export default function EscuchaActivaPage() {
-  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands, competitors, brandColors } = useClientData();
+  const { sovData, sentimentByBrand, mentionsByNetwork, mentions, ownBrands, competitors, brandColors, categoryTrends } = useClientData();
 
   const [brandFilter, setBrandFilter] = useState<string>("all");
   const [sentimentFilter, setSentimentFilter] = useState<string>("all");
@@ -342,6 +342,45 @@ export default function EscuchaActivaPage() {
           </div>
         </div>
       </div>
+
+      {/* Tendencias de la categoría */}
+      {categoryTrends.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Tendencias de la categoría
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            De qué habla la audiencia — temas principales identificados por escucha activa
+          </p>
+          <div className="space-y-4">
+            {categoryTrends.map((t) => {
+              const sentColor = t.sentiment === "positive" ? "#10b981" : t.sentiment === "negative" ? "#ef4444" : "#f59e0b";
+              return (
+                <div key={t.topic}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-semibold text-gray-800">{t.topic}</span>
+                      <span
+                        className="w-2 h-2 rounded-full"
+                        style={{ background: sentColor }}
+                        title={t.sentiment === "positive" ? "Sentimiento positivo" : t.sentiment === "negative" ? "Sentimiento negativo" : "Sentimiento neutro"}
+                      />
+                    </div>
+                    <span className="text-sm font-bold text-gray-900">{t.percentage}%</span>
+                  </div>
+                  <div className="flex h-3 rounded-full overflow-hidden bg-gray-100 mb-1.5">
+                    <div
+                      className="rounded-full"
+                      style={{ width: t.percentage + "%", background: sentColor, opacity: 0.7 }}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 leading-relaxed">{t.description}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="bg-white rounded-xl border border-gray-200 p-5">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">

@@ -334,7 +334,7 @@ function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Recor
 }
 
 export default function CompetenciaPage() {
-  const { ownBrands, competitors, brandColors, topPosts } = useClientData();
+  const { ownBrands, competitors, brandColors, topPosts, brandTopicMaps } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const hasInstagram = allBrands.some((b) => b.networks.instagram);
@@ -383,6 +383,50 @@ export default function CompetenciaPage() {
           brandColors={brandColors}
           disclaimer="Datos acumulados del período de monitoreo (dic 2025 – ago 2026). Seguidores al corte más reciente. Reacciones = total de likes + comentarios + compartidos. Engagement rate = interacciones / seguidores."
         />
+      )}
+
+      {/* Mapa de temas por marca */}
+      {brandTopicMaps.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mt-6 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Temas por marca
+          </h3>
+          <p className="text-xs text-gray-400 mb-5">
+            Qué tendencias y temas aprovecha cada marca en su contenido y conversación
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {brandTopicMaps.map((bm) => (
+              <div key={bm.brand} className="border border-gray-200 rounded-lg p-4">
+                <p
+                  className="text-sm font-bold mb-3"
+                  style={{ color: brandColors[bm.brand] || "#334155" }}
+                >
+                  {bm.brand}
+                </p>
+                <div className="space-y-2.5">
+                  {bm.topics.map((t) => (
+                    <div key={t.topic}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs text-gray-700">{t.topic}</span>
+                        <span className="text-[10px] font-bold text-gray-500">{t.percentage}%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                        <div
+                          className="h-full rounded-full"
+                          style={{
+                            width: t.percentage + "%",
+                            background: brandColors[bm.brand] || "#94a3b8",
+                            opacity: 0.7,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Mejores y peores posts */}

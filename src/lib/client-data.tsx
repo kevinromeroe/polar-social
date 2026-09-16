@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
-import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation } from "./mock-data";
+import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, CategoryTrend, BrandTopicMap, MentionVolume } from "./mock-data";
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
@@ -22,6 +22,9 @@ export interface ClientDataset {
   sentimentCategorySummaries: Record<string, SentimentCategorySummary>;
   brandColors: Record<string, string>;
   chartAnnotations: ChartAnnotation[];
+  categoryTrends: CategoryTrend[];
+  brandTopicMaps: BrandTopicMap[];
+  mentionVolumeData: MentionVolume[];
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -56,6 +59,9 @@ const polarDataset: ClientDataset = {
   sentimentCategorySummaries: polarData.sentimentCategorySummaries,
   brandColors: polarData.brandColors,
   chartAnnotations: polarData.chartAnnotations,
+  categoryTrends: polarData.categoryTrends,
+  brandTopicMaps: polarData.brandTopicMaps,
+  mentionVolumeData: polarData.mentionVolumeData,
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -77,6 +83,9 @@ const havolineDataset: ClientDataset = {
   sentimentCategorySummaries: havolineData.sentimentCategorySummaries,
   brandColors: havolineData.brandColors,
   chartAnnotations: havolineData.chartAnnotations,
+  categoryTrends: havolineData.categoryTrends,
+  brandTopicMaps: havolineData.brandTopicMaps,
+  mentionVolumeData: havolineData.mentionVolumeData,
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",

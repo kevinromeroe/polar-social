@@ -71,6 +71,23 @@ export interface ChartAnnotation {
   text: string;
 }
 
+export interface CategoryTrend {
+  topic: string;
+  percentage: number;
+  description: string;
+  sentiment: "positive" | "neutral" | "negative";
+}
+
+export interface BrandTopicMap {
+  brand: string;
+  topics: { topic: string; percentage: number }[];
+}
+
+export interface MentionVolume {
+  date: string;
+  [brand: string]: string | number;
+}
+
 export const brands: BrandData[] = [
   {
     brand: "Buena Mesa",
@@ -384,3 +401,31 @@ export const productLineLabels: Record<string, string> = {
 export const productLineKeys = ["pasta", "pasta_atun"];
 
 export const chartAnnotations: ChartAnnotation[] = [];
+
+export const categoryTrends: CategoryTrend[] = [
+  { topic: "Recetas y preparaciones", percentage: 35, description: "Recetas caseras, tips de cocina, combinaciones con otros ingredientes. Contenido más compartido de la categoría.", sentiment: "positive" },
+  { topic: "Precio y promociones", percentage: 22, description: "Comparaciones de precio entre marcas, ofertas en supermercados, percepción de relación calidad-precio.", sentiment: "neutral" },
+  { topic: "Disponibilidad y distribución", percentage: 15, description: "Quejas sobre falta de stock, preguntas sobre dónde comprar productos específicos, cobertura en tiendas de barrio.", sentiment: "negative" },
+  { topic: "Innovación y nuevos productos", percentage: 12, description: "Lanzamientos, nuevos sabores, empaques sostenibles, presentaciones familiares y personales.", sentiment: "positive" },
+  { topic: "Nutrición y salud", percentage: 10, description: "Tabla nutricional, contenido de sodio, opciones integrales, debates sobre procesados.", sentiment: "neutral" },
+  { topic: "Experiencia de marca", percentage: 6, description: "Eventos, patrocinios, presencia en ferias gastronómicas, activaciones de marca.", sentiment: "positive" },
+];
+
+export const brandTopicMaps: BrandTopicMap[] = [
+  { brand: "Buena Mesa", topics: [{ topic: "Recetas", percentage: 40 }, { topic: "Sostenibilidad", percentage: 25 }, { topic: "Precio", percentage: 20 }, { topic: "Nutrición", percentage: 15 }] },
+  { brand: "Pasta P.A.N.", topics: [{ topic: "Loncheras", percentage: 35 }, { topic: "Recetas rápidas", percentage: 30 }, { topic: "Eventos", percentage: 20 }, { topic: "Precio", percentage: 15 }] },
+  { brand: "Doria", topics: [{ topic: "Recetas", percentage: 45 }, { topic: "Promociones", percentage: 25 }, { topic: "Precio", percentage: 20 }, { topic: "Disponibilidad", percentage: 10 }] },
+  { brand: "La Muñeca", topics: [{ topic: "Precio accesible", percentage: 40 }, { topic: "Recetas", percentage: 30 }, { topic: "Disponibilidad", percentage: 20 }, { topic: "Calidad", percentage: 10 }] },
+  { brand: "Comarico", topics: [{ topic: "Recetas regionales", percentage: 35 }, { topic: "Precio", percentage: 30 }, { topic: "Tradición", percentage: 20 }, { topic: "Disponibilidad", percentage: 15 }] },
+  { brand: "Van Camps", topics: [{ topic: "Recetas atún", percentage: 45 }, { topic: "Nutrición", percentage: 25 }, { topic: "Conveniencia", percentage: 20 }, { topic: "Precio", percentage: 10 }] },
+  { brand: "Zenú", topics: [{ topic: "Variedad", percentage: 35 }, { topic: "Precio", percentage: 30 }, { topic: "Recetas", percentage: 20 }, { topic: "Disponibilidad", percentage: 15 }] },
+];
+
+export const mentionVolumeData: MentionVolume[] = [
+  { date: "Abr", "Buena Mesa": 380, "Pasta P.A.N.": 245 },
+  { date: "May", "Buena Mesa": 420, "Pasta P.A.N.": 290 },
+  { date: "Jun", "Buena Mesa": 510, "Pasta P.A.N.": 340 },
+  { date: "Jul", "Buena Mesa": 390, "Pasta P.A.N.": 310 },
+  { date: "Ago", "Buena Mesa": 445, "Pasta P.A.N.": 285 },
+  { date: "Sep", "Buena Mesa": 480, "Pasta P.A.N.": 355 },
+];

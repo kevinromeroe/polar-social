@@ -107,7 +107,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, chartAnnotations, clientDescription } = useClientData();
+  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, chartAnnotations, mentionVolumeData, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -303,6 +303,41 @@ export default function MarcaPage() {
               </div>
             )}
           </div>
+
+          {/* Volumen de menciones en el tiempo */}
+          {mentionVolumeData.length > 0 && (
+            <div className="bg-white rounded-xl border border-gray-200 p-5">
+              <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                Volumen de menciones por mes
+              </h3>
+              <p className="text-xs text-gray-400 mb-4">
+                Cuántas veces se mencionan nuestras marcas en redes sociales cada mes (earned media)
+              </p>
+              <ResponsiveContainer width="100%" height={220}>
+                <LineChart data={mentionVolumeData} margin={{ left: 10, right: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} />
+                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickFormatter={(v) => formatNumber(v)} />
+                  <Tooltip
+                    formatter={(value) => [Number(value).toLocaleString("es-CO"), "Menciones"]}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 12 }} />
+                  {ownBrandNames.map((name, i) => (
+                    <Line
+                      key={name}
+                      type="monotone"
+                      dataKey={name}
+                      stroke={brandColors[name] || fallbackLineColors[i]}
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                      activeDot={{ r: 5 }}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           {/* Top publicaciones */}
           <div className="bg-white rounded-xl border border-gray-200 p-5">
