@@ -58,7 +58,7 @@ export function Sidebar() {
                 onClick={() => setSelectedProductLine(opt.key)}
                 className={`px-3 py-2.5 rounded-lg text-sm font-semibold text-center transition-colors ${
                   selectedProductLine === opt.key
-                    ? "bg-teal-600 text-white shadow-md"
+                    ? "bg-white text-slate-900 shadow-md"
                     : "bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-white"
                 }`}
               >

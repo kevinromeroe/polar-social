@@ -2,11 +2,6 @@
 
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
-  AlertTriangle,
-  Info,
-  Zap,
-} from "lucide-react";
-import {
   BarChart,
   Bar,
   XAxis,
@@ -16,30 +11,11 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
-import { getTotalFollowers, getAvgEngagement, formatNumber, executiveInsights, sentimentByBrand } from "@/lib/mock-data";
+import { getTotalFollowers, getAvgEngagement, formatNumber, sentimentByBrand } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 
-const insightCategoryStyles = {
-  oportunidad: { border: "border-l-emerald-500", bg: "bg-emerald-50", label: "Oportunidad", color: "text-emerald-700" },
-  riesgo: { border: "border-l-red-500", bg: "bg-red-50", label: "Riesgo", color: "text-red-700" },
-  tendencia: { border: "border-l-blue-500", bg: "bg-blue-50", label: "Tendencia", color: "text-blue-700" },
-  accion: { border: "border-l-amber-500", bg: "bg-amber-50", label: "Acción requerida", color: "text-amber-700" },
-};
-
-const severityStyles = {
-  info: "border-l-blue-400 bg-blue-50",
-  warning: "border-l-amber-400 bg-amber-50",
-  critical: "border-l-red-400 bg-red-50",
-};
-
-const severityIcons = {
-  info: Info,
-  warning: AlertTriangle,
-  critical: Zap,
-};
-
 export default function DashboardPage() {
-  const { ownBrands, sovData, alerts, clientDescription, brandColors, mentionsByNetwork } = useClientData();
+  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -51,9 +27,6 @@ export default function DashboardPage() {
   const ownSentimentAvg = ownSentimentData.length > 0
     ? Math.round(ownSentimentData.reduce((sum, s) => sum + s.positive - s.negative, 0) / ownSentimentData.length)
     : 70;
-
-  const totalAnalyzedPosts = mentionsByNetwork.reduce((sum: number, n: { mentions: number }) => sum + n.mentions, 0);
-  const getNetworkMentions = (name: string) => mentionsByNetwork.find((n: { network: string }) => n.network === name)?.mentions ?? 0;
 
   const sovChartData = sovData.slice(0, 8).map((s) => ({
     ...s,
@@ -205,86 +178,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 p-5 mb-8">
-        <h3 className="text-sm font-semibold text-gray-900 mb-1">
-          Insights ejecutivos
-        </h3>
-        <p className="text-xs text-gray-400 mb-4">
-          Hallazgos accionables basados en el análisis de {formatNumber(totalAnalyzedPosts)} publicaciones reales
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {executiveInsights.map((insight, i) => {
-            const style = insightCategoryStyles[insight.category];
-            return (
-              <div
-                key={i}
-                className={`border-l-4 ${style.border} ${style.bg} rounded-r-lg p-4`}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-[10px] font-bold uppercase ${style.color}`}>
-                    {style.label}
-                  </span>
-                </div>
-                <p className="text-sm font-medium text-gray-900">{insight.title}</p>
-                <p className="text-xs text-gray-600 mt-1">{insight.description}</p>
-                {insight.metric && (
-                  <p className="text-xs font-semibold text-gray-800 mt-2">{insight.metric}</p>
-                )}
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  {insight.brands.map((b) => (
-                    <span key={b} className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-white/70 text-gray-600">
-                      {b}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-          Basado en análisis de sentimiento y engagement de {formatNumber(getNetworkMentions("Instagram"))} publicaciones en Instagram, {formatNumber(getNetworkMentions("Facebook"))} en Facebook y {formatNumber(getNetworkMentions("TikTok"))} en TikTok. Periodo: ultimos 3 meses.
-        </p>
-      </div>
-
-      <div className="bg-white rounded-xl border border-gray-200 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4">
-          Alertas y cambios significativos
-        </h3>
-        <div className="space-y-3">
-          {alerts.map((alert, i) => {
-            const Icon = severityIcons[alert.severity];
-            return (
-              <div
-                key={i}
-                className={`border-l-4 rounded-r-lg p-4 ${severityStyles[alert.severity]}`}
-              >
-                <div className="flex items-start gap-3">
-                  <Icon className="h-4 w-4 mt-0.5 shrink-0 text-gray-600" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {alert.title}
-                    </p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      {alert.description}
-                    </p>
-                    <div className="flex gap-3 mt-2">
-                      <span
-                        className="text-[10px] font-bold uppercase"
-                        style={{ color: brandColors[alert.brand] || "#9ca3af" }}
-                      >
-                        {alert.brand}
-                      </span>
-                      <span className="text-[10px] text-gray-400">
-                        {alert.date}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </ProtectedLayout>
   );
 }

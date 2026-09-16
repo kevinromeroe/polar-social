@@ -3,17 +3,6 @@
 import { useState, useEffect } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  ReferenceDot,
-} from "recharts";
-import {
   networkLabels,
   networkColors,
   formatNumber,
@@ -107,7 +96,7 @@ function NetworkCard({
 }
 
 export default function MarcaPage() {
-  const { ownBrands, topPosts, mentions, growthTrend, sentimentByBrand, sentimentCategorySummaries, brandColors, chartAnnotations, mentionVolumeData, clientDescription } = useClientData();
+  const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription } = useClientData();
 
   const [selectedBrand, setSelectedBrand] = useState(ownBrands[0]?.brand ?? "");
 
@@ -118,11 +107,11 @@ export default function MarcaPage() {
   }, [ownBrands, selectedBrand]);
 
   const currentBrand = ownBrands.find((b) => b.brand === selectedBrand);
-  const brandTopPosts = topPosts.filter((p) => p.brand === selectedBrand);
   const brandMentions = mentions.filter((m) => m.brand === selectedBrand);
   const brandSentiment = sentimentByBrand.find(
     (s) => s.brand === selectedBrand
   );
+  const brandTopics = brandTopicMaps.find((t) => t.brand === selectedBrand);
 
   const networkEntries = currentBrand
     ? (Object.entries(currentBrand.networks) as [Network, NonNullable<BrandData["networks"][Network]>][]).filter(
@@ -132,9 +121,6 @@ export default function MarcaPage() {
 
   const totalFollowers = networkEntries.reduce((sum, [, m]) => sum + m.followers, 0);
   const totalPosts = networkEntries.reduce((sum, [, m]) => sum + m.posts, 0);
-
-  const fallbackLineColors = ["#0d9488", "#6366f1", "#f59e0b", "#ef4444"];
-  const ownBrandNames = ownBrands.map((b) => b.brand);
 
   return (
     <ProtectedLayout>
@@ -219,208 +205,39 @@ export default function MarcaPage() {
             </div>
           </div>
 
-          {/* Evolución de seguidores — mensual, todas las marcas */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Evolución mensual de interacciones
-            </h3>
-            <p className="text-xs text-gray-400 mb-4">
-              Total de likes + comentarios + compartidos por mes — marcas propias
-            </p>
-            <ResponsiveContainer width="100%" height={260}>
-              <LineChart
-                data={growthTrend}
-                margin={{ left: 10, right: 20 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fontSize: 11, fill: "#94a3b8" }}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: "#94a3b8" }}
-                  tickFormatter={(v) => formatNumber(v)}
-                />
-                <Tooltip
-                  formatter={(value, name) => [
-                    Number(value).toLocaleString("es-CO"),
-                    name,
-                  ]}
-                  contentStyle={{
-                    fontSize: 12,
-                    borderRadius: 8,
-                    border: "1px solid #e2e8f0",
-                  }}
-                />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                {ownBrandNames.map((name, i) => (
-                  <Line
-                    key={name}
-                    type="monotone"
-                    dataKey={name}
-                    stroke={brandColors[name] || fallbackLineColors[i]}
-                    strokeWidth={2}
-                    dot={{ r: 3 }}
-                    activeDot={{ r: 5 }}
-                  />
-                ))}
-                {chartAnnotations
-                  .filter((ann) => ann.brand === selectedBrand)
-                  .map((ann, i) => {
-                    const point = growthTrend.find((d) => d.date === ann.date);
-                    const val = point?.[ann.brand];
-                    if (val == null) return null;
-                    return (
-                      <ReferenceDot
-                        key={i}
-                        x={ann.date}
-                        y={Number(val)}
-                        r={6}
-                        fill={brandColors[ann.brand] || "#0d9488"}
-                        stroke="#fff"
-                        strokeWidth={2}
-                      />
-                    );
-                  })}
-              </LineChart>
-            </ResponsiveContainer>
-            {chartAnnotations.filter((a) => a.brand === selectedBrand).length > 0 && (
-              <div className="mt-4 space-y-2">
-                {chartAnnotations
-                  .filter((a) => a.brand === selectedBrand)
-                  .map((ann, i) => (
-                    <div key={i} className="flex items-start gap-2">
-                      <span
-                        className="w-3 h-3 rounded-full shrink-0 mt-0.5 border-2 border-white"
-                        style={{ background: brandColors[ann.brand] || "#0d9488", boxShadow: "0 0 0 1px " + (brandColors[ann.brand] || "#0d9488") }}
-                      />
-                      <p className="text-xs text-gray-600 leading-relaxed">
-                        <span className="font-semibold" style={{ color: brandColors[ann.brand] || "#0d9488" }}>{ann.date}</span>
-                        {" — "}{ann.text}
-                      </p>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </div>
-
-          {/* Volumen de menciones en el tiempo */}
-          {mentionVolumeData.length > 0 && (
+          {/* Mapa de temas de la audiencia */}
+          {brandTopics && (
             <div className="bg-white rounded-xl border border-gray-200 p-5">
               <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                Volumen de menciones por mes
+                De qué habla nuestra audiencia
               </h3>
               <p className="text-xs text-gray-400 mb-4">
-                Cuántas veces se mencionan nuestras marcas en redes sociales cada mes (earned media)
+                Temas principales del contenido de <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span> — qué genera conversación en la categoría
               </p>
-              <ResponsiveContainer width="100%" height={220}>
-                <LineChart data={mentionVolumeData} margin={{ left: 10, right: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#94a3b8" }} />
-                  <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickFormatter={(v) => formatNumber(v)} />
-                  <Tooltip
-                    formatter={(value) => [Number(value).toLocaleString("es-CO"), "Menciones"]}
-                    contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
-                  />
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                  {ownBrandNames.map((name, i) => (
-                    <Line
-                      key={name}
-                      type="monotone"
-                      dataKey={name}
-                      stroke={brandColors[name] || fallbackLineColors[i]}
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          )}
-
-          {/* Top publicaciones */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Top publicaciones por engagement
-            </h3>
-            <p className="text-xs text-gray-400 mb-4">
-              Las publicaciones con mejor desempeño del período
-            </p>
-            {brandTopPosts.length > 0 ? (
-              <div className="space-y-3">
-                {brandTopPosts.map((post, i) => {
-                  const Icon = networkIcons[post.network];
+              <div className="space-y-4">
+                {brandTopics.topics.map((topic, i) => {
+                  const barColor = brandColors[selectedBrand] || "#0d9488";
                   return (
-                    <div
-                      key={i}
-                      className="border border-gray-100 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                    >
-                      <div className="flex gap-4">
-                        {post.imageUrl && (
-                          <a
-                            href={post.url || "#"}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="shrink-0"
-                          >
-                            <img
-                              src={post.imageUrl}
-                              alt=""
-                              className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-gray-100"
-                              loading="lazy"
-                            />
-                          </a>
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span
-                              className="flex items-center gap-1.5 text-[10px] font-bold uppercase px-2 py-0.5 rounded text-white"
-                              style={{
-                                background: networkColors[post.network] || "#6b7280",
-                              }}
-                            >
-                              {Icon && <Icon size={10} />}
-                              {networkLabels[post.network]}
-                            </span>
-                            <span className="text-xs text-gray-400">{post.date}</span>
-                          </div>
-                          <p className="text-sm text-gray-700 mb-3">
-                            {post.caption}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
-                            <span>{formatNumber(post.likes)} me gusta</span>
-                            <span>{formatNumber(post.comments)} comentarios</span>
-                            <span>{formatNumber(post.shares)} compartidos</span>
-                            {post.views > 0 && (
-                              <span className="font-medium text-gray-900">
-                                {formatNumber(post.views)} vistas
-                              </span>
-                            )}
-                            {post.url && (
-                              <a
-                                href={post.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-teal-600 hover:text-teal-700 font-medium ml-auto"
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                Ver post &rarr;
-                              </a>
-                            )}
-                          </div>
-                        </div>
+                    <div key={i}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="text-sm font-medium text-gray-800">{topic.topic}</span>
+                        <span className="text-sm font-bold" style={{ color: barColor }}>{topic.percentage}%</span>
+                      </div>
+                      <div className="flex h-3 rounded-full overflow-hidden bg-gray-100">
+                        <div
+                          className="rounded-full transition-all"
+                          style={{ width: topic.percentage + "%", background: barColor, opacity: 0.7 }}
+                        />
                       </div>
                     </div>
                   );
                 })}
               </div>
-            ) : (
-              <p className="text-sm text-gray-400">
-                Sin datos de publicaciones aún.
+              <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+                Distribución temática basada en análisis de contenido publicado. Los porcentajes indican la proporción de publicaciones dedicadas a cada tema.
               </p>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Sentimiento + menciones por categoría */}
           <div className="space-y-5">
