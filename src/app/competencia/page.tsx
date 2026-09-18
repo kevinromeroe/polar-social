@@ -351,20 +351,25 @@ export default function CompetenciaPage() {
 
   const hasInstagram = allBrands.some((b) => b.networks.instagram);
   const hasFacebook = allBrands.some((b) => b.networks.facebook);
+  const hasTiktok = allBrands.some((b) => b.networks.tiktok);
+  const hasX = allBrands.some((b) => b.networks.x);
 
   const ownBrandNames = new Set(ownBrands.map((b) => b.brand));
 
-  const bestPosts = topPosts
-    .filter((p) => p.ranking === "best")
-    .sort((a, b) => (b.likes + b.comments + b.shares) - (a.likes + a.comments + a.shares));
-  const worstPosts = topPosts
-    .filter((p) => p.ranking === "worst")
-    .sort((a, b) => (a.likes + a.comments + a.shares) - (b.likes + b.comments + b.shares));
-
-  const ownBestPosts = bestPosts.filter((p) => ownBrandNames.has(p.brand));
-  const ownWorstPosts = worstPosts.filter((p) => ownBrandNames.has(p.brand));
-  const compBestPosts = bestPosts.filter((p) => !ownBrandNames.has(p.brand));
-  const compWorstPosts = worstPosts.filter((p) => !ownBrandNames.has(p.brand));
+  const postsByBrand: Record<string, Record<string, { best?: TopPostData; worst?: TopPostData }>> = {};
+  for (const p of topPosts) {
+    if (!postsByBrand[p.brand]) postsByBrand[p.brand] = {};
+    if (!postsByBrand[p.brand][p.network]) postsByBrand[p.brand][p.network] = {};
+    const slot = postsByBrand[p.brand][p.network];
+    const eng = p.likes + p.comments + p.shares;
+    if (p.ranking === "best") {
+      if (!slot.best || eng > (slot.best.likes + slot.best.comments + slot.best.shares)) slot.best = p;
+    } else {
+      if (!slot.worst || eng < (slot.worst.likes + slot.worst.comments + slot.worst.shares)) slot.worst = p;
+    }
+  }
+  const ownBrandsWithPosts = Object.keys(postsByBrand).filter((b) => ownBrandNames.has(b)).sort();
+  const compBrandsWithPosts = Object.keys(postsByBrand).filter((b) => !ownBrandNames.has(b)).sort();
 
   return (
     <ProtectedLayout>
@@ -390,6 +395,28 @@ export default function CompetenciaPage() {
         <NetworkTable
           network="facebook"
           networkLabel="Facebook"
+          brands={allBrands}
+          ownBrands={ownBrands}
+          brandColors={brandColors}
+          disclaimer="Seguidores y engagement actuales. Reacciones acumuladas (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
+        />
+      )}
+
+      {hasTiktok && (
+        <NetworkTable
+          network="tiktok"
+          networkLabel="TikTok"
+          brands={allBrands}
+          ownBrands={ownBrands}
+          brandColors={brandColors}
+          disclaimer="Seguidores y engagement actuales. Reacciones acumuladas (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
+        />
+      )}
+
+      {hasX && (
+        <NetworkTable
+          network="x"
+          networkLabel="X (Twitter)"
           brands={allBrands}
           ownBrands={ownBrands}
           brandColors={brandColors}
@@ -435,51 +462,64 @@ export default function CompetenciaPage() {
                     </div>
                   ))}
                 </div>
+                {bm.insight && (
+                  <p className="text-[11px] text-gray-500 mt-3 leading-relaxed bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                    {bm.insight}
+                  </p>
+                )}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Mejores y peores posts */}
-      {(bestPosts.length > 0 || worstPosts.length > 0) && (
+      {/* Mejores y peores posts — por marca y red */}
+      {topPosts.length > 0 && (
         <div className="mt-6 space-y-6">
           <div>
             <h3 className="text-sm font-semibold text-gray-900 mb-1">
               Mejores y peores publicaciones
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              Comparación del contenido con mayor y menor interacción — marcas propias vs. competencia
+              Por marca y red social — mejor y peor post según interacciones
             </p>
           </div>
 
-          {/* Marcas propias */}
-          {(ownBestPosts.length > 0 || ownWorstPosts.length > 0) && (
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Marcas propias</p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {ownBestPosts.slice(0, 3).map((p, i) => (
-                  <PostCard key={`own-best-${i}`} post={p} brandColors={brandColors} />
-                ))}
-                {ownWorstPosts.slice(0, 2).map((p, i) => (
-                  <PostCard key={`own-worst-${i}`} post={p} brandColors={brandColors} />
-                ))}
-              </div>
+          {ownBrandsWithPosts.length > 0 && (
+            <div className="space-y-5">
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Marcas propias</p>
+              {ownBrandsWithPosts.map((brand) => (
+                <div key={brand}>
+                  <p className="text-sm font-bold mb-3" style={{ color: brandColors[brand] || "#334155" }}>{brand}</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {Object.entries(postsByBrand[brand]).map(([net, posts]) => (
+                      <Fragment key={net}>
+                        {posts.best && <PostCard post={posts.best} brandColors={brandColors} />}
+                        {posts.worst && <PostCard post={posts.worst} brandColors={brandColors} />}
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
 
-          {/* Competencia */}
-          {(compBestPosts.length > 0 || compWorstPosts.length > 0) && (
-            <div>
-              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Competencia</p>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {compBestPosts.slice(0, 5).map((p, i) => (
-                  <PostCard key={`comp-best-${i}`} post={p} brandColors={brandColors} />
-                ))}
-                {compWorstPosts.slice(0, 4).map((p, i) => (
-                  <PostCard key={`comp-worst-${i}`} post={p} brandColors={brandColors} />
-                ))}
-              </div>
+          {compBrandsWithPosts.length > 0 && (
+            <div className="space-y-5">
+              <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Competencia</p>
+              {compBrandsWithPosts.map((brand) => (
+                <div key={brand}>
+                  <p className="text-sm font-bold mb-3" style={{ color: brandColors[brand] || "#334155" }}>{brand}</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {Object.entries(postsByBrand[brand]).map(([net, posts]) => (
+                      <Fragment key={net}>
+                        {posts.best && <PostCard post={posts.best} brandColors={brandColors} />}
+                        {posts.worst && <PostCard post={posts.worst} brandColors={brandColors} />}
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </div>
