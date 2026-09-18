@@ -82,11 +82,11 @@ export default function MarcaPage() {
         return [
           s.network,
           {
-            followers: s.followers,
+            followers: s.followers || mockNet?.followers || 0,
             engagementRate: mockNet?.engagementRate ?? 0,
-            posts: s.totalPosts,
+            posts: s.totalPosts || mockNet?.posts || 0,
             growth: mockNet?.growth ?? 0,
-            username: s.username,
+            username: s.username || mockNet?.username,
           },
         ] as NetworkEntry;
       });
@@ -128,26 +128,28 @@ export default function MarcaPage() {
       </div>
       <p className="text-[10px] text-gray-300 mb-6">Datos de junio a septiembre 2026.</p>
 
-      <div className="flex gap-2 mb-6">
-        {ownBrands.map((b) => {
-          const isActive = selectedBrand === b.brand;
-          const color = brandColors[b.brand] || "#0d9488";
-          return (
-            <button
-              key={b.brand}
-              onClick={() => setSelectedBrand(b.brand)}
-              className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "text-white"
-                  : "bg-white border border-gray-200 hover:bg-gray-50"
-              }`}
-              style={isActive ? { background: color } : { color }}
-            >
-              {b.brand}
-            </button>
-          );
-        })}
-      </div>
+      {ownBrands.length > 1 && (
+        <div className="flex gap-2 mb-6">
+          {ownBrands.map((b) => {
+            const isActive = selectedBrand === b.brand;
+            const color = brandColors[b.brand] || "#0d9488";
+            return (
+              <button
+                key={b.brand}
+                onClick={() => setSelectedBrand(b.brand)}
+                className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  isActive
+                    ? "text-white"
+                    : "bg-white border border-gray-200 hover:bg-gray-50"
+                }`}
+                style={isActive ? { background: color } : { color }}
+              >
+                {b.brand}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {currentBrand && (
         <div className="space-y-6">
