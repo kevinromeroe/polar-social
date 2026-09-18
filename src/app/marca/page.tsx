@@ -43,7 +43,11 @@ export default function MarcaPage() {
 
   const ownSnapshots = accountSnapshots.filter((s) => ownBrands.some((b) => b.brand === s.brand));
   const totalFollowersOwn = ownSnapshots.length > 0
-    ? ownSnapshots.reduce((s, snap) => s + snap.followers, 0)
+    ? ownSnapshots.reduce((s, snap) => {
+        const brand = ownBrands.find((b) => b.brand === snap.brand);
+        const mockNet = brand?.networks[snap.network as Network];
+        return s + (snap.followers || mockNet?.followers || 0);
+      }, 0)
     : ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn = ownBrands.length > 0
     ? ownBrands.reduce((s, b) => s + getAvgEngagement(b), 0) / ownBrands.length
