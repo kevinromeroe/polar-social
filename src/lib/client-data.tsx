@@ -207,7 +207,28 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     const email = user?.email ?? "";
     const mock = clients[email] ?? polarDataset;
     if (!realData || email === "havoline@datalitica.com.co") return mock;
-    return { ...mock, ...Object.fromEntries(Object.entries(realData).filter(([, v]) => v !== undefined)) } as ClientDataset;
+    const merged = { ...mock, ...Object.fromEntries(Object.entries(realData).filter(([, v]) => v !== undefined)) } as ClientDataset;
+    if (realData.topPosts && realData.topPosts.length > 0) {
+      const realBrands = new Set(realData.topPosts.map(p => p.brand));
+      const mockImageMap: Record<string, string> = {};
+      for (const p of mock.topPosts) {
+        if (p.imageUrl) {
+          const key = `${p.brand}|${p.network}|${p.ranking}`;
+          mockImageMap[key] = p.imageUrl;
+        }
+      }
+      const realWithImages = realData.topPosts.map(p => {
+        if (!p.imageUrl) {
+          const key = `${p.brand}|${p.network}|${p.ranking}`;
+          const fallback = mockImageMap[key];
+          if (fallback) return { ...p, imageUrl: fallback };
+        }
+        return p;
+      });
+      const mockForMissingBrands = mock.topPosts.filter(p => !realBrands.has(p.brand));
+      merged.topPosts = [...realWithImages, ...mockForMissingBrands];
+    }
+    return merged;
   }, [user?.email, realData]);
 
   const productLineOptions = useMemo<ProductLineOption[]>(() => {
