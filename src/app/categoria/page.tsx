@@ -21,10 +21,10 @@ const statusConfig: Record<string, { label: string; bg: string; text: string }> 
 };
 
 const threatConfig: Record<string, { label: string; color: string; bg: string }> = {
-  critica: { label: "Amenaza crítica", color: "text-red-700", bg: "bg-red-50" },
-  alta: { label: "Amenaza alta", color: "text-orange-700", bg: "bg-orange-50" },
-  media: { label: "Amenaza media", color: "text-amber-700", bg: "bg-amber-50" },
-  baja: { label: "Amenaza baja", color: "text-gray-600", bg: "bg-gray-50" },
+  critica: { label: "Prioridad crítica", color: "text-red-700", bg: "bg-red-50" },
+  alta: { label: "Prioridad alta", color: "text-orange-700", bg: "bg-orange-50" },
+  media: { label: "Prioridad media", color: "text-amber-700", bg: "bg-amber-50" },
+  baja: { label: "Prioridad baja", color: "text-gray-600", bg: "bg-gray-50" },
 };
 
 const networkStatusDot: Record<string, string> = {
@@ -329,7 +329,7 @@ export default function EscuchaActivaPage() {
         </div>
 
         <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-          Acumulado jun–sep 2026. Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma. Fuente: scraping de datos públicos.
+          Acumulado jun–sep 2026. Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma.
         </p>
       </div>
 
@@ -532,7 +532,7 @@ export default function EscuchaActivaPage() {
             ))}
           </div>
           <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-            Nivel de amenaza calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca.
+            Nivel de prioridad calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca. Datos acumulados jun–sep 2026.
           </p>
         </div>
       )}

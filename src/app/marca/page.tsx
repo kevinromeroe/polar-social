@@ -258,7 +258,12 @@ export default function MarcaPage() {
                     );
                   })}
                 </div>
-                <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+                {brandTopics.insight && (
+                  <p className="text-xs text-gray-500 mt-4 leading-relaxed bg-gray-50 rounded-lg p-3 border border-gray-100">
+                    {brandTopics.insight}
+                  </p>
+                )}
+                <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
                   Hallazgo · basado en análisis de contenido publicado (acumulado jun–sep 2026).
                 </p>
               </div>

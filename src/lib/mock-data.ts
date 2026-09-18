@@ -90,6 +90,7 @@ export interface CategoryTrend {
 export interface BrandTopicMap {
   brand: string;
   topics: { topic: string; percentage: number }[];
+  insight?: string;
 }
 
 export interface MentionVolume {
@@ -109,7 +110,6 @@ export const brands: BrandData[] = [
     networks: {
       instagram: { username: "harinapancolombia", followers: 50388, posts: 1809, engagementRate: 0.17, growth: 1.2, avgLikes: 78, avgComments: 8, avgShares: 0 },
       facebook: { username: "HarinaPANColombia", followers: 175278, posts: 890, engagementRate: 0.01, growth: 0.5, avgLikes: 11, avgComments: 1, avgShares: 3 },
-      tiktok: { username: "harinapancolombia", followers: 2, posts: 1, engagementRate: 0, growth: 0, avgLikes: 0, avgComments: 0, avgShares: 0 },
     },
   },
   {
@@ -524,16 +524,16 @@ export const categoryTrends: CategoryTrend[] = [
 ];
 
 export const brandTopicMaps: BrandTopicMap[] = [
-  { brand: "P.A.N.", topics: [{ topic: "Pasta y atún P.A.N.", percentage: 15 }, { topic: "Arepas y harina (no relevante)", percentage: 50 }, { topic: "Recetas versátiles", percentage: 20 }, { topic: "Portafolio general", percentage: 15 }] },
-  { brand: "Doria", topics: [{ topic: "Recetas patrocinadas", percentage: 45 }, { topic: "Recetas fáciles", percentage: 25 }, { topic: "Mazorcada con pasta", percentage: 20 }, { topic: "Cachete", percentage: 10 }] },
-  { brand: "La Muñeca", topics: [{ topic: "Historia 78 años", percentage: 35 }, { topic: "Recetas", percentage: 30 }, { topic: "Gaming/gamers", percentage: 20 }, { topic: "Energía", percentage: 15 }] },
-  { brand: "Comarrico", topics: [{ topic: "Recetas económicas", percentage: 40 }, { topic: "Arroces", percentage: 25 }, { topic: "Ceviche de pastas", percentage: 20 }, { topic: "Precio accesible", percentage: 15 }] },
-  { brand: "Van Camp's", topics: [{ topic: "Mar y frescura", percentage: 45 }, { topic: "Recetas clásicas", percentage: 25 }, { topic: "ASMR/sonidos", percentage: 20 }, { topic: "Tradición", percentage: 10 }] },
-  { brand: "Zenú", topics: [{ topic: "Comida callejera", percentage: 35 }, { topic: "Festival perro caliente", percentage: 25 }, { topic: "Bogotá", percentage: 20 }, { topic: "Eventos deportivos", percentage: 20 }] },
-  { brand: "La Soberana", topics: [{ topic: "Emergencias/preparación", percentage: 35 }, { topic: "Almuerzos rápidos", percentage: 30 }, { topic: "Promociones", percentage: 20 }, { topic: "Recetas atún", percentage: 15 }] },
-  { brand: "Isabel", topics: [{ topic: "Recetas internacionales", percentage: 40 }, { topic: "Onigiris", percentage: 25 }, { topic: "Croquetas", percentage: 20 }, { topic: "Sopas de letras", percentage: 15 }] },
-  { brand: "Pugliese", topics: [{ topic: "Pastas artesanales", percentage: 40 }, { topic: "Hecho a mano", percentage: 30 }, { topic: "Pizza y panadería", percentage: 20 }, { topic: "Encargos y pedidos", percentage: 10 }] },
-  { brand: "La Española", topics: [{ topic: "Estilo de vida", percentage: 35 }, { topic: "Eventos deportivos", percentage: 25 }, { topic: "Aperitivos y verano", percentage: 25 }, { topic: "Sabor del mar", percentage: 15 }] },
+  { brand: "P.A.N.", topics: [{ topic: "Pasta y atún P.A.N.", percentage: 15 }, { topic: "Arepas y harina (no relevante)", percentage: 50 }, { topic: "Recetas versátiles", percentage: 20 }, { topic: "Portafolio general", percentage: 15 }], insight: "La conversación sigue dominada por arepas y harina. El contenido de pasta y atún apenas alcanza el 15%, lo que indica oportunidad de posicionar estos productos con contenido propio más frecuente." },
+  { brand: "Doria", topics: [{ topic: "Recetas patrocinadas", percentage: 45 }, { topic: "Recetas fáciles", percentage: 25 }, { topic: "Mazorcada con pasta", percentage: 20 }, { topic: "Cachete", percentage: 10 }], insight: "Doria concentra su narrativa en recetas patrocinadas con influencers. La mazorcada se convirtió en un formato viral propio. Estrategia clara de contenido aspiracional en cocina." },
+  { brand: "La Muñeca", topics: [{ topic: "Historia 78 años", percentage: 35 }, { topic: "Recetas", percentage: 30 }, { topic: "Gaming/gamers", percentage: 20 }, { topic: "Energía", percentage: 15 }], insight: "La Muñeca apuesta por nostalgia (78 años) y se diferencia con contenido gaming dirigido a audiencia joven. Combina tradición y cultura digital de forma única en la categoría." },
+  { brand: "Comarrico", topics: [{ topic: "Recetas económicas", percentage: 40 }, { topic: "Arroces", percentage: 25 }, { topic: "Ceviche de pastas", percentage: 20 }, { topic: "Precio accesible", percentage: 15 }], insight: "Posicionamiento 100% funcional: precio bajo y rendimiento. El ceviche de pastas es su formato diferenciador. Audiencia sensible al precio, no a la marca." },
+  { brand: "Van Camp's", topics: [{ topic: "Mar y frescura", percentage: 45 }, { topic: "Recetas clásicas", percentage: 25 }, { topic: "ASMR/sonidos", percentage: 20 }, { topic: "Tradición", percentage: 10 }], insight: "Van Camp's domina la conversación de atún con una estética visual fuerte y formatos ASMR que generan alto engagement en TikTok. Competidor directo en la línea de atún P.A.N." },
+  { brand: "Zenú", topics: [{ topic: "Comida callejera", percentage: 35 }, { topic: "Festival perro caliente", percentage: 25 }, { topic: "Bogotá", percentage: 20 }, { topic: "Eventos deportivos", percentage: 20 }], insight: "Zenú conecta con momentos culturales: comida callejera, festivales y deporte. Su audiencia asocia la marca con experiencias, no solo con el producto." },
+  { brand: "La Soberana", topics: [{ topic: "Emergencias/preparación", percentage: 35 }, { topic: "Almuerzos rápidos", percentage: 30 }, { topic: "Promociones", percentage: 20 }, { topic: "Recetas atún", percentage: 15 }], insight: "La Soberana se posiciona como solución práctica y de emergencia. Competidor de atún P.A.N. en el segmento de conveniencia y precio." },
+  { brand: "Isabel", topics: [{ topic: "Recetas internacionales", percentage: 40 }, { topic: "Onigiris", percentage: 25 }, { topic: "Croquetas", percentage: 20 }, { topic: "Sopas de letras", percentage: 15 }], insight: "Isabel se diferencia con recetas internacionales (onigiris, croquetas). Apunta a un consumidor curioso y dispuesto a experimentar, distinto al consumidor tradicional." },
+  { brand: "Pugliese", topics: [{ topic: "Pastas artesanales", percentage: 40 }, { topic: "Hecho a mano", percentage: 30 }, { topic: "Pizza y panadería", percentage: 20 }, { topic: "Encargos y pedidos", percentage: 10 }], insight: "Nicho artesanal con comunicación de producto hecho a mano. Audiencia reducida pero leal. No compite en volumen sino en percepción de calidad premium." },
+  { brand: "La Española", topics: [{ topic: "Estilo de vida", percentage: 35 }, { topic: "Eventos deportivos", percentage: 25 }, { topic: "Aperitivos y verano", percentage: 25 }, { topic: "Sabor del mar", percentage: 15 }], insight: "La Española comunica estilo de vida y momentos de consumo (aperitivos, verano, deporte). Estrategia de branding emocional más que funcional." },
 ];
 
 // Volumen de menciones — proyección basada en cadencia de publicación real (sep 2026)

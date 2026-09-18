@@ -127,7 +127,7 @@ export default function DashboardPage() {
             </BarChart>
           </ResponsiveContainer>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Acumulado jun–sep 2026. Cálculo: total de comentarios públicos en las cuentas de cada marca, dividido entre el total de la categoría. Fuente: scraping de comentarios reales.
+            Acumulado jun–sep 2026. Cálculo: total de comentarios públicos en las cuentas de cada marca, dividido entre el total de la categoría.
           </p>
         </div>
 
@@ -178,7 +178,7 @@ export default function DashboardPage() {
             })}
           </div>
           <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-            Snapshot sep 2026. Se actualizará con scraping quincenal para mostrar tendencia de crecimiento.
+            Snapshot sep 2026. Se actualiza quincenalmente.
           </p>
         </div>
       </div>
@@ -255,7 +255,7 @@ export default function DashboardPage() {
             </table>
           </div>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Acumulado jun–sep 2026. Engagement = likes + comentarios + shares. Views se reportan por separado (principalmente TikTok). Fuente: scraping de publicaciones reales.
+            Acumulado jun–sep 2026. Engagement = likes + comentarios + shares. Views se reportan por separado (principalmente TikTok).
           </p>
         </div>
       )}

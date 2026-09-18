@@ -29,7 +29,14 @@ export function ProtectedLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       <main className="pl-64">
-        <div className="p-8">{children}</div>
+        <div className="p-8">
+          {children}
+          <div className="mt-10 pt-4 border-t border-gray-200">
+            <p className="text-[10px] text-gray-300 leading-relaxed">
+              Datos correspondientes al periodo junio – septiembre 2026. Actualización quincenal. Plataforma de escucha activa operada por Datalitica.
+            </p>
+          </div>
+        </div>
       </main>
     </div>
   );
