@@ -19,7 +19,7 @@ import {
   ThumbsDown,
   MessageCircle,
 } from "lucide-react";
-import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter, FaRedditAlien } from "react-icons/fa6";
 
 const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   instagram: FaInstagram,
@@ -27,6 +27,7 @@ const networkIcons: Record<string, React.ComponentType<{ className?: string; siz
   tiktok: FaTiktok,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
+  reddit: FaRedditAlien,
 };
 
 function getSemaforoColor(value: number, allValues: number[]): string {

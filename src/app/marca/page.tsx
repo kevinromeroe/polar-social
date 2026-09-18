@@ -16,7 +16,7 @@ import {
   TrendingDown,
   Minus,
 } from "lucide-react";
-import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter, FaRedditAlien } from "react-icons/fa6";
 
 const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number; color?: string }>> = {
   instagram: FaInstagram,
@@ -24,6 +24,7 @@ const networkIcons: Record<string, React.ComponentType<{ className?: string; siz
   tiktok: FaTiktok,
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
+  reddit: FaRedditAlien,
 };
 
 const profileUrlBase: Record<string, string> = {
@@ -32,14 +33,18 @@ const profileUrlBase: Record<string, string> = {
   tiktok: "https://www.tiktok.com/@",
   linkedin: "https://www.linkedin.com/company/",
   x: "https://x.com/",
+  reddit: "https://www.reddit.com/user/",
 };
 
 const topicColors = ["#0d9488", "#6366f1", "#e11d48", "#ea580c", "#0284c7", "#7c3aed", "#ca8a04", "#059669"];
 
 export default function MarcaPage() {
-  const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription, sovData } = useClientData();
+  const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription, sovData, accountSnapshots } = useClientData();
 
-  const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
+  const ownSnapshots = accountSnapshots.filter((s) => ownBrands.some((b) => b.brand === s.brand));
+  const totalFollowersOwn = ownSnapshots.length > 0
+    ? ownSnapshots.reduce((s, snap) => s + snap.followers, 0)
+    : ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn = ownBrands.length > 0
     ? ownBrands.reduce((s, b) => s + getAvgEngagement(b), 0) / ownBrands.length
     : 0;
@@ -66,11 +71,27 @@ export default function MarcaPage() {
   );
   const brandTopics = brandTopicMaps.find((t) => t.brand === selectedBrand);
 
-  const networkEntries = currentBrand
-    ? (Object.entries(currentBrand.networks) as [Network, NonNullable<BrandData["networks"][Network]>][]).filter(
-        ([, v]) => v != null
-      )
-    : [];
+  const brandSnapshots = accountSnapshots.filter((s) => s.brand === selectedBrand);
+
+  type NetworkEntry = [string, { followers: number; engagementRate: number; posts: number; growth: number; username?: string }];
+
+  const networkEntries: NetworkEntry[] = (() => {
+    if (brandSnapshots.length > 0) {
+      return brandSnapshots.map((s) => [
+        s.network,
+        {
+          followers: s.followers,
+          engagementRate: 0,
+          posts: s.totalPosts,
+          growth: 0,
+          username: s.username,
+        },
+      ] as NetworkEntry);
+    }
+    if (!currentBrand) return [];
+    return (Object.entries(currentBrand.networks) as [Network, NonNullable<BrandData["networks"][Network]>][])
+      .filter(([, v]) => v != null);
+  })();
 
   const totalFollowers = networkEntries.reduce((sum, [, m]) => sum + m.followers, 0);
   const totalPosts = networkEntries.reduce((sum, [, m]) => sum + m.posts, 0);

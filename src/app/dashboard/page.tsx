@@ -17,9 +17,12 @@ import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-da
 import { useClientData } from "@/lib/client-data";
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork, sentimentByBrand, commentTrend, brandEngagement } = useClientData();
+  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork, sentimentByBrand, commentTrend, brandEngagement, accountSnapshots } = useClientData();
 
-  const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
+  const ownSnapshots = accountSnapshots.filter((s) => ownBrands.some((b) => b.brand === s.brand));
+  const totalFollowersOwn = ownSnapshots.length > 0
+    ? ownSnapshots.reduce((s, snap) => s + snap.followers, 0)
+    : ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
     ownBrands.reduce((s, b) => s + getAvgEngagement(b), 0) / ownBrands.length;
   const totalMentions = sovData

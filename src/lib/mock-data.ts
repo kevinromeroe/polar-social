@@ -1,4 +1,4 @@
-export type Network = "instagram" | "facebook" | "tiktok" | "linkedin" | "x";
+export type Network = "instagram" | "facebook" | "tiktok" | "linkedin" | "x" | "reddit";
 
 export interface NetworkMetrics {
   username: string;
@@ -421,6 +421,7 @@ export const networkColors: Record<string, string> = {
   tiktok: "#000000",
   linkedin: "#0A66C2",
   x: "#1DA1F2",
+  reddit: "#FF4500",
 };
 
 export const networkLabels: Record<string, string> = {
@@ -429,6 +430,7 @@ export const networkLabels: Record<string, string> = {
   tiktok: "TikTok",
   linkedin: "LinkedIn",
   x: "X",
+  reddit: "Reddit",
 };
 
 export function formatNumber(n: number): string {
