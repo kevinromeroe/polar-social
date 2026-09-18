@@ -1,4 +1,4 @@
-export type SocialNetwork = "instagram" | "facebook" | "tiktok" | "linkedin" | "x";
+export type SocialNetwork = "instagram" | "facebook" | "tiktok" | "linkedin" | "x" | "reddit";
 export type AccountType = "own" | "competitor";
 
 export interface Client {
@@ -72,6 +72,22 @@ export interface ScrapeRun {
   metadata: Record<string, unknown> | null;
 }
 
+export interface Comment {
+  id: string;
+  post_id: string | null;
+  account_id: string | null;
+  network: string;
+  comment_id_native: string | null;
+  author_username: string | null;
+  author_name: string | null;
+  text: string | null;
+  likes: number;
+  replies_count: number;
+  published_at: string | null;
+  scraped_at: string;
+  raw_data: Record<string, unknown> | null;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -80,6 +96,7 @@ export interface Database {
       account_snapshots: { Row: AccountSnapshot; Insert: Omit<AccountSnapshot, "id" | "created_at">; Update: Partial<AccountSnapshot> };
       posts: { Row: Post; Insert: Omit<Post, "id" | "scraped_at" | "engagement_total">; Update: Partial<Post> };
       scrape_runs: { Row: ScrapeRun; Insert: Omit<ScrapeRun, "id" | "started_at">; Update: Partial<ScrapeRun> };
+      comments: { Row: Comment; Insert: Omit<Comment, "id" | "scraped_at">; Update: Partial<Comment> };
     };
   };
 }

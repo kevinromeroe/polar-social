@@ -1,11 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/components/layout/AuthProvider";
 import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategorySummary, ChartAnnotation, CategoryTrend, BrandTopicMap, MentionVolume, NetworkIntelligence, CompetitorStrategy } from "./mock-data";
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
+import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData } from "./supabase-data";
 
 export interface ClientDataset {
   brands: BrandData[];
@@ -157,11 +158,41 @@ const ClientDataContext = createContext<ClientContextValue>(defaultContext);
 
 export function ClientDataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
+  const [realData, setRealData] = useState<Partial<ClientDataset> | null>(null);
+
+  const loadRealData = useCallback(async () => {
+    try {
+      const [mentions, topPosts, mentionsByNet, sentiment, sov] = await Promise.all([
+        fetchRealMentions(),
+        fetchRealTopPosts(),
+        fetchMentionsByNetwork(),
+        fetchSentimentByBrand(),
+        fetchSOVData(),
+      ]);
+      if (mentions.length > 0 || topPosts.length > 0) {
+        setRealData({
+          mentions: mentions.length > 0 ? mentions : undefined,
+          topPosts: topPosts.length > 0 ? topPosts : undefined,
+          mentionsByNetwork: mentionsByNet.length > 0 ? mentionsByNet : undefined,
+          sentimentByBrand: sentiment.length > 0 ? sentiment : undefined,
+          sovData: sov.length > 0 ? sov : undefined,
+        });
+      }
+    } catch {
+      // Supabase no disponible, se usa mock data
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user?.email) loadRealData();
+  }, [user?.email, loadRealData]);
 
   const baseDataset = useMemo(() => {
     const email = user?.email ?? "";
-    return clients[email] ?? polarDataset;
-  }, [user?.email]);
+    const mock = clients[email] ?? polarDataset;
+    if (!realData || email === "havoline@datalitica.com.co") return mock;
+    return { ...mock, ...Object.fromEntries(Object.entries(realData).filter(([, v]) => v !== undefined)) } as ClientDataset;
+  }, [user?.email, realData]);
 
   const productLineOptions = useMemo<ProductLineOption[]>(() => {
     if (baseDataset.productLineKeys.length <= 1) return [];
