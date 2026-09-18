@@ -218,16 +218,16 @@ export function getAvgEngagement(brand: BrandData): number {
 
 // SOV estimado basado en volumen de posts e interacciones reales en IG
 export const sovData = [
-  { brand: "Van Camp's", mentions: 2530, percentage: 22.2 },
-  { brand: "P.A.N.", mentions: 1809, percentage: 15.9 },
-  { brand: "La Soberana", mentions: 1379, percentage: 12.1 },
-  { brand: "Doria", mentions: 1284, percentage: 11.3 },
-  { brand: "La Muñeca", mentions: 1215, percentage: 10.7 },
-  { brand: "Zenú", mentions: 1156, percentage: 10.1 },
-  { brand: "Isabel", mentions: 1019, percentage: 8.9 },
-  { brand: "La Española", mentions: 798, percentage: 7.0 },
-  { brand: "Comarrico", mentions: 194, percentage: 1.7 },
-  { brand: "Pugliese", mentions: 16, percentage: 0.1 },
+  { brand: "Doria", mentions: 1371, percentage: 29.6 },
+  { brand: "Zenú", mentions: 938, percentage: 20.2 },
+  { brand: "La Soberana", mentions: 637, percentage: 13.7 },
+  { brand: "La Muñeca", mentions: 512, percentage: 11.0 },
+  { brand: "Van Camp's", mentions: 461, percentage: 9.9 },
+  { brand: "Comarrico", mentions: 265, percentage: 5.7 },
+  { brand: "Isabel", mentions: 264, percentage: 5.7 },
+  { brand: "P.A.N.", mentions: 175, percentage: 3.8 },
+  { brand: "Pugliese", mentions: 11, percentage: 0.2 },
+  { brand: "La Española", mentions: 2, percentage: 0.0 },
 ];
 
 // Sentimiento estimado — pendiente análisis NLP de captions reales

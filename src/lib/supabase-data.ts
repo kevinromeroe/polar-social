@@ -17,6 +17,20 @@ function classifySentiment(text: string): "positive" | "neutral" | "negative" {
   return "neutral";
 }
 
+async function fetchAll(table: string, columns: string): Promise<any[]> {
+  const PAGE = 1000;
+  let all: any[] = [];
+  let from = 0;
+  while (true) {
+    const { data } = await sb.from(table).select(columns).range(from, from + PAGE - 1);
+    if (!data || data.length === 0) break;
+    all = all.concat(data);
+    if (data.length < PAGE) break;
+    from += PAGE;
+  }
+  return all;
+}
+
 type AccountRow = { id: string; brand_name: string; account_type: string; product_line: string | null };
 
 async function getAccountMap(): Promise<Record<string, AccountRow>> {
@@ -64,7 +78,7 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
     getAccountMap(),
     sb
       .from("posts")
-      .select("id, caption, likes, comments, shares, views, published_at, network, post_url, account_id")
+      .select("id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data")
       .not("caption", "is", null)
       .not("caption", "eq", "")
       .order("likes", { ascending: false })
@@ -109,6 +123,7 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
       views: p.views || 0,
       date: p.published_at?.split("T")[0] || "2026-09-01",
       url: p.post_url || undefined,
+      imageUrl: p.raw_data?.displayUrl || undefined,
       topComment: commentsByPost[p.id] || undefined,
       _eng: eng,
     };
@@ -123,8 +138,8 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
 }
 
 export async function fetchMentionsByNetwork(): Promise<{ network: string; mentions: number; percentage: number }[]> {
-  const { data } = await sb.from("comments").select("network");
-  if (!data) return [];
+  const data = await fetchAll("comments", "network");
+  if (data.length === 0) return [];
 
   const counts: Record<string, number> = {};
   for (const c of data) {
@@ -143,15 +158,16 @@ export async function fetchMentionsByNetwork(): Promise<{ network: string; menti
 }
 
 export async function fetchSentimentByBrand(): Promise<{ brand: string; positive: number; neutral: number; negative: number }[]> {
-  const [accountMap, { data }] = await Promise.all([
+  const [accountMap, data] = await Promise.all([
     getAccountMap(),
-    sb.from("comments").select("text, account_id").not("text", "is", null).not("text", "eq", ""),
+    fetchAll("comments", "text, account_id"),
   ]);
 
-  if (!data) return [];
+  const filtered = data.filter((c: any) => c.text && c.text.length > 0);
+  if (filtered.length === 0) return [];
 
   const sentiments: Record<string, { positive: number; neutral: number; negative: number }> = {};
-  for (const c of data) {
+  for (const c of filtered) {
     const acc = c.account_id ? accountMap[c.account_id] : null;
     const brand = acc?.brand_name || "Otro";
     if (!sentiments[brand]) sentiments[brand] = { positive: 0, neutral: 0, negative: 0 };
@@ -179,17 +195,12 @@ const MONTH_LABELS: Record<string, string> = {
 export type CommentTrendPoint = { month: string; total: number; positive: number; neutral: number; negative: number };
 
 export async function fetchCommentTrend(): Promise<CommentTrendPoint[]> {
-  const { data } = await sb
-    .from("comments")
-    .select("published_at, text")
-    .not("published_at", "is", null)
-    .not("text", "is", null)
-    .not("text", "eq", "");
-
-  if (!data) return [];
+  const data = await fetchAll("comments", "published_at, text");
+  const filtered = data.filter((c: any) => c.published_at && c.text && c.text.length > 0);
+  if (filtered.length === 0) return [];
 
   const buckets: Record<string, { total: number; positive: number; neutral: number; negative: number }> = {};
-  for (const c of data) {
+  for (const c of filtered) {
     const date = c.published_at?.slice(0, 7);
     if (!date) continue;
     if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
@@ -218,12 +229,12 @@ export type BrandEngagement = {
 };
 
 export async function fetchBrandEngagement(): Promise<BrandEngagement[]> {
-  const [accountMap, { data: posts }] = await Promise.all([
+  const [accountMap, posts] = await Promise.all([
     getAccountMap(),
-    sb.from("posts").select("account_id, likes, comments, shares, views"),
+    fetchAll("posts", "account_id, likes, comments, shares, views"),
   ]);
 
-  if (!posts) return [];
+  if (posts.length === 0) return [];
 
   const brands: Record<string, BrandEngagement> = {};
   for (const p of posts) {
@@ -297,12 +308,12 @@ export async function fetchAccountSnapshots(): Promise<AccountSnapshot[]> {
 }
 
 export async function fetchSOVData(): Promise<{ brand: string; mentions: number; percentage: number }[]> {
-  const [accountMap, { data }] = await Promise.all([
+  const [accountMap, data] = await Promise.all([
     getAccountMap(),
-    sb.from("comments").select("account_id"),
+    fetchAll("comments", "account_id"),
   ]);
 
-  if (!data) return [];
+  if (!data || data.length === 0) return [];
 
   const counts: Record<string, number> = {};
   for (const c of data) {
