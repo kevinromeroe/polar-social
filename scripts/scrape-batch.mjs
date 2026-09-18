@@ -24,7 +24,7 @@ const postsLimit = args.includes("--posts") ? parseInt(args[args.indexOf("--post
 const onlyNetwork = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
 
 const ACTORS = {
-  instagram: "apify~instagram-profile-scraper",
+  instagram: "apify~instagram-scraper",
   facebook: "apify~facebook-pages-scraper",
   tiktok: "clockworks~free-tiktok-scraper",
   x: "apidojo~tweet-scraper",
@@ -98,7 +98,7 @@ async function runApify(actorId, input) {
 function buildInput(net, username) {
   switch (net) {
     case "instagram":
-      return { usernames: [username], resultsLimit: postsLimit, addParentData: true };
+      return { directUrls: [`https://www.instagram.com/${username}/`], resultsType: "posts", resultsLimit: postsLimit };
     case "facebook":
       return { startUrls: [{ url: `https://www.facebook.com/${username}` }], maxPosts: postsLimit, maxComments: 50 };
     case "tiktok":
@@ -112,39 +112,27 @@ function buildInput(net, username) {
 
 // ── Processors ──
 async function processInstagram(items, account, today) {
-  let profileSaved = false, postsSaved = 0;
+  let postsSaved = 0;
   const postCodes = [];
 
   for (const item of items) {
-    if (item.followersCount && !profileSaved) {
-      await sbUpsert("account_snapshots", {
-        account_id: account.id, snapshot_date: today,
-        followers: item.followersCount || 0, following: item.followsCount || 0,
-        total_posts: item.postsCount || 0,
-        raw_data: { fullName: item.fullName, biography: item.biography, verified: item.verified },
+    const sc = item.shortCode || item.id;
+    if (!sc) continue;
+    try {
+      await sbUpsert("posts", {
+        account_id: account.id, network: "instagram", post_id_native: sc,
+        post_url: item.url || `https://www.instagram.com/p/${sc}/`,
+        post_type: item.type || item.productType || "unknown", caption: item.caption || "",
+        likes: item.likesCount || 0, comments: item.commentsCount || 0,
+        shares: 0, views: item.videoViewCount || 0,
+        published_at: item.timestamp ? new Date(item.timestamp).toISOString() : null,
+        raw_data: { ownerUsername: item.ownerUsername, displayUrl: item.displayUrl, isVideo: item.isVideo },
       });
-      profileSaved = true;
-    }
-
-    for (const post of (item.latestPosts || [])) {
-      const sc = post.shortCode || post.id;
-      if (!sc) continue;
-      try {
-        await sbUpsert("posts", {
-          account_id: account.id, network: "instagram", post_id_native: sc,
-          post_url: post.url || `https://www.instagram.com/p/${sc}/`,
-          post_type: post.type || "unknown", caption: post.caption || "",
-          likes: post.likesCount || 0, comments: post.commentsCount || 0,
-          shares: 0, views: post.videoViewCount || 0,
-          published_at: post.timestamp ? new Date(post.timestamp).toISOString() : null,
-          raw_data: { ownerUsername: post.ownerUsername, displayUrl: post.displayUrl, isVideo: post.isVideo },
-        });
-        postsSaved++;
-        if ((post.commentsCount || 0) > 0) postCodes.push(sc);
-      } catch (err) { /* dup */ }
-    }
+      postsSaved++;
+      if ((item.commentsCount || 0) > 0) postCodes.push(sc);
+    } catch (err) { /* dup */ }
   }
-  return { profileSaved, postsSaved, postCodes };
+  return { profileSaved: false, postsSaved, postCodes };
 }
 
 async function scrapeInstagramComments(postCodes, account) {

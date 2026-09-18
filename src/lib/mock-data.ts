@@ -108,8 +108,8 @@ export const brands: BrandData[] = [
     type: "own",
     productLine: null,
     networks: {
-      instagram: { username: "harinapancolombia", followers: 50388, posts: 0, engagementRate: 0.17, growth: 1.2, avgLikes: 78, avgComments: 8, avgShares: 0 },
-      facebook: { username: "HarinaPANColombia", followers: 175278, posts: 28, engagementRate: 0.01, growth: 0.5, avgLikes: 11, avgComments: 1, avgShares: 3 },
+      instagram: { username: "harinapancolombia", followers: 50388, posts: 50, engagementRate: 0.17, growth: 1.2, avgLikes: 78, avgComments: 8, avgShares: 0 },
+      facebook: { username: "HarinaPANColombia", followers: 175278, posts: 43, engagementRate: 0.01, growth: 0.5, avgLikes: 11, avgComments: 1, avgShares: 3 },
     },
   },
   {
@@ -117,10 +117,10 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "alimentosdoria", followers: 60338, posts: 12, engagementRate: 1.37, growth: 2.3, avgLikes: 786, avgComments: 38, avgShares: 0 },
-      facebook: { username: "alimentosdoria", followers: 145074, posts: 0, engagementRate: 0.22, growth: 1.2, avgLikes: 295, avgComments: 5, avgShares: 20 },
-      tiktok: { username: "elbambinodoria", followers: 61000, posts: 0, engagementRate: 13.24, growth: 5.2, avgLikes: 8078, avgComments: 48, avgShares: 380 },
-      x: { username: "AlimentosDoria", followers: 7543, posts: 0, engagementRate: 0.8, growth: 0.3, avgLikes: 5, avgComments: 1, avgShares: 2 },
+      instagram: { username: "alimentosdoria", followers: 60338, posts: 50, engagementRate: 1.37, growth: 2.3, avgLikes: 786, avgComments: 38, avgShares: 0 },
+      facebook: { username: "alimentosdoria", followers: 145074, posts: 15, engagementRate: 0.22, growth: 1.2, avgLikes: 295, avgComments: 5, avgShares: 20 },
+      tiktok: { username: "elbambinodoria", followers: 61000, posts: 50, engagementRate: 13.24, growth: 5.2, avgLikes: 8078, avgComments: 48, avgShares: 380 },
+      x: { username: "AlimentosDoria", followers: 7543, posts: 781, engagementRate: 0.8, growth: 0.3, avgLikes: 5, avgComments: 1, avgShares: 2 },
     },
   },
   {
@@ -128,9 +128,9 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "pastaslamuneca", followers: 45432, posts: 12, engagementRate: 0.30, growth: 0.8, avgLikes: 127, avgComments: 8, avgShares: 0 },
+      instagram: { username: "pastaslamuneca", followers: 45432, posts: 50, engagementRate: 0.30, growth: 0.8, avgLikes: 127, avgComments: 8, avgShares: 0 },
       facebook: { username: "PastasLamunecaOficial", followers: 81915, posts: 39, engagementRate: 0.02, growth: 0.4, avgLikes: 12, avgComments: 1, avgShares: 2 },
-      tiktok: { username: "pastaslamuneca", followers: 16300, posts: 0, engagementRate: 1.43, growth: 1.8, avgLikes: 233, avgComments: 3, avgShares: 4 },
+      tiktok: { username: "pastaslamuneca", followers: 16300, posts: 50, engagementRate: 1.43, growth: 1.8, avgLikes: 233, avgComments: 3, avgShares: 4 },
     },
   },
   {
@@ -138,7 +138,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "productoscomarrico", followers: 5054, posts: 12, engagementRate: 4.55, growth: 1.5, avgLikes: 213, avgComments: 18, avgShares: 0 },
+      instagram: { username: "productoscomarrico", followers: 5054, posts: 50, engagementRate: 4.55, growth: 1.5, avgLikes: 213, avgComments: 18, avgShares: 0 },
       facebook: { username: "productoscomarrico", followers: 1694, posts: 0, engagementRate: 1.28, growth: 0.8, avgLikes: 19, avgComments: 1, avgShares: 1 },
     },
   },
@@ -147,7 +147,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta",
     networks: {
-      instagram: { username: "pugliesepastas", followers: 1511, posts: 0, engagementRate: 2.38, growth: 0.1, avgLikes: 35, avgComments: 1, avgShares: 0 },
+      instagram: { username: "pugliesepastas", followers: 1511, posts: 16, engagementRate: 2.38, growth: 0.1, avgLikes: 35, avgComments: 1, avgShares: 0 },
     },
   },
   {
@@ -155,9 +155,9 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "atunvancamps", followers: 146983, posts: 0, engagementRate: 0.11, growth: 0.5, avgLikes: 165, avgComments: 4, avgShares: 0 },
-      facebook: { username: "AtunVanCamps", followers: 783832, posts: 0, engagementRate: 0.01, growth: 0.3, avgLikes: 90, avgComments: 2, avgShares: 9 },
-      tiktok: { username: "atunvancampsco", followers: 221900, posts: 0, engagementRate: 1.73, growth: 3.1, avgLikes: 3831, avgComments: 9, avgShares: 689 },
+      instagram: { username: "atunvancamps", followers: 146983, posts: 50, engagementRate: 0.11, growth: 0.5, avgLikes: 165, avgComments: 4, avgShares: 0 },
+      facebook: { username: "AtunVanCamps", followers: 783832, posts: 50, engagementRate: 0.01, growth: 0.3, avgLikes: 90, avgComments: 2, avgShares: 9 },
+      tiktok: { username: "atunvancampsco", followers: 221900, posts: 50, engagementRate: 1.73, growth: 3.1, avgLikes: 3831, avgComments: 9, avgShares: 689 },
       x: { username: "atunvancamps", followers: 6187, posts: 796, engagementRate: 0.6, growth: 0.4, avgLikes: 4, avgComments: 1, avgShares: 1 },
     },
   },
@@ -166,8 +166,8 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "zenuoficial", followers: 94623, posts: 12, engagementRate: 1.06, growth: 1.8, avgLikes: 966, avgComments: 41, avgShares: 0 },
-      facebook: { username: "AlimentosZenu", followers: 227819, posts: 0, engagementRate: 0.14, growth: 0.9, avgLikes: 319, avgComments: 2, avgShares: 4 },
+      instagram: { username: "zenuoficial", followers: 94623, posts: 50, engagementRate: 1.06, growth: 1.8, avgLikes: 966, avgComments: 41, avgShares: 0 },
+      facebook: { username: "AlimentosZenu", followers: 227819, posts: 22, engagementRate: 0.14, growth: 0.9, avgLikes: 319, avgComments: 2, avgShares: 4 },
       tiktok: { username: "zenuoficial", followers: 20100, posts: 41, engagementRate: 5.33, growth: 2.4, avgLikes: 1071, avgComments: 5, avgShares: 61 },
       x: { username: "AlimentosZenu", followers: 395, posts: 6, engagementRate: 0.5, growth: 0.1, avgLikes: 1, avgComments: 0, avgShares: 0 },
     },
@@ -177,8 +177,8 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "lasoberanacol", followers: 31934, posts: 0, engagementRate: 25.75, growth: 3.5, avgLikes: 8134, avgComments: 88, avgShares: 0 },
-      facebook: { username: "lasoberanacol", followers: 24188, posts: 0, engagementRate: 0.04, growth: 0.6, avgLikes: 10, avgComments: 0, avgShares: 1 },
+      instagram: { username: "lasoberanacol", followers: 31934, posts: 50, engagementRate: 25.75, growth: 3.5, avgLikes: 8134, avgComments: 88, avgShares: 0 },
+      facebook: { username: "lasoberanacol", followers: 24188, posts: 39, engagementRate: 0.04, growth: 0.6, avgLikes: 10, avgComments: 0, avgShares: 1 },
       tiktok: { username: "lasoberanacol", followers: 9, posts: 0, engagementRate: 0, growth: 0, avgLikes: 0, avgComments: 0, avgShares: 0 },
     },
   },
@@ -187,7 +187,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "atunisabelcol", followers: 8064, posts: 0, engagementRate: 18.22, growth: 2.8, avgLikes: 1453, avgComments: 16, avgShares: 0 },
+      instagram: { username: "atunisabelcol", followers: 8064, posts: 50, engagementRate: 18.22, growth: 2.8, avgLikes: 1453, avgComments: 16, avgShares: 0 },
       facebook: { username: "atunisabelcolombia", followers: 13736, posts: 26, engagementRate: 0.02, growth: 0.2, avgLikes: 2, avgComments: 0, avgShares: 0 },
       x: { username: "AtunIsabelCol", followers: 7, posts: 15, engagementRate: 0, growth: 0, avgLikes: 0, avgComments: 0, avgShares: 0 },
     },
@@ -197,7 +197,7 @@ export const brands: BrandData[] = [
     type: "competitor",
     productLine: "pasta_atun",
     networks: {
-      instagram: { username: "la_espanola_comoninguna", followers: 19844, posts: 0, engagementRate: 0.13, growth: 0.3, avgLikes: 26, avgComments: 0, avgShares: 0 },
+      instagram: { username: "la_espanola_comoninguna", followers: 19844, posts: 5, engagementRate: 0.13, growth: 0.3, avgLikes: 26, avgComments: 0, avgShares: 0 },
       facebook: { username: "atunlaespanola", followers: 550, posts: 0, engagementRate: 0.15, growth: 0.1, avgLikes: 1, avgComments: 0, avgShares: 0 },
     },
   },
