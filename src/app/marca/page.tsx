@@ -26,76 +26,15 @@ const networkIcons: Record<string, React.ComponentType<{ className?: string; siz
   x: FaXTwitter,
 };
 
-function NetworkCard({
-  network,
-  metrics,
-}: {
-  network: string;
-  metrics: { followers: number; posts: number; engagementRate: number; growth: number; avgLikes: number; avgComments: number };
-}) {
-  const GrowthIcon =
-    metrics.growth > 0 ? TrendingUp : metrics.growth < 0 ? TrendingDown : Minus;
-  const growthColor =
-    metrics.growth > 0
-      ? "text-emerald-600"
-      : metrics.growth < 0
-        ? "text-red-500"
-        : "text-gray-400";
+const profileUrlBase: Record<string, string> = {
+  instagram: "https://www.instagram.com/",
+  facebook: "https://www.facebook.com/",
+  tiktok: "https://www.tiktok.com/@",
+  linkedin: "https://www.linkedin.com/company/",
+  x: "https://x.com/",
+};
 
-  const Icon = networkIcons[network];
-
-  return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5">
-      <div className="flex items-center gap-3 mb-4">
-        <div
-          className="w-9 h-9 rounded-lg flex items-center justify-center text-white"
-          style={{ background: networkColors[network] || "#6b7280" }}
-        >
-          {Icon ? <Icon size={18} /> : <span className="text-xs font-bold">{network.slice(0, 2).toUpperCase()}</span>}
-        </div>
-        <p className="text-sm font-semibold text-gray-900">
-          {networkLabels[network] || network}
-        </p>
-      </div>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3">
-        <div>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">
-            Seguidores
-          </p>
-          <p className="text-lg font-bold text-gray-900">
-            {formatNumber(metrics.followers)}
-          </p>
-        </div>
-        <div>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">
-            Engagement
-          </p>
-          <p className="text-lg font-bold text-gray-900">
-            {metrics.engagementRate}%
-          </p>
-        </div>
-        <div>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">
-            Posts
-          </p>
-          <p className="text-sm font-semibold text-gray-700">
-            {metrics.posts}
-          </p>
-        </div>
-        <div>
-          <p className="text-[10px] text-gray-400 uppercase tracking-wide">
-            Crecimiento
-          </p>
-          <p className={`text-sm font-semibold flex items-center gap-1 ${growthColor}`}>
-            <GrowthIcon className="h-3.5 w-3.5" />
-            {metrics.growth > 0 ? "+" : ""}
-            {metrics.growth}%
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
+const topicColors = ["#0d9488", "#6366f1", "#e11d48", "#ea580c", "#0284c7", "#7c3aed", "#ca8a04", "#059669"];
 
 export default function MarcaPage() {
   const { ownBrands, mentions, sentimentByBrand, sentimentCategorySummaries, brandColors, brandTopicMaps, clientDescription, sovData } = useClientData();
@@ -191,92 +130,157 @@ export default function MarcaPage() {
 
       {currentBrand && (
         <div className="space-y-6">
-          {/* Distribución por plataforma — horizontal */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-1">
-              Presencia por plataforma
-            </h3>
-            <p className="text-xs text-gray-400 mb-4">
-              <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span> tiene {formatNumber(totalFollowers)} seguidores en {networkEntries.length} redes y {totalPosts} publicaciones
-            </p>
-            <div className="flex items-center gap-1 h-8 rounded-lg overflow-hidden">
-              {networkEntries.map(([net, metrics]) => {
-                const pct = (metrics.followers / totalFollowers) * 100;
-                const Icon = networkIcons[net];
-                return (
-                  <div
-                    key={net}
-                    className="h-full flex items-center justify-center gap-1.5 px-2 text-white text-[10px] font-medium relative group"
-                    style={{ width: pct + "%", minWidth: 40, background: networkColors[net] || "#6b7280" }}
-                    title={`${networkLabels[net]}: ${formatNumber(metrics.followers)} (${pct.toFixed(0)}%)`}
-                  >
-                    {Icon && <Icon size={12} />}
-                    <span>{pct.toFixed(0)}%</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-              {networkEntries.map(([net, metrics]) => {
-                const Icon = networkIcons[net];
-                return (
-                  <div key={net} className="flex items-center gap-1.5 text-xs text-gray-500">
-                    {Icon && <Icon size={12} color={networkColors[net]} />}
-                    <span>{networkLabels[net]}</span>
-                    <span className="font-semibold text-gray-700">{formatNumber(metrics.followers)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Métricas por red social */}
+          {/* Presencia y métricas por red social — unificado */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
-              Métricas por red social
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-gray-900">
+                Presencia en redes sociales
+              </h3>
+              <p className="text-xs text-gray-400">
+                {formatNumber(totalFollowers)} seguidores &middot; {totalPosts} publicaciones &middot; Snapshot sep 2026
+              </p>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {networkEntries.map(([net, metrics]) => (
-                <NetworkCard key={net} network={net} metrics={metrics} />
-              ))}
+              {networkEntries.map(([net, metrics]) => {
+                const Icon = networkIcons[net];
+                const pct = (metrics.followers / totalFollowers) * 100;
+                const profileUrl = metrics.username ? profileUrlBase[net] + metrics.username : undefined;
+                const GrowthIcon = metrics.growth > 0 ? TrendingUp : metrics.growth < 0 ? TrendingDown : Minus;
+                const growthColor = metrics.growth > 0 ? "text-emerald-600" : metrics.growth < 0 ? "text-red-500" : "text-gray-400";
+
+                return (
+                  <div key={net} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <div className="h-1.5" style={{ background: networkColors[net] || "#6b7280" }} />
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white" style={{ background: networkColors[net] || "#6b7280" }}>
+                            {Icon ? <Icon size={16} /> : <span className="text-[10px] font-bold">{net.slice(0, 2).toUpperCase()}</span>}
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-gray-900">{networkLabels[net] || net}</p>
+                            {metrics.username && (
+                              <p className="text-[10px] text-gray-400">@{metrics.username}</p>
+                            )}
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{pct.toFixed(0)}%</span>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
+                        <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Seguidores</p>
+                          <p className="text-base font-bold text-gray-900">{formatNumber(metrics.followers)}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Engagement</p>
+                          <p className="text-base font-bold text-gray-900">{metrics.engagementRate}%</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Posts</p>
+                          <p className="text-sm font-semibold text-gray-700">{metrics.posts}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Crecimiento</p>
+                          <p className={`text-sm font-semibold flex items-center gap-1 ${growthColor}`}>
+                            <GrowthIcon className="h-3.5 w-3.5" />
+                            {metrics.growth > 0 ? "+" : ""}{metrics.growth}%
+                          </p>
+                        </div>
+                      </div>
+
+                      {profileUrl && (
+                        <a
+                          href={profileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 flex items-center justify-center gap-1.5 text-xs font-medium py-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
+                          style={{ color: networkColors[net] || "#6b7280" }}
+                        >
+                          {Icon && <Icon size={12} />}
+                          Ver perfil
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Mapa de temas de la audiencia */}
-          {brandTopics && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="text-sm font-semibold text-gray-900 mb-1">
-                De qué habla nuestra audiencia
-              </h3>
-              <p className="text-xs text-gray-400 mb-4">
-                Temas principales del contenido de <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span> — qué genera conversación en la categoría
-              </p>
-              <div className="space-y-4">
-                {brandTopics.topics.map((topic, i) => {
-                  const barColor = brandColors[selectedBrand] || "#0d9488";
-                  return (
-                    <div key={i}>
-                      <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-sm font-medium text-gray-800">{topic.topic}</span>
-                        <span className="text-sm font-bold" style={{ color: barColor }}>{topic.percentage}%</span>
+          {/* Mapa de temas de la audiencia — mitad del ancho */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {brandTopics && (
+              <div className="bg-white rounded-xl border border-gray-200 p-5">
+                <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                  De qué habla nuestra audiencia
+                </h3>
+                <p className="text-xs text-gray-400 mb-4">
+                  Temas principales de <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span>
+                </p>
+                <div className="space-y-3">
+                  {brandTopics.topics.map((topic, i) => {
+                    const barColor = topicColors[i % topicColors.length];
+                    return (
+                      <div key={i}>
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: barColor }} />
+                            <span className="text-xs font-medium text-gray-800">{topic.topic}</span>
+                          </div>
+                          <span className="text-xs font-bold" style={{ color: barColor }}>{topic.percentage}%</span>
+                        </div>
+                        <div className="flex h-2.5 rounded-full overflow-hidden bg-gray-100 ml-[18px]">
+                          <div className="rounded-full transition-all" style={{ width: topic.percentage + "%", background: barColor, opacity: 0.75 }} />
+                        </div>
                       </div>
-                      <div className="flex h-3 rounded-full overflow-hidden bg-gray-100">
-                        <div
-                          className="rounded-full transition-all"
-                          style={{ width: topic.percentage + "%", background: barColor, opacity: 0.7 }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
+                <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+                  Distribución temática basada en análisis de contenido publicado.
+                </p>
               </div>
-              <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-                Distribución temática basada en análisis de contenido publicado. Los porcentajes indican la proporción de publicaciones dedicadas a cada tema.
-              </p>
-            </div>
-          )}
+            )}
 
-          {/* Sentimiento + menciones por categoría */}
+            {brandSentiment && (
+              <div className="bg-white rounded-xl border border-gray-200 p-5">
+                <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                  Sentimiento general
+                </h3>
+                <p className="text-xs text-gray-400 mb-4">
+                  Qué dicen de <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span>
+                </p>
+                <div className="flex h-7 rounded-lg overflow-hidden mb-4">
+                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.positive + "%", background: "#10b981" }}>
+                    {brandSentiment.positive > 10 && `${brandSentiment.positive}%`}
+                  </div>
+                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.neutral + "%", background: "#f59e0b" }}>
+                    {brandSentiment.neutral > 10 && `${brandSentiment.neutral}%`}
+                  </div>
+                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.negative + "%", background: "#ef4444" }}>
+                    {brandSentiment.negative > 10 && `${brandSentiment.negative}%`}
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-emerald-600">{brandSentiment.positive}%</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Positivo</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-amber-500">{brandSentiment.neutral}%</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Neutro</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg font-bold text-red-500">{brandSentiment.negative}%</p>
+                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Negativo</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Menciones por categoría de sentimiento */}
           <div className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-1">
@@ -292,56 +296,6 @@ export default function MarcaPage() {
 
             {brandSentiment && (
               <>
-                {/* Tarjeta resumen de sentimiento */}
-                <div className="bg-white rounded-xl border border-gray-200 p-5">
-                  <div className="flex items-center gap-3 mb-4">
-                    <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Sentimiento general</p>
-                  </div>
-                  <div className="flex h-8 rounded-lg overflow-hidden mb-4">
-                    <div
-                      className="flex items-center justify-center text-white text-xs font-bold"
-                      style={{ width: brandSentiment.positive + "%", background: "#10b981" }}
-                    >
-                      {brandSentiment.positive > 10 && `${brandSentiment.positive}%`}
-                    </div>
-                    <div
-                      className="flex items-center justify-center text-white text-xs font-bold"
-                      style={{ width: brandSentiment.neutral + "%", background: "#f59e0b" }}
-                    >
-                      {brandSentiment.neutral > 10 && `${brandSentiment.neutral}%`}
-                    </div>
-                    <div
-                      className="flex items-center justify-center text-white text-xs font-bold"
-                      style={{ width: brandSentiment.negative + "%", background: "#ef4444" }}
-                    >
-                      {brandSentiment.negative > 10 && `${brandSentiment.negative}%`}
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="text-center">
-                      <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-1.5">
-                        <span className="text-lg">+</span>
-                      </div>
-                      <p className="text-xl font-bold text-emerald-600">{brandSentiment.positive}%</p>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Positivo</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-1.5">
-                        <span className="text-lg">=</span>
-                      </div>
-                      <p className="text-xl font-bold text-amber-500">{brandSentiment.neutral}%</p>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Neutro</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-1.5">
-                        <span className="text-lg">&minus;</span>
-                      </div>
-                      <p className="text-xl font-bold text-red-500">{brandSentiment.negative}%</p>
-                      <p className="text-[10px] text-gray-400 uppercase tracking-wide">Negativo</p>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Categorías de sentimiento */}
                 <div className="space-y-4">
                   {(
