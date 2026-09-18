@@ -248,34 +248,32 @@ export default function MarcaPage() {
                 <h3 className="text-sm font-semibold text-gray-900 mb-1">
                   Sentimiento general
                 </h3>
-                <p className="text-xs text-gray-400 mb-4">
+                <p className="text-xs text-gray-400 mb-5">
                   Qué dicen de <span className="font-semibold" style={{ color: brandColors[selectedBrand] || "#0d9488" }}>{selectedBrand}</span>
                 </p>
-                <div className="flex h-7 rounded-lg overflow-hidden mb-4">
-                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.positive + "%", background: "#10b981" }}>
-                    {brandSentiment.positive > 10 && `${brandSentiment.positive}%`}
-                  </div>
-                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.neutral + "%", background: "#f59e0b" }}>
-                    {brandSentiment.neutral > 10 && `${brandSentiment.neutral}%`}
-                  </div>
-                  <div className="flex items-center justify-center text-white text-[10px] font-bold" style={{ width: brandSentiment.negative + "%", background: "#ef4444" }}>
-                    {brandSentiment.negative > 10 && `${brandSentiment.negative}%`}
-                  </div>
+                <div className="space-y-4">
+                  {([
+                    { label: "Positivo", value: brandSentiment.positive, color: "#10b981", textClass: "text-emerald-600" },
+                    { label: "Neutro", value: brandSentiment.neutral, color: "#f59e0b", textClass: "text-amber-500" },
+                    { label: "Negativo", value: brandSentiment.negative, color: "#ef4444", textClass: "text-red-500" },
+                  ] as const).map((s) => (
+                    <div key={s.label}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: s.color }} />
+                          <span className="text-xs font-medium text-gray-700">{s.label}</span>
+                        </div>
+                        <span className={`text-sm font-bold ${s.textClass}`}>{s.value}%</span>
+                      </div>
+                      <div className="flex h-2.5 rounded-full overflow-hidden bg-gray-100 ml-[18px]">
+                        <div className="rounded-full" style={{ width: s.value + "%", background: s.color, opacity: 0.8 }} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-emerald-600">{brandSentiment.positive}%</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Positivo</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-amber-500">{brandSentiment.neutral}%</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Neutro</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg font-bold text-red-500">{brandSentiment.negative}%</p>
-                    <p className="text-[10px] text-gray-400 uppercase tracking-wide">Negativo</p>
-                  </div>
-                </div>
+                <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+                  Basado en menciones encontradas por búsqueda de keywords.
+                </p>
               </div>
             )}
           </div>
