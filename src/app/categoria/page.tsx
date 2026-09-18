@@ -12,6 +12,16 @@ import {
 import { formatNumber, getTotalInteractions, networkColors } from "@/lib/mock-data";
 import type { Network, NetworkIntelligence, CompetitorStrategy } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
+import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter, FaRedditAlien } from "react-icons/fa6";
+
+const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
+  instagram: FaInstagram,
+  facebook: FaFacebookF,
+  tiktok: FaTiktok,
+  linkedin: FaLinkedinIn,
+  x: FaXTwitter,
+  reddit: FaRedditAlien,
+};
 
 const statusConfig: Record<string, { label: string; bg: string; text: string }> = {
   dominante: { label: "Dominante", bg: "bg-emerald-100", text: "text-emerald-800" },
@@ -44,8 +54,8 @@ function NetworkIntelligenceCard({ intel }: { intel: NetworkIntelligence }) {
       <div className="p-5">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: intel.color + "15" }}>
-              <span className="text-sm font-bold" style={{ color: intel.color }}>{intel.label[0]}</span>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white" style={{ background: intel.color }}>
+              {networkIcons[intel.network] ? (() => { const Icon = networkIcons[intel.network]; return <Icon size={20} />; })() : <span className="text-sm font-bold">{intel.label[0]}</span>}
             </div>
             <div>
               <h4 className="text-sm font-semibold text-gray-900">{intel.label}</h4>
