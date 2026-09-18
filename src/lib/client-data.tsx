@@ -6,8 +6,8 @@ import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategoryS
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
-import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement } from "./supabase-data";
-import type { CommentTrendPoint, BrandEngagement } from "./supabase-data";
+import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement, fetchAccountSnapshots } from "./supabase-data";
+import type { CommentTrendPoint, BrandEngagement, AccountSnapshot } from "./supabase-data";
 
 export interface ClientDataset {
   brands: BrandData[];
@@ -31,6 +31,7 @@ export interface ClientDataset {
   competitorStrategies: CompetitorStrategy[];
   commentTrend: CommentTrendPoint[];
   brandEngagement: BrandEngagement[];
+  accountSnapshots: AccountSnapshot[];
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -72,6 +73,7 @@ const polarDataset: ClientDataset = {
   competitorStrategies: polarData.competitorStrategies,
   commentTrend: [],
   brandEngagement: [],
+  accountSnapshots: [],
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -100,6 +102,7 @@ const havolineDataset: ClientDataset = {
   competitorStrategies: havolineData.competitorStrategies,
   commentTrend: [],
   brandEngagement: [],
+  accountSnapshots: [],
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",
@@ -169,7 +172,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
 
   const loadRealData = useCallback(async () => {
     try {
-      const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement] = await Promise.all([
+      const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement, snapshots] = await Promise.all([
         fetchRealMentions(),
         fetchRealTopPosts(),
         fetchMentionsByNetwork(),
@@ -177,6 +180,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         fetchSOVData(),
         fetchCommentTrend(),
         fetchBrandEngagement(),
+        fetchAccountSnapshots(),
       ]);
       if (mentions.length > 0 || topPosts.length > 0) {
         setRealData({
@@ -187,6 +191,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           sovData: sov.length > 0 ? sov : undefined,
           commentTrend: trend.length > 0 ? trend : undefined,
           brandEngagement: engagement.length > 0 ? engagement : undefined,
+          accountSnapshots: snapshots.length > 0 ? snapshots : undefined,
         });
       }
     } catch {

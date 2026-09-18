@@ -244,6 +244,57 @@ export async function fetchBrandEngagement(): Promise<BrandEngagement[]> {
   return Object.values(brands).sort((a, b) => b.totalEngagement - a.totalEngagement);
 }
 
+export type AccountSnapshot = {
+  brand: string;
+  network: string;
+  username: string;
+  followers: number;
+  following: number;
+  totalPosts: number;
+  snapshotDate: string;
+  accountType: string;
+};
+
+export async function fetchAccountSnapshots(): Promise<AccountSnapshot[]> {
+  const { data } = await sb
+    .from("account_snapshots")
+    .select("account_id, followers, following, total_posts, snapshot_date")
+    .order("snapshot_date", { ascending: false });
+
+  if (!data || data.length === 0) return [];
+
+  const [accountMap] = await Promise.all([getAccountMap()]);
+
+  const { data: accounts } = await sb.from("accounts").select("id, brand_name, network, username, account_type");
+  const acctDetails: Record<string, { brand: string; network: string; username: string; accountType: string }> = {};
+  if (accounts) {
+    for (const a of accounts) {
+      acctDetails[a.id] = { brand: a.brand_name, network: a.network, username: a.username, accountType: a.account_type };
+    }
+  }
+
+  const seen = new Set<string>();
+  const results: AccountSnapshot[] = [];
+  for (const s of data) {
+    const key = s.account_id;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const acc = acctDetails[s.account_id];
+    if (!acc) continue;
+    results.push({
+      brand: acc.brand,
+      network: acc.network,
+      username: acc.username,
+      followers: s.followers || 0,
+      following: s.following || 0,
+      totalPosts: s.total_posts || 0,
+      snapshotDate: s.snapshot_date,
+      accountType: acc.accountType,
+    });
+  }
+  return results;
+}
+
 export async function fetchSOVData(): Promise<{ brand: string; mentions: number; percentage: number }[]> {
   const [accountMap, { data }] = await Promise.all([
     getAccountMap(),

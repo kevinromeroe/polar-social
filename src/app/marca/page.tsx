@@ -278,7 +278,7 @@ export default function MarcaPage() {
             )}
           </div>
 
-          {/* Menciones por categoría de sentimiento */}
+          {/* Qué dicen — comentarios reales de personas */}
           <div className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-1">
@@ -288,75 +288,105 @@ export default function MarcaPage() {
                 </span>
               </h3>
               <p className="text-xs text-gray-400">
-                Hallazgos · comentarios reales acumulados jun–sep 2026
+                Hallazgos · comentarios reales de personas acumulados jun–sep 2026
               </p>
             </div>
 
+            {brandMentions.length > 0 && (
+              <div className="bg-white rounded-xl border border-gray-200 p-4">
+                <div className="flex items-center gap-6 text-sm">
+                  <div>
+                    <span className="text-2xl font-bold text-gray-900">{brandMentions.length}</span>
+                    <span className="text-xs text-gray-400 ml-1.5">comentarios analizados</span>
+                  </div>
+                  <div className="flex-1 flex h-3 rounded-full overflow-hidden bg-gray-100">
+                    {brandSentiment && (
+                      <>
+                        <div className="bg-emerald-500" style={{ width: brandSentiment.positive + "%" }} />
+                        <div className="bg-amber-400" style={{ width: brandSentiment.neutral + "%" }} />
+                        <div className="bg-red-500" style={{ width: brandSentiment.negative + "%" }} />
+                      </>
+                    )}
+                  </div>
+                  <div className="flex gap-3 text-[10px] text-gray-500 shrink-0">
+                    {(() => {
+                      const nets: Record<string, number> = {};
+                      for (const m of brandMentions) {
+                        const n = m.network.toLowerCase();
+                        nets[n] = (nets[n] || 0) + 1;
+                      }
+                      return Object.entries(nets)
+                        .sort(([, a], [, b]) => b - a)
+                        .slice(0, 3)
+                        .map(([net, count]) => {
+                          const Icon = networkIcons[net];
+                          return (
+                            <span key={net} className="flex items-center gap-1">
+                              {Icon && <Icon size={10} color={networkColors[net] || "#6b7280"} />}
+                              {count}
+                            </span>
+                          );
+                        });
+                    })()}
+                  </div>
+                </div>
+              </div>
+            )}
+
             {brandSentiment && (
-              <>
-                {/* Categorías de sentimiento */}
-                <div className="space-y-4">
-                  {(
-                    [
-                      { key: "positive" as const, label: "Positivo", accentColor: "#10b981", bgClass: "bg-emerald-50", textClass: "text-emerald-700", borderClass: "border-emerald-200" },
-                      { key: "neutral" as const, label: "Neutro", accentColor: "#f59e0b", bgClass: "bg-amber-50", textClass: "text-amber-700", borderClass: "border-amber-200" },
-                      { key: "negative" as const, label: "Negativo", accentColor: "#ef4444", bgClass: "bg-red-50", textClass: "text-red-700", borderClass: "border-red-200" },
-                    ] as const
-                  ).map(({ key, label, accentColor, bgClass, textClass, borderClass }) => {
-                    const summary = sentimentCategorySummaries[selectedBrand]?.[key];
-                    const categoryMentions = brandMentions.filter((m) => m.sentiment === key);
-                    return (
-                      <div key={key} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                        <div className="flex items-stretch">
-                          <div className="w-1.5 shrink-0" style={{ background: accentColor }} />
-                          <div className="flex-1 p-5">
-                            <div className="flex items-center gap-3 mb-3">
-                              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${bgClass} ${textClass}`}>
-                                {label}
-                              </span>
-                              <span className="text-xs text-gray-400">{categoryMentions.length} menciones</span>
-                            </div>
-                            {summary && (
-                              <p className="text-sm text-gray-600 mb-4 leading-relaxed">{summary}</p>
-                            )}
-                            {categoryMentions.length > 0 ? (
-                              <div className="space-y-3">
-                                {categoryMentions.slice(0, 3).map((m) => {
-                                  const Icon = networkIcons[m.network.toLowerCase()];
-                                  return (
-                                    <div key={m.id} className={`rounded-lg p-4 ${bgClass} border ${borderClass}`}>
-                                      <p className="text-sm text-gray-800 leading-relaxed italic">
-                                        &ldquo;{m.text}&rdquo;
-                                      </p>
-                                      <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-200/50">
-                                        <div className="flex items-center gap-2">
-                                          {Icon && (
-                                            <span className="w-5 h-5 rounded flex items-center justify-center text-white" style={{ background: networkColors[m.network.toLowerCase()] || "#6b7280" }}>
-                                              <Icon size={10} />
-                                            </span>
-                                          )}
-                                          <span className="text-xs font-medium text-gray-700">{m.author}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                          {m.likes > 0 && <span className="text-[10px] text-gray-500">{formatNumber(m.likes)} me gusta</span>}
-                                          <span className="text-[10px] text-gray-400">{m.date}</span>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <p className="text-xs text-gray-400">Sin menciones en esta categoría.</p>
-                            )}
+              <div className="space-y-4">
+                {(
+                  [
+                    { key: "positive" as const, label: "Positivo", accentColor: "#10b981", bgClass: "bg-emerald-50", textClass: "text-emerald-700", borderClass: "border-emerald-200" },
+                    { key: "neutral" as const, label: "Neutro", accentColor: "#f59e0b", bgClass: "bg-amber-50", textClass: "text-amber-700", borderClass: "border-amber-200" },
+                    { key: "negative" as const, label: "Negativo", accentColor: "#ef4444", bgClass: "bg-red-50", textClass: "text-red-700", borderClass: "border-red-200" },
+                  ] as const
+                ).map(({ key, label, accentColor, bgClass, textClass, borderClass }) => {
+                  const categoryMentions = brandMentions.filter((m) => m.sentiment === key);
+                  if (categoryMentions.length === 0) return null;
+                  return (
+                    <div key={key} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                      <div className="flex items-stretch">
+                        <div className="w-1.5 shrink-0" style={{ background: accentColor }} />
+                        <div className="flex-1 p-5">
+                          <div className="flex items-center gap-3 mb-4">
+                            <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${bgClass} ${textClass}`}>
+                              {label}
+                            </span>
+                            <span className="text-xs text-gray-400">{categoryMentions.length} comentarios</span>
+                          </div>
+                          <div className="space-y-3">
+                            {categoryMentions.slice(0, 5).map((m) => {
+                              const Icon = networkIcons[m.network.toLowerCase()];
+                              return (
+                                <div key={m.id} className={`rounded-lg px-4 py-3 ${bgClass} border ${borderClass}`}>
+                                  <p className="text-sm text-gray-800 leading-relaxed">
+                                    &ldquo;{m.text}&rdquo;
+                                  </p>
+                                  <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-500">
+                                    {Icon && (
+                                      <span className="w-4 h-4 rounded flex items-center justify-center text-white" style={{ background: networkColors[m.network.toLowerCase()] || "#6b7280" }}>
+                                        <Icon size={8} />
+                                      </span>
+                                    )}
+                                    <span className="font-medium">{m.author}</span>
+                                    <span>·</span>
+                                    <span>{m.date}</span>
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
-              </>
+                    </div>
+                  );
+                })}
+              </div>
             )}
+            <p className="text-[10px] text-gray-300 leading-relaxed">
+              Hallazgo acumulado · jun–sep 2026. Todos los textos son comentarios reales de usuarios en las publicaciones de la marca. Clasificación por keywords y emojis.
+            </p>
           </div>
         </div>
       )}
