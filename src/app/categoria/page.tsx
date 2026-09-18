@@ -247,8 +247,7 @@ export default function EscuchaActivaPage() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Escucha Activa</h2>
         <p className="text-gray-500 text-sm mt-1">
-          Qué dicen sobre las marcas y la categoría en redes sociales, foros y
-          reseñas
+          Qué dicen sobre las marcas y la categoría a nivel digital
         </p>
       </div>
 
@@ -267,61 +266,47 @@ export default function EscuchaActivaPage() {
             if (!data || data.length === 0) return null;
             const chartData = data.map((d) => ({
               brand: d.brand,
-              percentage: (d as Record<string, unknown>).percentage as number,
+              percentage: Math.round((d as Record<string, unknown>).percentage as number),
+              interactions: d.interactions,
               fill: d.fill,
             }));
-            const leader = chartData[0];
-            const ownInNet = chartData.filter((d) => ownBrands.some((b) => b.brand === d.brand));
-            const ownBest = ownInNet[0];
-            const ownRank = ownBest ? chartData.findIndex((d) => d.brand === ownBest.brand) + 1 : null;
-
-            if (chartData.length <= 2) {
-              return (
-                <div key={net} className="rounded-lg border border-gray-100 p-4">
-                  <p className="text-xs font-semibold text-gray-700 mb-2">{networkLabelsMap[net] || net}</p>
-                  {chartData.map((d) => {
-                    const isOwn = ownBrands.some((b) => b.brand === d.brand);
-                    return (
-                      <div key={d.brand} className="flex items-center justify-between py-1.5">
-                        <span className={`text-sm ${isOwn ? "font-bold" : "font-medium"}`} style={{ color: d.fill }}>{d.brand}</span>
-                        <span className="text-sm font-bold text-gray-900">{d.percentage}%</span>
-                      </div>
-                    );
-                  })}
-                  {chartData.length === 1 && (
-                    <p className="text-[10px] text-gray-400 mt-1">Única marca monitoreada en esta red</p>
-                  )}
-                </div>
-              );
-            }
 
             return (
               <div key={net} className="rounded-lg border border-gray-100 p-4">
-                <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-semibold text-gray-700">{networkLabelsMap[net] || net}</p>
                   <p className="text-[10px] text-gray-400">{chartData.length} marcas</p>
                 </div>
-                <div className="flex h-5 rounded-full overflow-hidden mb-2">
-                  {chartData.slice(0, 5).map((d, i) => (
-                    <div
-                      key={i}
-                      className="h-full flex items-center justify-center text-white text-[9px] font-bold"
-                      style={{ width: d.percentage + "%", minWidth: d.percentage > 5 ? 24 : 0, background: d.fill }}
-                      title={`${d.brand}: ${d.percentage}%`}
-                    >
-                      {d.percentage >= 10 && `${d.percentage}%`}
-                    </div>
-                  ))}
-                </div>
-                <div className="space-y-1">
-                  <p className="text-xs text-gray-600">
-                    <span className="font-semibold" style={{ color: leader.fill }}>{leader.brand}</span> lidera con <span className="font-bold">{leader.percentage}%</span>
-                  </p>
-                  {ownBest && ownBest.brand !== leader.brand && (
-                    <p className="text-xs text-gray-600">
-                      <span className="font-semibold" style={{ color: ownBest.fill }}>{ownBest.brand}</span> está #{ownRank} con <span className="font-bold">{ownBest.percentage}%</span>
-                    </p>
-                  )}
+                {chartData.length > 2 && (
+                  <div className="flex h-6 rounded-full overflow-hidden mb-3">
+                    {chartData.slice(0, 6).map((d, i) => (
+                      <div
+                        key={i}
+                        className="h-full flex items-center justify-center text-white text-[9px] font-bold"
+                        style={{ width: d.percentage + "%", minWidth: d.percentage > 5 ? 24 : 0, background: d.fill }}
+                        title={`${d.brand}: ${d.percentage}%`}
+                      >
+                        {d.percentage >= 8 && `${d.percentage}%`}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="space-y-1.5">
+                  {chartData.map((d) => {
+                    const isOwn = ownBrands.some((b) => b.brand === d.brand);
+                    return (
+                      <div key={d.brand} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: d.fill }} />
+                          <span className={`text-xs ${isOwn ? "font-bold" : "font-medium"} text-gray-700`}>{d.brand}</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className="text-[10px] text-gray-400 tabular-nums">{formatNumber(d.interactions)}</span>
+                          <span className="text-xs font-bold text-gray-900 tabular-nums w-8 text-right">{d.percentage}%</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -396,15 +381,15 @@ export default function EscuchaActivaPage() {
           <p className="text-xs text-gray-400 mb-4">
             Dónde ocurren las conversaciones sobre la categoría
           </p>
-          <div className="flex items-center gap-6">
-            <ResponsiveContainer width="50%" height={200}>
+          <div className="flex items-center gap-8">
+            <ResponsiveContainer width="55%" height={280}>
               <PieChart>
                 <Pie
                   data={networkPieData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={45}
-                  outerRadius={80}
+                  innerRadius={60}
+                  outerRadius={110}
                   paddingAngle={2}
                   dataKey="mentions"
                 >
@@ -425,7 +410,7 @@ export default function EscuchaActivaPage() {
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="space-y-2 flex-1">
+            <div className="space-y-3 flex-1">
               {networkPieData.map((n) => (
                 <div
                   key={n.network}
@@ -433,16 +418,19 @@ export default function EscuchaActivaPage() {
                 >
                   <div className="flex items-center gap-2">
                     <span
-                      className="w-2.5 h-2.5 rounded-full"
+                      className="w-3 h-3 rounded-full"
                       style={{ background: n.color }}
                     />
-                    <span className="text-xs font-medium text-gray-700">
+                    <span className="text-sm font-medium text-gray-700">
                       {n.network}
                     </span>
                   </div>
-                  <span className="text-xs text-gray-400">
-                    {n.percentage}%
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-gray-400 tabular-nums">{formatNumber(n.mentions)}</span>
+                    <span className="text-sm font-bold text-gray-900 tabular-nums">
+                      {Math.round(n.percentage)}%
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
