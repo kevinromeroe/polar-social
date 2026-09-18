@@ -382,7 +382,7 @@ export default function CompetenciaPage() {
           brands={allBrands}
           ownBrands={ownBrands}
           brandColors={brandColors}
-          disclaimer="Snapshot sep 2026 (seguidores, engagement). Reacciones acumuladas jun–sep 2026 (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
+          disclaimer="Seguidores y engagement actuales. Reacciones acumuladas (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
         />
       )}
 
@@ -393,7 +393,7 @@ export default function CompetenciaPage() {
           brands={allBrands}
           ownBrands={ownBrands}
           brandColors={brandColors}
-          disclaimer="Snapshot sep 2026 (seguidores, engagement). Reacciones acumuladas jun–sep 2026 (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
+          disclaimer="Seguidores y engagement actuales. Reacciones acumuladas (likes + comentarios + compartidos). Engagement rate = interacciones / seguidores."
         />
       )}
 

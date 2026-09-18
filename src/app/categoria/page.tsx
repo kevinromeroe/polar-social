@@ -258,7 +258,7 @@ export default function EscuchaActivaPage() {
           Share of Voice por plataforma
         </h3>
         <p className="text-xs text-gray-400 mb-4">
-          Acumulado jun–sep 2026. Quién domina la conversación en cada red — basado en interacciones reales
+          Quién domina la conversación en cada red — basado en interacciones reales
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -329,7 +329,7 @@ export default function EscuchaActivaPage() {
         </div>
 
         <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-          Acumulado jun–sep 2026. Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma.
+          Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma.
         </p>
       </div>
 
@@ -340,7 +340,7 @@ export default function EscuchaActivaPage() {
             Sentimiento por marca
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Hallazgo acumulado jun–sep 2026 · clasificación por keywords y emojis
+            Clasificación por keywords y emojis
           </p>
           <div className="space-y-4">
             {sentimentByBrand.slice(0, 8).map((s) => (
@@ -394,7 +394,7 @@ export default function EscuchaActivaPage() {
             Volumen de menciones por plataforma
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Acumulado jun–sep 2026 · dónde ocurren las conversaciones sobre la categoría
+            Dónde ocurren las conversaciones sobre la categoría
           </p>
           <div className="flex items-center gap-6">
             <ResponsiveContainer width="50%" height={200}>
@@ -532,7 +532,7 @@ export default function EscuchaActivaPage() {
             ))}
           </div>
           <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-            Nivel de prioridad calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca. Datos acumulados jun–sep 2026.
+            Nivel de prioridad calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca.
           </p>
         </div>
       )}

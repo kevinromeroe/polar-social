@@ -344,18 +344,11 @@ export const alerts: AlertData[] = [
   { type: "spike", severity: "info", title: "Zenú lidera engagement en atún", description: "Zenú promedia 966 likes/post, superando a Van Camp's (165) a pesar de tener menos seguidores. Su contenido de comida callejera conecta más.", brand: "Zenú", date: "2026-09-15" },
   { type: "sentiment", severity: "warning", title: "Van Camp's: bajo engagement vs seguidores", description: "Con 147K seguidores, Van Camp's promedia solo 165 likes/post (ER 0.11%). Posible audiencia inactiva o contenido que no conecta.", brand: "Van Camp's", date: "2026-09-15" },
   { type: "growth", severity: "info", title: "Comarrico destaca en engagement de pastas", description: "Comarrico tiene el mayor engagement rate (4.55%) entre competidores de pasta, superando a Doria (1.37%) y La Muñeca (0.30%).", brand: "Comarrico", date: "2026-09-15" },
-  { type: "viral", severity: "critical", title: "Doria arrasa en TikTok: 75M views en un video", description: "El video 'calidad de toda la vida' de Doria alcanzó 75.2M views, 47K likes y 2K shares. Con 61K seguidores y 13.24% ER, Doria lidera TikTok en la categoría pasta. P.A.N. tiene solo 2 seguidores en TikTok.", brand: "Doria", date: "2026-04-10" },
+  { type: "viral", severity: "critical", title: "Doria arrasa en TikTok: 75M views en un video", description: "El video 'calidad de toda la vida' de Doria alcanzó 75.2M views, 47K likes y 2K shares. Con 61K seguidores y 13.24% ER, Doria lidera TikTok en la categoría pasta.", brand: "Doria", date: "2026-04-10" },
   { type: "viral", severity: "warning", title: "Van Camp's lidera TikTok en atún: 222K seguidores", description: "Van Camp's es la marca de atún más fuerte en TikTok con 221.9K seguidores. Su video de ceviche tiene 39.7K likes y 10.6K shares.", brand: "Van Camp's", date: "2026-09-15" },
 ];
 
 export const executiveInsights: ExecutiveInsight[] = [
-  {
-    category: "riesgo",
-    title: "P.A.N. ausente en TikTok",
-    description: "P.A.N. tiene solo 2 seguidores en TikTok mientras Doria acumula 239M de views. La brecha en esta red es crítica para alcanzar audiencia joven (18-34).",
-    metric: "2 seguidores vs 61K de Doria",
-    brands: ["P.A.N.", "Doria"],
-  },
   {
     category: "oportunidad",
     title: "Contenido de recetas genera 42% del engagement",

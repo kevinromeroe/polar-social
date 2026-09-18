@@ -47,28 +47,25 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Seguidores totales</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalFollowersOwn)}</p>
-          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Engagement promedio</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{avgEngOwn.toFixed(1)}%</p>
-          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Comentarios propios</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalMentions)}</p>
-          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Sentimiento neto</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">+{ownSentimentAvg}%</p>
-          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
       </div>
+      <p className="text-[10px] text-gray-300 mb-8">Datos de junio a septiembre 2026.</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="bg-white rounded-xl border border-gray-200 p-5">
@@ -127,7 +124,7 @@ export default function DashboardPage() {
             </BarChart>
           </ResponsiveContainer>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Acumulado jun–sep 2026. Cálculo: total de comentarios públicos en las cuentas de cada marca, dividido entre el total de la categoría.
+            Cálculo: total de comentarios públicos en las cuentas de cada marca, dividido entre el total de la categoría.
           </p>
         </div>
 
@@ -178,7 +175,7 @@ export default function DashboardPage() {
             })}
           </div>
           <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-            Snapshot sep 2026. Se actualiza quincenalmente.
+            Se actualiza quincenalmente.
           </p>
         </div>
       </div>
@@ -255,7 +252,7 @@ export default function DashboardPage() {
             </table>
           </div>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Acumulado jun–sep 2026. Engagement = likes + comentarios + shares. Views se reportan por separado (principalmente TikTok).
+            Engagement = likes + comentarios + shares. Views se reportan por separado (principalmente TikTok).
           </p>
         </div>
       )}

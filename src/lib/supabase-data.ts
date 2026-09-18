@@ -281,6 +281,7 @@ export async function fetchAccountSnapshots(): Promise<AccountSnapshot[]> {
     seen.add(key);
     const acc = acctDetails[s.account_id];
     if (!acc) continue;
+    if (acc.brand === "P.A.N." && acc.network === "tiktok") continue;
     results.push({
       brand: acc.brand,
       network: acc.network,
