@@ -246,70 +246,119 @@ export default function EscuchaActivaPage() {
           Quién domina la conversación en cada red — basado en interacciones reales
         </p>
 
-        {sovNetworks.length > 0 ? (
-          <div className="space-y-5">
-            {sovNetworks.map((net) => {
-              const entries = realSOVByNetwork[net];
-              if (!entries || entries.length === 0) return null;
-              const NetIcon = networkIcons[net];
-              const totalComments = entries.reduce((s, e) => s + e.comments, 0);
-              const maxComments = Math.max(...entries.map((e) => e.comments), 1);
+        {(() => {
+          const networksToShow = sovNetworks.length > 0 ? sovNetworks : [];
+          const hasNetworkData = networksToShow.length > 0;
 
-              return (
-                <div key={net}>
-                  <div className="flex items-center gap-2 mb-2">
-                    {NetIcon && <NetIcon size={14} className="text-gray-500" />}
-                    <span className="text-xs font-bold" style={{ color: networkColors[net] || "#6b7280" }}>
-                      {networkLabelsMap[net] || net}
-                    </span>
-                    <span className="text-[10px] text-gray-400">
-                      {formatNumber(totalComments)} comentarios
-                    </span>
-                  </div>
-                  <div className="rounded-lg border border-gray-100 overflow-hidden">
-                    <table className="w-full text-left">
-                      <thead>
-                        <tr className="border-b border-gray-100 bg-gray-50">
-                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 pl-3 pr-1 w-6">#</th>
-                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2">Marca</th>
-                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-20">Comentarios</th>
-                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-14">SOV</th>
-                          <th className="py-1.5 px-3 w-[35%]"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {entries.map((e, i) => {
-                          const isOwn = ownBrands.some((b) => b.brand === e.brand);
-                          const barW = maxComments > 0 ? Math.max((e.comments / maxComments) * 100, 1) : 1;
-                          return (
-                            <tr key={e.brand} className={`border-b border-gray-50 last:border-0 ${isOwn ? "bg-teal-50/40" : ""}`}>
-                              <td className="text-[10px] text-gray-400 tabular-nums py-1.5 pl-3 pr-1">{i + 1}</td>
-                              <td className="py-1.5 px-2">
-                                <span className={`text-xs ${isOwn ? "font-bold text-teal-700" : "font-medium text-gray-700"}`}>{e.brand}</span>
-                              </td>
-                              <td className="text-xs tabular-nums text-gray-600 py-1.5 px-2 text-right font-medium">{formatNumber(e.comments)}</td>
-                              <td className="text-xs tabular-nums font-bold text-gray-900 py-1.5 px-2 text-right">{e.percentage}%</td>
-                              <td className="py-1.5 px-3">
-                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                  <div className="h-full rounded-full" style={{ width: barW + "%", background: brandColors[e.brand] || "#64748b" }} />
-                                </div>
-                              </td>
+          if (hasNetworkData) {
+            return (
+              <div className="space-y-5">
+                {networksToShow.map((net) => {
+                  const entries = realSOVByNetwork[net];
+                  if (!entries || entries.length === 0) return null;
+                  const NetIcon = networkIcons[net];
+                  const totalComments = entries.reduce((s, e) => s + e.comments, 0);
+                  const maxComments = Math.max(...entries.map((e) => e.comments), 1);
+
+                  return (
+                    <div key={net}>
+                      <div className="flex items-center gap-2 mb-2">
+                        {NetIcon && <NetIcon size={14} className="text-gray-500" />}
+                        <span className="text-xs font-bold" style={{ color: networkColors[net] || "#6b7280" }}>
+                          {networkLabelsMap[net] || net}
+                        </span>
+                        <span className="text-[10px] text-gray-400">
+                          {formatNumber(totalComments)} comentarios
+                        </span>
+                      </div>
+                      <div className="rounded-lg border border-gray-100 overflow-hidden">
+                        <table className="w-full text-left">
+                          <thead>
+                            <tr className="border-b border-gray-100 bg-gray-50">
+                              <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 pl-3 pr-1 w-6">#</th>
+                              <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2">Marca</th>
+                              <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-20">Comentarios</th>
+                              <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-14">SOV</th>
+                              <th className="py-1.5 px-3 w-[35%]"></th>
                             </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                          </thead>
+                          <tbody>
+                            {entries.map((e, i) => {
+                              const isOwn = ownBrands.some((b) => b.brand === e.brand);
+                              const barW = maxComments > 0 ? Math.max((e.comments / maxComments) * 100, 1) : 1;
+                              return (
+                                <tr key={e.brand} className={`border-b border-gray-50 last:border-0 ${isOwn ? "bg-teal-50/40" : ""}`}>
+                                  <td className="text-[10px] text-gray-400 tabular-nums py-1.5 pl-3 pr-1">{i + 1}</td>
+                                  <td className="py-1.5 px-2">
+                                    <span className={`text-xs ${isOwn ? "font-bold text-teal-700" : "font-medium text-gray-700"}`}>{e.brand}</span>
+                                  </td>
+                                  <td className="text-xs tabular-nums text-gray-600 py-1.5 px-2 text-right font-medium">{formatNumber(e.comments)}</td>
+                                  <td className="text-xs tabular-nums font-bold text-gray-900 py-1.5 px-2 text-right">{e.percentage}%</td>
+                                  <td className="py-1.5 px-3">
+                                    <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                      <div className="h-full rounded-full" style={{ width: barW + "%", background: brandColors[e.brand] || "#64748b" }} />
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
+          if (sovData.length > 0) {
+            const maxMentions = Math.max(...sovData.map((s) => s.mentions), 1);
+            return (
+              <div>
+                <div className="rounded-lg border border-gray-100 overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-gray-100 bg-gray-50">
+                        <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 pl-3 pr-1 w-6">#</th>
+                        <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2">Marca</th>
+                        <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-20">Comentarios</th>
+                        <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-14">SOV</th>
+                        <th className="py-1.5 px-3 w-[35%]"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sovData.map((s, i) => {
+                        const isOwn = ownBrands.some((b) => b.brand === s.brand);
+                        const barW = maxMentions > 0 ? Math.max((s.mentions / maxMentions) * 100, 1) : 1;
+                        return (
+                          <tr key={s.brand} className={`border-b border-gray-50 last:border-0 ${isOwn ? "bg-teal-50/40" : ""}`}>
+                            <td className="text-[10px] text-gray-400 tabular-nums py-1.5 pl-3 pr-1">{i + 1}</td>
+                            <td className="py-1.5 px-2">
+                              <span className={`text-xs ${isOwn ? "font-bold text-teal-700" : "font-medium text-gray-700"}`}>{s.brand}</span>
+                            </td>
+                            <td className="text-xs tabular-nums text-gray-600 py-1.5 px-2 text-right font-medium">{formatNumber(s.mentions)}</td>
+                            <td className="text-xs tabular-nums font-bold text-gray-900 py-1.5 px-2 text-right">{s.percentage}%</td>
+                            <td className="py-1.5 px-3">
+                              <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="h-full rounded-full" style={{ width: barW + "%", background: brandColors[s.brand] || "#64748b" }} />
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-xs text-gray-400 italic">Sin datos de comentarios por plataforma.</p>
-        )}
+              </div>
+            );
+          }
+
+          return <p className="text-xs text-gray-400 italic">Cargando datos de comentarios...</p>;
+        })()}
 
         <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-          Basado en comentarios reales scrapeados por plataforma. SOV = comentarios de la marca / total de comentarios en esa red.
+          Basado en comentarios reales scrapeados. SOV = comentarios de la marca / total de comentarios en la categoría.
         </p>
       </div>
 
