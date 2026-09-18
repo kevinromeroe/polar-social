@@ -88,7 +88,7 @@ export default function MarcaPage() {
           {
             followers: s.followers || mockNet?.followers || 0,
             engagementRate: mockNet?.engagementRate ?? 0,
-            posts: s.totalPosts || mockNet?.posts || 0,
+            posts: mockNet?.posts || 0,
             growth: mockNet?.growth ?? 0,
             username: s.username || mockNet?.username,
           },
@@ -164,7 +164,7 @@ export default function MarcaPage() {
                 Presencia en redes sociales
               </h3>
               <p className="text-xs text-gray-400">
-                {formatNumber(totalFollowers)} seguidores · {totalPosts} publicaciones
+                {formatNumber(totalFollowers)} seguidores · {totalPosts} posts analizados
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -204,7 +204,7 @@ export default function MarcaPage() {
                           <p className="text-base font-bold text-gray-900">{metrics.engagementRate}%</p>
                         </div>
                         <div>
-                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Posts</p>
+                          <p className="text-[10px] text-gray-400 uppercase tracking-wide">Posts analizados</p>
                           <p className="text-sm font-semibold text-gray-700">{metrics.posts}</p>
                         </div>
                         <div>

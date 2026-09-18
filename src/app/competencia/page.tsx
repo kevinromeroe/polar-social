@@ -135,7 +135,7 @@ function NetworkTable({
               <SortHeader label="Seguidores" sortId="followers" />
               <SortHeader label="Engagement" sortId="engagement" />
               <SortHeader label="Reacciones" sortId="reactions" />
-              <SortHeader label="Posts" sortId="posts" />
+              <SortHeader label="Posts analizados" sortId="posts" />
               <SortHeader label="Crecimiento" sortId="growth" />
             </tr>
           </thead>
