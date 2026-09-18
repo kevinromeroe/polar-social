@@ -74,20 +74,38 @@ export async function fetchRealMentions(): Promise<MentionData[]> {
 }
 
 export async function fetchRealTopPosts(): Promise<TopPostData[]> {
-  const [accountMap, { data: posts }] = await Promise.all([
+  const [accountMap, allPosts] = await Promise.all([
     getAccountMap(),
-    sb
-      .from("posts")
-      .select("id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data")
-      .not("caption", "is", null)
-      .not("caption", "eq", "")
-      .order("likes", { ascending: false })
-      .limit(100),
+    fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data"),
   ]);
 
-  if (!posts) return [];
+  const posts = allPosts.filter((p: any) => p.caption && p.caption.length > 0);
+  if (posts.length === 0) return [];
 
-  const postIds = posts.map((p: any) => p.id);
+  const grouped: Record<string, { best: any; worst: any }> = {};
+  for (const p of posts) {
+    const acc = p.account_id ? accountMap[p.account_id] : null;
+    const brand = acc?.brand_name || "Desconocido";
+    const net = p.network || "instagram";
+    const key = `${brand}|${net}`;
+    const eng = (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
+    const entry = { ...p, _brand: brand, _eng: eng };
+
+    if (!grouped[key]) {
+      grouped[key] = { best: entry, worst: entry };
+    } else {
+      if (eng > grouped[key].best._eng) grouped[key].best = entry;
+      if (eng < grouped[key].worst._eng) grouped[key].worst = entry;
+    }
+  }
+
+  const selectedPosts: any[] = [];
+  for (const { best, worst } of Object.values(grouped)) {
+    selectedPosts.push(best);
+    if (best.id !== worst.id) selectedPosts.push(worst);
+  }
+
+  const postIds = selectedPosts.map((p: any) => p.id);
   const { data: topComments } = await sb
     .from("comments")
     .select("post_id, author_username, text, likes")
@@ -110,31 +128,30 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
     }
   }
 
-  const mapped = posts.map((p: any) => {
-    const acc = p.account_id ? accountMap[p.account_id] : null;
-    const eng = (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
-    return {
-      brand: acc?.brand_name || "Desconocido",
-      network: (p.network || "instagram") as Network,
-      caption: (p.caption || "").slice(0, 200),
-      likes: p.likes || 0,
-      comments: p.comments || 0,
-      shares: p.shares || 0,
-      views: p.views || 0,
-      date: p.published_at?.split("T")[0] || "2026-09-01",
-      url: p.post_url || undefined,
-      imageUrl: p.raw_data?.displayUrl || undefined,
-      topComment: commentsByPost[p.id] || undefined,
-      _eng: eng,
+  const result: TopPostData[] = [];
+  for (const { best, worst } of Object.values(grouped)) {
+    const mapPost = (p: any, ranking: "best" | "worst") => {
+      const acc = p.account_id ? accountMap[p.account_id] : null;
+      return {
+        brand: acc?.brand_name || "Desconocido",
+        network: (p.network || "instagram") as Network,
+        caption: (p.caption || "").slice(0, 200),
+        likes: p.likes || 0,
+        comments: p.comments || 0,
+        shares: p.shares || 0,
+        views: p.views || 0,
+        date: p.published_at?.split("T")[0] || "2026-09-01",
+        url: p.post_url || undefined,
+        imageUrl: p.raw_data?.displayUrl || undefined,
+        topComment: commentsByPost[p.id] || undefined,
+        ranking,
+      };
     };
-  });
+    result.push(mapPost(best, "best"));
+    if (best.id !== worst.id) result.push(mapPost(worst, "worst"));
+  }
 
-  mapped.sort((a: any, b: any) => b._eng - a._eng);
-  const bestCut = Math.ceil(mapped.length * 0.3);
-  return mapped.map((p: any, i: number) => {
-    const { _eng, ...rest } = p;
-    return { ...rest, ranking: i < bestCut ? "best" as const : "worst" as const };
-  });
+  return result;
 }
 
 export async function fetchMentionsByNetwork(): Promise<{ network: string; mentions: number; percentage: number }[]> {
@@ -330,4 +347,38 @@ export async function fetchSOVData(): Promise<{ brand: string; mentions: number;
       percentage: total > 0 ? Number(((mentions / total) * 100).toFixed(1)) : 0,
     }))
     .sort((a, b) => b.mentions - a.mentions);
+}
+
+export type SOVByNetworkEntry = { brand: string; network: string; comments: number; percentage: number };
+
+export async function fetchSOVByNetwork(): Promise<Record<string, SOVByNetworkEntry[]>> {
+  const [accountMap, data] = await Promise.all([
+    getAccountMap(),
+    fetchAll("comments", "account_id, network"),
+  ]);
+
+  if (!data || data.length === 0) return {};
+
+  const counts: Record<string, Record<string, number>> = {};
+  for (const c of data) {
+    const acc = c.account_id ? accountMap[c.account_id] : null;
+    const brand = acc?.brand_name || "Otro";
+    const net = c.network || "unknown";
+    if (!counts[net]) counts[net] = {};
+    counts[net][brand] = (counts[net][brand] || 0) + 1;
+  }
+
+  const result: Record<string, SOVByNetworkEntry[]> = {};
+  for (const [net, brands] of Object.entries(counts)) {
+    const total = Object.values(brands).reduce((s, n) => s + n, 0);
+    result[net] = Object.entries(brands)
+      .map(([brand, comments]) => ({
+        brand,
+        network: net,
+        comments,
+        percentage: total > 0 ? Number(((comments / total) * 100).toFixed(1)) : 0,
+      }))
+      .sort((a, b) => b.comments - a.comments);
+  }
+  return result;
 }

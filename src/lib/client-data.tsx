@@ -6,8 +6,8 @@ import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategoryS
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
-import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement, fetchAccountSnapshots } from "./supabase-data";
-import type { CommentTrendPoint, BrandEngagement, AccountSnapshot } from "./supabase-data";
+import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement, fetchAccountSnapshots, fetchSOVByNetwork } from "./supabase-data";
+import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry } from "./supabase-data";
 
 export interface ClientDataset {
   brands: BrandData[];
@@ -32,6 +32,7 @@ export interface ClientDataset {
   commentTrend: CommentTrendPoint[];
   brandEngagement: BrandEngagement[];
   accountSnapshots: AccountSnapshot[];
+  sovByNetwork: Record<string, SOVByNetworkEntry[]>;
   productLineLabels: Record<string, string>;
   productLineKeys: string[];
   clientName: string;
@@ -74,6 +75,7 @@ const polarDataset: ClientDataset = {
   commentTrend: [],
   brandEngagement: [],
   accountSnapshots: [],
+  sovByNetwork: {},
   productLineLabels: polarData.productLineLabels,
   productLineKeys: polarData.productLineKeys,
   clientName: "Alimentos Polar",
@@ -103,6 +105,7 @@ const havolineDataset: ClientDataset = {
   commentTrend: [],
   brandEngagement: [],
   accountSnapshots: [],
+  sovByNetwork: {},
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
   clientName: "Havoline",
@@ -152,6 +155,13 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
       brandNamesInLine.has(m.brand) && (!m.productLine || m.productLine === productLine)
     ),
     alerts: dataset.alerts.filter(a => brandNamesInLine.has(a.brand)),
+    sovByNetwork: Object.fromEntries(
+      Object.entries(dataset.sovByNetwork).map(([net, entries]) => {
+        const filtered = entries.filter(e => brandNamesInLine.has(e.brand));
+        const total = filtered.reduce((s, e) => s + e.comments, 0);
+        return [net, filtered.map(e => ({ ...e, percentage: total > 0 ? Number(((e.comments / total) * 100).toFixed(1)) : 0 }))];
+      })
+    ),
     clientDescription: filteredOwnBrands.map(b => b.brand).join(" y "),
   };
 }
@@ -172,7 +182,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
 
   const loadRealData = useCallback(async () => {
     try {
-      const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement, snapshots] = await Promise.all([
+      const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement, snapshots, sovByNet] = await Promise.all([
         fetchRealMentions(),
         fetchRealTopPosts(),
         fetchMentionsByNetwork(),
@@ -181,6 +191,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         fetchCommentTrend(),
         fetchBrandEngagement(),
         fetchAccountSnapshots(),
+        fetchSOVByNetwork(),
       ]);
       if (mentions.length > 0 || topPosts.length > 0) {
         setRealData({
@@ -192,6 +203,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           commentTrend: trend.length > 0 ? trend : undefined,
           brandEngagement: engagement.length > 0 ? engagement : undefined,
           accountSnapshots: snapshots.length > 0 ? snapshots : undefined,
+          sovByNetwork: Object.keys(sovByNet).length > 0 ? sovByNet : undefined,
         });
       }
     } catch {
@@ -210,18 +222,23 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     const merged = { ...mock, ...Object.fromEntries(Object.entries(realData).filter(([, v]) => v !== undefined)) } as ClientDataset;
     if (realData.topPosts && realData.topPosts.length > 0) {
       const realBrands = new Set(realData.topPosts.map(p => p.brand));
-      const mockImageMap: Record<string, string> = {};
+      const mockImagesByBrandNet: Record<string, string[]> = {};
       for (const p of mock.topPosts) {
-        if (p.imageUrl) {
-          const key = `${p.brand}|${p.network}|${p.ranking}`;
-          mockImageMap[key] = p.imageUrl;
+        if (p.imageUrl && p.imageUrl.startsWith("/")) {
+          const key = `${p.brand}|${p.network}`;
+          if (!mockImagesByBrandNet[key]) mockImagesByBrandNet[key] = [];
+          if (!mockImagesByBrandNet[key].includes(p.imageUrl)) mockImagesByBrandNet[key].push(p.imageUrl);
         }
       }
       const realWithImages = realData.topPosts.map(p => {
-        if (!p.imageUrl) {
-          const key = `${p.brand}|${p.network}|${p.ranking}`;
-          const fallback = mockImageMap[key];
-          if (fallback) return { ...p, imageUrl: fallback };
+        const isLocalImage = p.imageUrl && p.imageUrl.startsWith("/");
+        if (!isLocalImage) {
+          const key = `${p.brand}|${p.network}`;
+          const localImages = mockImagesByBrandNet[key];
+          if (localImages && localImages.length > 0) {
+            return { ...p, imageUrl: localImages[0] };
+          }
+          return { ...p, imageUrl: undefined };
         }
         return p;
       });

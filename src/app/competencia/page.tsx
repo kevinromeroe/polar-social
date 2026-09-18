@@ -279,22 +279,28 @@ function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Recor
       </div>
       <div className="p-4">
         <div className="flex gap-4">
-          {(post.imageUrl || post.url) && (
-            <a href={post.url || "#"} target="_blank" rel="noopener noreferrer" className="shrink-0">
-              {post.imageUrl ? (
-                <img
-                  src={post.imageUrl}
-                  alt=""
-                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-gray-100"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gray-100 flex items-center justify-center" style={{ backgroundColor: (brandColors[post.brand] || "#64748b") + "15" }}>
-                  <span style={{ color: brandColors[post.brand] || "#64748b", opacity: 0.5 }}><Icon className="h-8 w-8" /></span>
-                </div>
-              )}
-            </a>
-          )}
+          <a href={post.url || "#"} target="_blank" rel="noopener noreferrer" className="shrink-0">
+            {post.imageUrl ? (
+              <img
+                src={post.imageUrl}
+                alt=""
+                className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover bg-gray-100"
+                loading="lazy"
+                onError={(e) => {
+                  const el = e.currentTarget;
+                  el.style.display = "none";
+                  const fallback = el.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = "flex";
+                }}
+              />
+            ) : null}
+            <div
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-gray-100 items-center justify-center"
+              style={{ backgroundColor: (brandColors[post.brand] || "#64748b") + "15", display: post.imageUrl ? "none" : "flex" }}
+            >
+              <span style={{ color: brandColors[post.brand] || "#64748b", opacity: 0.5 }}><Icon className="h-8 w-8" /></span>
+            </div>
+          </a>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
               <span

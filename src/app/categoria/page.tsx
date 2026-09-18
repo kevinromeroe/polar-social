@@ -9,7 +9,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { formatNumber, getTotalInteractions, networkColors } from "@/lib/mock-data";
+import { formatNumber, networkColors } from "@/lib/mock-data";
 import type { Network, NetworkIntelligence, CompetitorStrategy } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter, FaRedditAlien } from "react-icons/fa6";
@@ -200,7 +200,7 @@ function CompetitorCard({ competitor, brandColor }: { competitor: CompetitorStra
 }
 
 export default function EscuchaActivaPage() {
-  const { sovData, sentimentByBrand, mentionsByNetwork, ownBrands, competitors, brandColors, categoryTrends, networkIntelligence, competitorStrategies } = useClientData();
+  const { sovData, sentimentByBrand, mentionsByNetwork, ownBrands, competitors, brandColors, categoryTrends, networkIntelligence, competitorStrategies, sovByNetwork: realSOVByNetwork } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const sovChartData = sovData.map((s) => ({
@@ -213,16 +213,6 @@ export default function EscuchaActivaPage() {
     color: networkColors[m.network.toLowerCase()] || "#6b7280",
   }));
 
-  const availableNetworks = useMemo(() => {
-    const nets = new Set<Network>();
-    allBrands.forEach((b) => {
-      (Object.keys(b.networks) as Network[]).forEach((n) => {
-        if (b.networks[n]) nets.add(n);
-      });
-    });
-    return Array.from(nets);
-  }, [allBrands]);
-
   const networkLabelsMap: Record<string, string> = {
     instagram: "Instagram",
     facebook: "Facebook",
@@ -231,26 +221,12 @@ export default function EscuchaActivaPage() {
     x: "X",
   };
 
-  const sovByNetwork = useMemo(() => {
-    const result: Record<string, { brand: string; interactions: number; fill: string }[]> = {};
-    for (const net of availableNetworks) {
-      const entries = allBrands
-        .filter((b) => b.networks[net])
-        .map((b) => ({
-          brand: b.brand,
-          interactions: getTotalInteractions(b, net),
-          fill: brandColors[b.brand] || "#64748b",
-        }))
-        .sort((a, b) => b.interactions - a.interactions);
-
-      const total = entries.reduce((s, e) => s + e.interactions, 0);
-      result[net] = entries.map((e) => ({
-        ...e,
-        percentage: total > 0 ? Number(((e.interactions / total) * 100).toFixed(1)) : 0,
-      }));
-    }
-    return result;
-  }, [allBrands, availableNetworks, ownBrands, brandColors]);
+  const sovNetworks = useMemo(() =>
+    Object.keys(realSOVByNetwork).filter(n => n !== "unknown").sort((a, b) => {
+      const order = ["instagram", "facebook", "tiktok", "x", "linkedin"];
+      return order.indexOf(a) - order.indexOf(b);
+    }),
+  [realSOVByNetwork]);
 
   return (
     <ProtectedLayout>
@@ -270,61 +246,70 @@ export default function EscuchaActivaPage() {
           Quién domina la conversación en cada red — basado en interacciones reales
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {availableNetworks.map((net) => {
-            const data = sovByNetwork[net];
-            if (!data || data.length === 0) return null;
-            const chartData = data.map((d) => ({
-              brand: d.brand,
-              percentage: Math.round((d as Record<string, unknown>).percentage as number),
-              interactions: d.interactions,
-              fill: d.fill,
-            }));
+        {sovNetworks.length > 0 ? (
+          <div className="space-y-5">
+            {sovNetworks.map((net) => {
+              const entries = realSOVByNetwork[net];
+              if (!entries || entries.length === 0) return null;
+              const NetIcon = networkIcons[net];
+              const totalComments = entries.reduce((s, e) => s + e.comments, 0);
+              const maxComments = Math.max(...entries.map((e) => e.comments), 1);
 
-            return (
-              <div key={net} className="rounded-lg border border-gray-100 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-xs font-semibold text-gray-700">{networkLabelsMap[net] || net}</p>
-                  <p className="text-[10px] text-gray-400">{chartData.length} marcas</p>
-                </div>
-                {chartData.length > 2 && (
-                  <div className="flex h-6 rounded-full overflow-hidden mb-3">
-                    {chartData.slice(0, 6).map((d, i) => (
-                      <div
-                        key={i}
-                        className="h-full flex items-center justify-center text-white text-[9px] font-bold"
-                        style={{ width: d.percentage + "%", minWidth: d.percentage > 5 ? 24 : 0, background: d.fill }}
-                        title={`${d.brand}: ${d.percentage}%`}
-                      >
-                        {d.percentage >= 8 && `${d.percentage}%`}
-                      </div>
-                    ))}
+              return (
+                <div key={net}>
+                  <div className="flex items-center gap-2 mb-2">
+                    {NetIcon && <NetIcon size={14} className="text-gray-500" />}
+                    <span className="text-xs font-bold" style={{ color: networkColors[net] || "#6b7280" }}>
+                      {networkLabelsMap[net] || net}
+                    </span>
+                    <span className="text-[10px] text-gray-400">
+                      {formatNumber(totalComments)} comentarios
+                    </span>
                   </div>
-                )}
-                <div className="space-y-1.5">
-                  {chartData.map((d) => {
-                    const isOwn = ownBrands.some((b) => b.brand === d.brand);
-                    return (
-                      <div key={d.brand} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: d.fill }} />
-                          <span className={`text-xs ${isOwn ? "font-bold" : "font-medium"} text-gray-700`}>{d.brand}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-[10px] text-gray-400 tabular-nums">{formatNumber(d.interactions)}</span>
-                          <span className="text-xs font-bold text-gray-900 tabular-nums w-8 text-right">{d.percentage}%</span>
-                        </div>
-                      </div>
-                    );
-                  })}
+                  <div className="rounded-lg border border-gray-100 overflow-hidden">
+                    <table className="w-full text-left">
+                      <thead>
+                        <tr className="border-b border-gray-100 bg-gray-50">
+                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 pl-3 pr-1 w-6">#</th>
+                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2">Marca</th>
+                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-20">Comentarios</th>
+                          <th className="text-[10px] font-semibold text-gray-400 uppercase tracking-wide py-1.5 px-2 text-right w-14">SOV</th>
+                          <th className="py-1.5 px-3 w-[35%]"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {entries.map((e, i) => {
+                          const isOwn = ownBrands.some((b) => b.brand === e.brand);
+                          const barW = maxComments > 0 ? Math.max((e.comments / maxComments) * 100, 1) : 1;
+                          return (
+                            <tr key={e.brand} className={`border-b border-gray-50 last:border-0 ${isOwn ? "bg-teal-50/40" : ""}`}>
+                              <td className="text-[10px] text-gray-400 tabular-nums py-1.5 pl-3 pr-1">{i + 1}</td>
+                              <td className="py-1.5 px-2">
+                                <span className={`text-xs ${isOwn ? "font-bold text-teal-700" : "font-medium text-gray-700"}`}>{e.brand}</span>
+                              </td>
+                              <td className="text-xs tabular-nums text-gray-600 py-1.5 px-2 text-right font-medium">{formatNumber(e.comments)}</td>
+                              <td className="text-xs tabular-nums font-bold text-gray-900 py-1.5 px-2 text-right">{e.percentage}%</td>
+                              <td className="py-1.5 px-3">
+                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="h-full rounded-full" style={{ width: barW + "%", background: brandColors[e.brand] || "#64748b" }} />
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-xs text-gray-400 italic">Sin datos de comentarios por plataforma.</p>
+        )}
 
         <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-          Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma.
+          Basado en comentarios reales scrapeados por plataforma. SOV = comentarios de la marca / total de comentarios en esa red.
         </p>
       </div>
 
