@@ -88,22 +88,22 @@ export default function MarcaPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Seguidores totales</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalFollowersOwn)}</p>
-          <p className="text-xs text-gray-400 mt-1">Marcas propias, todas las redes</p>
+          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Engagement promedio</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{avgEngOwn.toFixed(1)}%</p>
-          <p className="text-xs text-gray-400 mt-1">Últimos 30 días</p>
+          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Menciones propias</p>
+          <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Comentarios propios</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalMentions)}</p>
-          <p className="text-xs text-gray-400 mt-1">Veces que se mencionan nuestras marcas</p>
+          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-[10px] font-medium text-gray-400 uppercase tracking-wide">Sentimiento neto</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">+{ownSentimentAvg}%</p>
-          <p className="text-xs text-gray-400 mt-1">% positivo menos % negativo</p>
+          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export default function MarcaPage() {
                 Presencia en redes sociales
               </h3>
               <p className="text-xs text-gray-400">
-                {formatNumber(totalFollowers)} seguidores &middot; {totalPosts} publicaciones &middot; Snapshot sep 2026
+                Snapshot · sep 2026 · {formatNumber(totalFollowers)} seguidores · {totalPosts} publicaciones
               </p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -238,7 +238,7 @@ export default function MarcaPage() {
                   })}
                 </div>
                 <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-                  Distribución temática basada en análisis de contenido publicado.
+                  Hallazgo · basado en análisis de contenido publicado (acumulado jun–sep 2026).
                 </p>
               </div>
             )}
@@ -272,7 +272,7 @@ export default function MarcaPage() {
                   ))}
                 </div>
                 <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-                  Basado en menciones encontradas por búsqueda de keywords.
+                  Hallazgo acumulado · jun–sep 2026. Clasificación por keywords y emojis en comentarios reales.
                 </p>
               </div>
             )}
@@ -288,7 +288,7 @@ export default function MarcaPage() {
                 </span>
               </h3>
               <p className="text-xs text-gray-400">
-                Menciones encontradas por búsqueda de keywords (earned media)
+                Hallazgos · comentarios reales acumulados jun–sep 2026
               </p>
             </div>
 

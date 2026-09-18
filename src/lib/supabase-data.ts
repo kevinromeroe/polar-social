@@ -150,8 +150,51 @@ export async function fetchSentimentByBrand(): Promise<{ brand: string; positive
   }
 
   return Object.entries(sentiments)
-    .map(([brand, s]) => ({ brand, ...s }))
+    .map(([brand, s]) => {
+      const total = s.positive + s.neutral + s.negative;
+      return {
+        brand,
+        positive: total > 0 ? Math.round((s.positive / total) * 100) : 0,
+        neutral: total > 0 ? Math.round((s.neutral / total) * 100) : 0,
+        negative: total > 0 ? Math.round((s.negative / total) * 100) : 0,
+      };
+    })
     .sort((a, b) => (b.positive + b.neutral + b.negative) - (a.positive + a.neutral + a.negative));
+}
+
+const MONTH_LABELS: Record<string, string> = {
+  "01": "Ene", "02": "Feb", "03": "Mar", "04": "Abr", "05": "May", "06": "Jun",
+  "07": "Jul", "08": "Ago", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic",
+};
+
+export type CommentTrendPoint = { month: string; total: number; positive: number; neutral: number; negative: number };
+
+export async function fetchCommentTrend(): Promise<CommentTrendPoint[]> {
+  const { data } = await sb
+    .from("comments")
+    .select("published_at, text")
+    .not("published_at", "is", null)
+    .not("text", "is", null)
+    .not("text", "eq", "");
+
+  if (!data) return [];
+
+  const buckets: Record<string, { total: number; positive: number; neutral: number; negative: number }> = {};
+  for (const c of data) {
+    const date = c.published_at?.slice(0, 7);
+    if (!date) continue;
+    if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
+    buckets[date].total++;
+    const sent = classifySentiment(c.text || "");
+    buckets[date][sent]++;
+  }
+
+  return Object.entries(buckets)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, val]) => ({
+      month: MONTH_LABELS[key.slice(5, 7)] + " " + key.slice(0, 4),
+      ...val,
+    }));
 }
 
 export async function fetchSOVData(): Promise<{ brand: string; mentions: number; percentage: number }[]> {

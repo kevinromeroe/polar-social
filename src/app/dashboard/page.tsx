@@ -10,12 +10,14 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  AreaChart,
+  Area,
 } from "recharts";
-import { getTotalFollowers, getAvgEngagement, formatNumber, sentimentByBrand } from "@/lib/mock-data";
+import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork } = useClientData();
+  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork, sentimentByBrand, commentTrend } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -46,22 +48,22 @@ export default function DashboardPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Seguidores totales</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalFollowersOwn)}</p>
-          <p className="text-xs text-gray-400 mt-1">Marcas propias, todas las redes</p>
+          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Engagement promedio</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{avgEngOwn.toFixed(1)}%</p>
-          <p className="text-xs text-gray-400 mt-1">Últimos 30 días</p>
+          <p className="text-xs text-gray-400 mt-1">Snapshot · sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Menciones propias</p>
+          <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Comentarios propios</p>
           <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(totalMentions)}</p>
-          <p className="text-xs text-gray-400 mt-1">Veces que se mencionan nuestras marcas en redes</p>
+          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
         <div className="bg-white rounded-xl border border-gray-200 p-5">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Sentimiento neto</p>
           <p className="text-2xl font-bold text-emerald-600 mt-1">+{ownSentimentAvg}%</p>
-          <p className="text-xs text-gray-400 mt-1">% positivo menos % negativo</p>
+          <p className="text-xs text-gray-400 mt-1">Acumulado · jun–sep 2026</p>
         </div>
       </div>
 
@@ -122,7 +124,7 @@ export default function DashboardPage() {
             </BarChart>
           </ResponsiveContainer>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
-            Cálculo: total de menciones públicas de cada marca en Instagram, Facebook, TikTok y X durante el período, dividido por el total de menciones de la categoría. Fuente: escucha activa por keywords.
+            Acumulado jun–sep 2026. Cálculo: total de comentarios públicos en las cuentas de cada marca, dividido entre el total de la categoría. Fuente: scraping de comentarios reales.
           </p>
         </div>
 
@@ -173,10 +175,37 @@ export default function DashboardPage() {
             })}
           </div>
           <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-            Snapshot sep 2026 — se actualizará con scraping quincenal para mostrar tendencia de crecimiento.
+            Snapshot sep 2026. Se actualizará con scraping quincenal para mostrar tendencia de crecimiento.
           </p>
         </div>
       </div>
+
+      {commentTrend.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-8">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Tendencia de comentarios
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Volumen mensual y distribución de sentimiento — todas las marcas monitoreadas
+          </p>
+          <ResponsiveContainer width="100%" height={260}>
+            <AreaChart data={commentTrend} margin={{ left: 0, right: 10, top: 5, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#94a3b8" }} />
+              <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} />
+              <Tooltip
+                contentStyle={{ fontSize: 12, borderRadius: 8, border: "1px solid #e2e8f0" }}
+              />
+              <Area type="monotone" dataKey="positive" stackId="1" stroke="#10b981" fill="#10b981" fillOpacity={0.6} name="Positivo" />
+              <Area type="monotone" dataKey="neutral" stackId="1" stroke="#f59e0b" fill="#f59e0b" fillOpacity={0.4} name="Neutro" />
+              <Area type="monotone" dataKey="negative" stackId="1" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} name="Negativo" />
+            </AreaChart>
+          </ResponsiveContainer>
+          <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
+            Tendencia · jun–sep 2026. Clasificación de sentimiento por keywords y emojis sobre comentarios reales scrapeados.
+          </p>
+        </div>
+      )}
 
     </ProtectedLayout>
   );

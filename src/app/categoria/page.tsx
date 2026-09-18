@@ -258,7 +258,7 @@ export default function EscuchaActivaPage() {
           Share of Voice por plataforma
         </h3>
         <p className="text-xs text-gray-400 mb-4">
-          Quién domina la conversación en cada red — basado en interacciones reales (likes + comentarios + compartidos)
+          Acumulado jun–sep 2026. Quién domina la conversación en cada red — basado en interacciones reales
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -329,7 +329,7 @@ export default function EscuchaActivaPage() {
         </div>
 
         <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
-          Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma. Fuente: datos públicos de redes sociales.
+          Acumulado jun–sep 2026. Cálculo: total de interacciones de cada marca en cada plataforma, dividido por el total de la categoría en esa misma plataforma. Fuente: scraping de datos públicos.
         </p>
       </div>
 
@@ -340,7 +340,7 @@ export default function EscuchaActivaPage() {
             Sentimiento por marca
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Distribución positivo / neutral / negativo
+            Hallazgo acumulado jun–sep 2026 · clasificación por keywords y emojis
           </p>
           <div className="space-y-4">
             {sentimentByBrand.slice(0, 8).map((s) => (
@@ -394,7 +394,7 @@ export default function EscuchaActivaPage() {
             Volumen de menciones por plataforma
           </h3>
           <p className="text-xs text-gray-400 mb-4">
-            Dónde ocurren las conversaciones sobre la categoría
+            Acumulado jun–sep 2026 · dónde ocurren las conversaciones sobre la categoría
           </p>
           <div className="flex items-center gap-6">
             <ResponsiveContainer width="50%" height={200}>
