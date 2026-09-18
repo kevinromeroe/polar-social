@@ -17,7 +17,7 @@ import { getTotalFollowers, getAvgEngagement, formatNumber } from "@/lib/mock-da
 import { useClientData } from "@/lib/client-data";
 
 export default function DashboardPage() {
-  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork, sentimentByBrand, commentTrend } = useClientData();
+  const { ownBrands, sovData, clientDescription, brandColors, mentionsByNetwork, sentimentByBrand, commentTrend, brandEngagement } = useClientData();
 
   const totalFollowersOwn = ownBrands.reduce((s, b) => s + getTotalFollowers(b), 0);
   const avgEngOwn =
@@ -203,6 +203,56 @@ export default function DashboardPage() {
           </ResponsiveContainer>
           <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
             Tendencia · jun–sep 2026. Clasificación de sentimiento por keywords y emojis sobre comentarios reales scrapeados.
+          </p>
+        </div>
+      )}
+
+      {brandEngagement.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-8">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Ranking de engagement por marca
+          </h3>
+          <p className="text-xs text-gray-400 mb-4">
+            Total de interacciones acumuladas — todas las marcas monitoreadas
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-gray-100">
+                  <th className="text-left py-2 pr-3 text-xs font-medium text-gray-400">#</th>
+                  <th className="text-left py-2 pr-3 text-xs font-medium text-gray-400">Marca</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-gray-400">Posts</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-gray-400">Likes</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-gray-400">Comentarios</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-gray-400">Shares</th>
+                  <th className="text-right py-2 px-2 text-xs font-medium text-gray-400">Views</th>
+                  <th className="text-right py-2 pl-2 text-xs font-medium text-gray-400">Engagement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {brandEngagement.slice(0, 10).map((b, i) => {
+                  const isOwn = ownBrands.some((ob) => ob.brand === b.brand);
+                  return (
+                    <tr key={b.brand} className={`border-b border-gray-50 ${isOwn ? "bg-blue-50/40" : ""}`}>
+                      <td className="py-2 pr-3 text-xs text-gray-400 font-mono">{i + 1}</td>
+                      <td className="py-2 pr-3 font-medium" style={{ color: brandColors[b.brand] || "#334155" }}>
+                        {b.brand}
+                        {isOwn && <span className="ml-1.5 text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">propia</span>}
+                      </td>
+                      <td className="py-2 px-2 text-right text-gray-600 tabular-nums">{formatNumber(b.posts)}</td>
+                      <td className="py-2 px-2 text-right text-gray-600 tabular-nums">{formatNumber(b.likes)}</td>
+                      <td className="py-2 px-2 text-right text-gray-600 tabular-nums">{formatNumber(b.comments)}</td>
+                      <td className="py-2 px-2 text-right text-gray-600 tabular-nums">{formatNumber(b.shares)}</td>
+                      <td className="py-2 px-2 text-right text-gray-600 tabular-nums">{formatNumber(b.views)}</td>
+                      <td className="py-2 pl-2 text-right font-bold text-gray-900 tabular-nums">{formatNumber(b.totalEngagement)}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-[10px] text-gray-300 mt-3 leading-relaxed">
+            Acumulado jun–sep 2026. Engagement = likes + comentarios + shares. Views se reportan por separado (principalmente TikTok). Fuente: scraping de publicaciones reales.
           </p>
         </div>
       )}

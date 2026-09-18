@@ -96,8 +96,9 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
     }
   }
 
-  return posts.map((p: any) => {
+  const mapped = posts.map((p: any) => {
     const acc = p.account_id ? accountMap[p.account_id] : null;
+    const eng = (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
     return {
       brand: acc?.brand_name || "Desconocido",
       network: (p.network || "instagram") as Network,
@@ -109,7 +110,15 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
       date: p.published_at?.split("T")[0] || "2026-09-01",
       url: p.post_url || undefined,
       topComment: commentsByPost[p.id] || undefined,
+      _eng: eng,
     };
+  });
+
+  mapped.sort((a: any, b: any) => b._eng - a._eng);
+  const bestCut = Math.ceil(mapped.length * 0.3);
+  return mapped.map((p: any, i: number) => {
+    const { _eng, ...rest } = p;
+    return { ...rest, ranking: i < bestCut ? "best" as const : "worst" as const };
   });
 }
 
@@ -195,6 +204,44 @@ export async function fetchCommentTrend(): Promise<CommentTrendPoint[]> {
       month: MONTH_LABELS[key.slice(5, 7)] + " " + key.slice(0, 4),
       ...val,
     }));
+}
+
+export type BrandEngagement = {
+  brand: string;
+  accountType: string;
+  posts: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  views: number;
+  totalEngagement: number;
+};
+
+export async function fetchBrandEngagement(): Promise<BrandEngagement[]> {
+  const [accountMap, { data: posts }] = await Promise.all([
+    getAccountMap(),
+    sb.from("posts").select("account_id, likes, comments, shares, views"),
+  ]);
+
+  if (!posts) return [];
+
+  const brands: Record<string, BrandEngagement> = {};
+  for (const p of posts) {
+    const acc = p.account_id ? accountMap[p.account_id] : null;
+    const brand = acc?.brand_name || "Otro";
+    if (!brands[brand]) {
+      brands[brand] = { brand, accountType: acc?.account_type || "competitor", posts: 0, likes: 0, comments: 0, shares: 0, views: 0, totalEngagement: 0 };
+    }
+    const b = brands[brand];
+    b.posts++;
+    b.likes += p.likes || 0;
+    b.comments += p.comments || 0;
+    b.shares += p.shares || 0;
+    b.views += p.views || 0;
+    b.totalEngagement += (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
+  }
+
+  return Object.values(brands).sort((a, b) => b.totalEngagement - a.totalEngagement);
 }
 
 export async function fetchSOVData(): Promise<{ brand: string; mentions: number; percentage: number }[]> {
