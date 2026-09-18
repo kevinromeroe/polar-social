@@ -76,17 +76,20 @@ export default function MarcaPage() {
   type NetworkEntry = [string, { followers: number; engagementRate: number; posts: number; growth: number; username?: string }];
 
   const networkEntries: NetworkEntry[] = (() => {
-    if (brandSnapshots.length > 0) {
-      return brandSnapshots.map((s) => [
-        s.network,
-        {
-          followers: s.followers,
-          engagementRate: 0,
-          posts: s.totalPosts,
-          growth: 0,
-          username: s.username,
-        },
-      ] as NetworkEntry);
+    if (brandSnapshots.length > 0 && currentBrand) {
+      return brandSnapshots.map((s) => {
+        const mockNet = currentBrand.networks[s.network as Network];
+        return [
+          s.network,
+          {
+            followers: s.followers,
+            engagementRate: mockNet?.engagementRate ?? 0,
+            posts: s.totalPosts,
+            growth: mockNet?.growth ?? 0,
+            username: s.username,
+          },
+        ] as NetworkEntry;
+      });
     }
     if (!currentBrand) return [];
     return (Object.entries(currentBrand.networks) as [Network, NonNullable<BrandData["networks"][Network]>][])
@@ -301,8 +304,8 @@ export default function MarcaPage() {
             )}
           </div>
 
-          {/* Qué dicen — comentarios reales de personas */}
-          <div className="space-y-5">
+          {/* Qué dicen — comentarios reales de personas (mín 5 para mostrar) */}
+          {brandMentions.length >= 5 && <div className="space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-gray-900 mb-1">
                 Qué dicen de{" "}
@@ -410,7 +413,7 @@ export default function MarcaPage() {
             <p className="text-[10px] text-gray-300 leading-relaxed">
               Todos los textos son comentarios reales de usuarios en las publicaciones de la marca. Clasificación por keywords y emojis.
             </p>
-          </div>
+          </div>}
         </div>
       )}
     </ProtectedLayout>
