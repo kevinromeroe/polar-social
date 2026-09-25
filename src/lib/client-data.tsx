@@ -162,7 +162,14 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
         return [net, filtered.map(e => ({ ...e, percentage: total > 0 ? Number(((e.comments / total) * 100).toFixed(1)) : 0 }))];
       })
     ),
-    clientDescription: filteredOwnBrands.map(b => b.brand).join(" y "),
+    brandTopicMaps: dataset.brandTopicMaps.filter(b => brandNamesInLine.has(b.brand)),
+    categoryTrends: dataset.categoryTrends.filter(() => !productLine.startsWith("mascotas_")),
+    networkIntelligence: dataset.networkIntelligence.filter(() => !productLine.startsWith("mascotas_")),
+    competitorStrategies: dataset.competitorStrategies.filter(s => brandNamesInLine.has(s.brand)),
+    sentimentCategorySummaries: Object.fromEntries(
+      Object.entries(dataset.sentimentCategorySummaries).filter(([brand]) => brandNamesInLine.has(brand))
+    ),
+    clientDescription: filteredOwnBrands.length > 0 ? filteredOwnBrands.map(b => b.brand).join(" y ") : filteredCompetitors.slice(0, 2).map(b => b.brand).join(", "),
   };
 }
 

@@ -17,6 +17,15 @@ function classifySentiment(text: string): "positive" | "neutral" | "negative" {
   return "neutral";
 }
 
+function extractFbImage(raw: any): string | undefined {
+  if (!raw?.media || !Array.isArray(raw.media)) return undefined;
+  for (const m of raw.media) {
+    if (m.image?.uri) return m.image.uri;
+    if (m.thumbnail) return m.thumbnail;
+  }
+  return undefined;
+}
+
 async function fetchAll(table: string, columns: string): Promise<any[]> {
   const PAGE = 1000;
   let all: any[] = [];
@@ -142,7 +151,7 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
         views: p.views || 0,
         date: p.published_at?.split("T")[0] || "2026-09-01",
         url: p.post_url || undefined,
-        imageUrl: p.raw_data?.displayUrl || undefined,
+        imageUrl: p.raw_data?.displayUrl || extractFbImage(p.raw_data) || undefined,
         topComment: commentsByPost[p.id] || undefined,
         ranking,
       };
