@@ -4,10 +4,10 @@ import type { MentionData, TopPostData, TopComment, Network } from "./mock-data"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const sb = supabase as any;
 
-const POSITIVE_WORDS = /delicioso|deliciosa|rico|rica|excelente|perfecto|perfecta|increíble|divino|divina|bueno|buena|genial|maravill|espectacular|mejor|favorit|encanta|amo|hermoso|hermosa|buen/i;
-const NEGATIVE_WORDS = /malo|mala|horrible|terrible|asco|pésimo|pésima|feo|fea|peor|odio|decepcion|basura|fraude/i;
-const POSITIVE_EMOJI = /😍|🤤|😋|❤️|💛|💙|🔥|👏|✨|🥰|💯|👌|😊|🙌|💪|😎|🫶/;
-const NEGATIVE_EMOJI = /😡|👎|💔|😤|🤮|😠|😞|😢|💩/;
+const POSITIVE_WORDS = /delicioso|deliciosa|rico|rica|excelente|perfecto|perfecta|increíble|divino|divina|bueno|buena|genial|maravill|espectacular|mejor|favorit|encanta|amo|hermoso|hermosa|buen|sabroso|sabrosa|riquísim|exquisit|fantástic|recomiendo|recomendad|me gusta|me encanta|lo máximo|de calidad|súper|super bien|nutritiv|salud|practico|práctico|fácil|rendidor/i;
+const NEGATIVE_WORDS = /malo|mala|horrible|terrible|asco|pésimo|pésima|feo|fea|peor|odio|decepcion|basura|fraude|caro|cara\b|costoso|costosa|no me gust|no sirv|no rind|no vale|no encuentr|no hay\b|agotad|mediocre|regular\b|desagradabl|grumo|seco\b|seca\b|duro\b|dura\b|vencid|caducad|dañad|porquería|mugr|sucio|sucia|engaño|estafa|queja|reclam|decepcionan|lástima|lastima|enferm|intoxica|dolor de|mal sabor|mal olor|no compren|no compr[eé]|subió|aumentó|inflación|escas|desabastecer|no recomien|perjudic|tóxico|tóxic|nocivo|insípid|desabrid|químic|artificial|aburrido|aburrida|desperdicio|botaron|tirar a la basura|echó a perder/i;
+const POSITIVE_EMOJI = /😍|🤤|😋|❤️|💛|💙|🔥|👏|✨|🥰|💯|👌|😊|🙌|💪|😎|🫶|😻|🐾❤|♥️|💕|💖|🎉|👍/;
+const NEGATIVE_EMOJI = /😡|👎|💔|😤|🤮|😠|😞|😢|💩|🙄|😒|😖|😣|😩|😫|🤢|🚫|⚠️|❌/;
 
 const HTML_ENTITIES: Record<string, string> = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#x27;": "'", "&#x2F;": "/" };
 function cleanText(raw: string): string {
