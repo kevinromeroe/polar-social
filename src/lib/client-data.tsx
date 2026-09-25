@@ -200,7 +200,8 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         fetchAccountSnapshots(),
         fetchSOVByNetwork(),
       ]);
-      if (mentions.length > 0 || topPosts.length > 0) {
+      const hasAny = mentions.length > 0 || topPosts.length > 0 || mentionsByNet.length > 0 || sentiment.length > 0 || sov.length > 0 || trend.length > 0 || engagement.length > 0 || snapshots.length > 0 || Object.keys(sovByNet).length > 0;
+      if (hasAny) {
         setRealData({
           mentions: mentions.length > 0 ? mentions : undefined,
           topPosts: topPosts.length > 0 ? topPosts : undefined,
@@ -226,7 +227,28 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     const email = user?.email ?? "";
     const mock = clients[email] ?? polarDataset;
     if (!realData || email === "havoline@datalitica.com.co") return mock;
-    const merged = { ...mock, ...Object.fromEntries(Object.entries(realData).filter(([, v]) => v !== undefined)) } as ClientDataset;
+    const merged = { ...mock } as ClientDataset;
+
+    if (realData.mentions && realData.mentions.length > 0) merged.mentions = realData.mentions;
+    if (realData.mentionsByNetwork && realData.mentionsByNetwork.length > 0) merged.mentionsByNetwork = realData.mentionsByNetwork;
+    if (realData.commentTrend && realData.commentTrend.length > 0) merged.commentTrend = realData.commentTrend;
+    if (realData.brandEngagement && realData.brandEngagement.length > 0) merged.brandEngagement = realData.brandEngagement;
+    if (realData.accountSnapshots && realData.accountSnapshots.length > 0) merged.accountSnapshots = realData.accountSnapshots;
+    if (realData.sovByNetwork && Object.keys(realData.sovByNetwork).length > 0) merged.sovByNetwork = realData.sovByNetwork;
+
+    if (realData.sentimentByBrand && realData.sentimentByBrand.length > 0) {
+      const realBrandsSent = new Set(realData.sentimentByBrand.map(s => s.brand));
+      const mockMissing = mock.sentimentByBrand.filter(s => !realBrandsSent.has(s.brand));
+      merged.sentimentByBrand = [...realData.sentimentByBrand, ...mockMissing];
+    }
+    if (realData.sovData && realData.sovData.length > 0) {
+      const realBrandsSov = new Set(realData.sovData.map(s => s.brand));
+      const mockMissing = mock.sovData.filter(s => !realBrandsSov.has(s.brand));
+      const combined = [...realData.sovData, ...mockMissing];
+      const total = combined.reduce((s, e) => s + e.mentions, 0);
+      merged.sovData = combined.map(e => ({ ...e, percentage: total > 0 ? Number(((e.mentions / total) * 100).toFixed(1)) : 0 })).sort((a, b) => b.mentions - a.mentions);
+    }
+
     if (realData.topPosts && realData.topPosts.length > 0) {
       const realBrands = new Set(realData.topPosts.map(p => p.brand));
       const mockImagesByBrandNet: Record<string, string[]> = {};

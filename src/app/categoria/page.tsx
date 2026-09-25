@@ -219,12 +219,13 @@ export default function EscuchaActivaPage() {
     tiktok: "TikTok",
     linkedin: "LinkedIn",
     x: "X",
+    reddit: "Reddit",
   };
 
   const sovNetworks = useMemo(() =>
     Object.keys(realSOVByNetwork).filter(n => n !== "unknown").sort((a, b) => {
-      const order = ["instagram", "facebook", "tiktok", "x", "linkedin"];
-      return order.indexOf(a) - order.indexOf(b);
+      const order = ["instagram", "facebook", "tiktok", "x", "reddit", "linkedin"];
+      return (order.indexOf(a) === -1 ? 99 : order.indexOf(a)) - (order.indexOf(b) === -1 ? 99 : order.indexOf(b));
     }),
   [realSOVByNetwork]);
 
