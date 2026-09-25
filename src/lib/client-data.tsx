@@ -8,7 +8,7 @@ import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
 import { fetchAllRealData } from "./supabase-data";
 import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry } from "./supabase-data";
-import { supabase } from "./supabase";
+
 
 export interface ClientDataset {
   brands: BrandData[];
@@ -190,19 +190,6 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
 
   const loadRealData = useCallback(async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        console.warn("[Supabase] No hay sesión autenticada activa");
-        return;
-      }
-      const tokenExp = session.expires_at ? new Date(session.expires_at * 1000) : null;
-      const isExpired = tokenExp && tokenExp < new Date();
-      if (isExpired) {
-        const { error: refreshErr } = await supabase.auth.refreshSession();
-        if (refreshErr) {
-          console.warn("[Supabase] No se pudo refrescar token:", refreshErr.message);
-        }
-      }
       const result = await fetchAllRealData();
       const counts = {
         mentions: result.mentions.length, topPosts: result.topPosts.length,
@@ -226,7 +213,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           sovByNetwork: Object.keys(result.sovByNetwork).length > 0 ? result.sovByNetwork : undefined,
         });
       } else {
-        console.warn("[Supabase] Todas las consultas retornaron vacío - verificar RLS policies");
+        console.warn("[Supabase] Todas las consultas retornaron vacío");
       }
     } catch (err) {
       console.error("[Supabase] Error cargando datos:", err);
