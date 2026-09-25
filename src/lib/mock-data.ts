@@ -502,9 +502,10 @@ export const sentimentCategorySummaries: Record<string, SentimentCategorySummary
 export const productLineLabels: Record<string, string> = {
   pasta: "Pasta",
   pasta_atun: "Atún",
+  mascotas: "Mascotas",
 };
 
-export const productLineKeys = ["pasta", "pasta_atun"];
+export const productLineKeys = ["pasta", "pasta_atun", "mascotas"];
 
 export const chartAnnotations: ChartAnnotation[] = [
   { date: "Sep", brand: "P.A.N.", text: "Datos reales confirmados via Apify (IG + FB + TikTok + X)" },

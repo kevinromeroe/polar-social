@@ -6,16 +6,24 @@ import {
   Star,
   Swords,
   Ear,
+  Lightbulb,
   LogOut,
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { useAuth } from "./AuthProvider";
 import { useClientData } from "@/lib/client-data";
 
-const navigation = [
-  { name: "Nuestras Marcas", href: "/marca", icon: Star },
+const baseNavigation = [
   { name: "Competencia", href: "/competencia", icon: Swords },
   { name: "Escucha Activa", href: "/categoria", icon: Ear },
+  { name: "Nuestras Marcas", href: "/marca", icon: Star },
+];
+
+const mascotasNavigation = [
+  { name: "Competencia", href: "/competencia", icon: Swords },
+  { name: "Escucha Activa", href: "/categoria", icon: Ear },
+  { name: "Radar Innovacion", href: "/innovacion", icon: Lightbulb },
+  { name: "Nuestras Marcas", href: "/marca", icon: Star },
 ];
 
 export function Sidebar() {
@@ -49,7 +57,7 @@ export function Sidebar() {
       {hasMultipleProductLines && (
         <div className="mx-3 mt-4 mb-3 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50">
           <p className="text-[10px] text-white uppercase tracking-wider mb-2 px-1">Categoría</p>
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-3 gap-1.5">
             {productLineOptions.map((opt) => (
               <button
                 key={opt.key}
@@ -68,7 +76,7 @@ export function Sidebar() {
       )}
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navigation.map((item) => {
+        {(selectedProductLine === "mascotas" ? mascotasNavigation : baseNavigation).map((item) => {
           const isActive = pathname?.startsWith(item.href);
           return (
             <Link
