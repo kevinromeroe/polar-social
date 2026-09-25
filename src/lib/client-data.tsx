@@ -118,7 +118,7 @@ const clients: Record<string, ClientDataset> = {
 };
 
 function filterDatasetByProductLine(dataset: ClientDataset, productLine: string): ClientDataset {
-  const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine || b.productLine === null);
+  const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine || (b.productLine === null && !productLine.startsWith("mascotas_")));
   const filteredCompetitors = dataset.competitors.filter(b => b.productLine === productLine);
   const brandNamesInLine = new Set(
     [...filteredOwnBrands, ...filteredCompetitors].map(b => b.brand)
