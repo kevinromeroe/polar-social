@@ -8,18 +8,20 @@ import {
   Ear,
   Lightbulb,
   LogOut,
+  PawPrint,
+  UtensilsCrossed,
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { useAuth } from "./AuthProvider";
 import { useClientData } from "@/lib/client-data";
 
-const alimentosNavigation = [
+const alimentosLinks = [
   { name: "Competencia", href: "/competencia", icon: Swords },
   { name: "Escucha Activa", href: "/categoria", icon: Ear },
   { name: "Nuestras Marcas", href: "/marca", icon: Star },
 ];
 
-const mascotasNavigation = [
+const mascotasLinks = [
   { name: "Radar Innovacion", href: "/innovacion", icon: Lightbulb },
 ];
 
@@ -34,7 +36,8 @@ export function Sidebar() {
     router.replace("/login");
   };
 
-  const navigation = selectedProductLine === "mascotas" ? mascotasNavigation : alimentosNavigation;
+  const alimentosOptions = productLineOptions.filter(o => o.key !== "mascotas");
+  const hasMascotas = productLineOptions.some(o => o.key === "mascotas");
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col">
@@ -53,52 +56,92 @@ export function Sidebar() {
         </div>
       </div>
 
-      {hasMultipleProductLines && (
-        <div className="mx-3 mt-4 mb-3 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50">
-          <p className="text-[10px] text-white uppercase tracking-wider mb-2 px-1">Categoria</p>
-          <div className="flex flex-col gap-1.5">
-            {productLineOptions.map((opt) => (
-              <button
-                key={opt.key}
-                onClick={() => {
-                  setSelectedProductLine(opt.key);
-                  if (opt.key === "mascotas") {
-                    router.push("/innovacion");
-                  } else if (pathname === "/innovacion") {
-                    router.push("/competencia");
-                  }
-                }}
-                className={`px-3 py-2.5 rounded-lg text-sm font-semibold text-left transition-colors ${
-                  selectedProductLine === opt.key
-                    ? "bg-white text-slate-900 shadow-md"
-                    : "bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-white"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
+      <nav className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+        {/* Alimentos section */}
+        <div>
+          <div className="flex items-center gap-2 px-3 mb-2">
+            <UtensilsCrossed className="h-3.5 w-3.5 text-slate-500" />
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Alimentos</p>
+          </div>
+
+          {hasMultipleProductLines && alimentosOptions.length > 1 && (
+            <div className="flex gap-1 mx-2 mb-2 p-1 rounded-lg bg-slate-800/80">
+              {alimentosOptions.map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => {
+                    setSelectedProductLine(opt.key);
+                    if (pathname === "/innovacion") {
+                      router.push("/competencia");
+                    }
+                  }}
+                  className={`flex-1 px-2 py-1.5 rounded-md text-xs font-semibold text-center transition-colors ${
+                    selectedProductLine === opt.key
+                      ? "bg-slate-600 text-white shadow-sm"
+                      : "text-slate-400 hover:text-slate-300"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="space-y-0.5">
+            {alimentosLinks.map((item) => {
+              const isActive = pathname?.startsWith(item.href);
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  onClick={() => {
+                    if (selectedProductLine === "mascotas" && alimentosOptions.length > 0) {
+                      setSelectedProductLine(alimentosOptions[0].key);
+                    }
+                  }}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    isActive && selectedProductLine !== "mascotas"
+                      ? "bg-teal-600 text-white"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`}
+                >
+                  <item.icon className="h-4.5 w-4.5 shrink-0" />
+                  {item.name}
+                </Link>
+              );
+            })}
           </div>
         </div>
-      )}
 
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {navigation.map((item) => {
-          const isActive = pathname?.startsWith(item.href);
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? "bg-teal-600 text-white"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              <item.icon className="h-5 w-5 shrink-0" />
-              {item.name}
-            </Link>
-          );
-        })}
+        {/* Mascotas section */}
+        {hasMascotas && (
+          <div>
+            <div className="flex items-center gap-2 px-3 mb-2">
+              <PawPrint className="h-3.5 w-3.5 text-slate-500" />
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Mascotas</p>
+            </div>
+            <div className="space-y-0.5">
+              {mascotasLinks.map((item) => {
+                const isActive = pathname?.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setSelectedProductLine("mascotas")}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive && selectedProductLine === "mascotas"
+                        ? "bg-teal-600 text-white"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                    }`}
+                  >
+                    <item.icon className="h-4.5 w-4.5 shrink-0" />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className="p-4 border-t border-slate-700/50">
