@@ -68,20 +68,12 @@ async function getAccountMap(): Promise<Record<string, AccountRow>> {
 }
 
 export async function fetchRealMentions(): Promise<MentionData[]> {
-  const [accountMap, commentsResult] = await Promise.all([
+  const [accountMap, comments] = await Promise.all([
     getAccountMap(),
-    sb
-      .from("comments")
-      .select("id, text, author_username, likes, published_at, network, account_id")
-      .not("text", "is", null)
-      .not("text", "eq", "")
-      .order("published_at", { ascending: false })
-      .limit(500),
+    fetchAll("comments", "id, text, author_username, likes, published_at, network, account_id"),
   ]);
 
-  const { data: comments, error: commentsError } = commentsResult;
-  if (commentsError) console.warn("[Supabase] fetchRealMentions:", commentsError.message);
-  if (!comments) return [];
+  if (!comments || comments.length === 0) return [];
 
   type CommentItem = { acc: AccountRow | null; text: string; net: string; raw: any };
   const mapped: CommentItem[] = comments
