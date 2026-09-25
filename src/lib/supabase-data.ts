@@ -31,7 +31,8 @@ async function fetchAll(table: string, columns: string): Promise<any[]> {
   let all: any[] = [];
   let from = 0;
   while (true) {
-    const { data } = await sb.from(table).select(columns).range(from, from + PAGE - 1);
+    const { data, error } = await sb.from(table).select(columns).range(from, from + PAGE - 1);
+    if (error) { console.warn(`[Supabase] fetchAll ${table}:`, error.message); break; }
     if (!data || data.length === 0) break;
     all = all.concat(data);
     if (data.length < PAGE) break;
@@ -50,7 +51,7 @@ async function getAccountMap(): Promise<Record<string, AccountRow>> {
 }
 
 export async function fetchRealMentions(): Promise<MentionData[]> {
-  const [accountMap, { data: comments }] = await Promise.all([
+  const [accountMap, commentsResult] = await Promise.all([
     getAccountMap(),
     sb
       .from("comments")
@@ -61,6 +62,8 @@ export async function fetchRealMentions(): Promise<MentionData[]> {
       .limit(500),
   ]);
 
+  const { data: comments, error: commentsError } = commentsResult;
+  if (commentsError) console.warn("[Supabase] fetchRealMentions:", commentsError.message);
   if (!comments) return [];
 
   return comments

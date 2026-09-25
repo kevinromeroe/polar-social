@@ -200,7 +200,9 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         fetchAccountSnapshots(),
         fetchSOVByNetwork(),
       ]);
-      const hasAny = mentions.length > 0 || topPosts.length > 0 || mentionsByNet.length > 0 || sentiment.length > 0 || sov.length > 0 || trend.length > 0 || engagement.length > 0 || snapshots.length > 0 || Object.keys(sovByNet).length > 0;
+      const counts = { mentions: mentions.length, topPosts: topPosts.length, mentionsByNet: mentionsByNet.length, sentiment: sentiment.length, sov: sov.length, trend: trend.length, engagement: engagement.length, snapshots: snapshots.length, sovByNet: Object.keys(sovByNet).length };
+      console.log("[Supabase] Datos cargados:", counts);
+      const hasAny = Object.values(counts).some(c => c > 0);
       if (hasAny) {
         setRealData({
           mentions: mentions.length > 0 ? mentions : undefined,
@@ -213,9 +215,11 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           accountSnapshots: snapshots.length > 0 ? snapshots : undefined,
           sovByNetwork: Object.keys(sovByNet).length > 0 ? sovByNet : undefined,
         });
+      } else {
+        console.warn("[Supabase] Todas las consultas retornaron vacío - verificar RLS policies");
       }
-    } catch {
-      // Supabase no disponible, se usa mock data
+    } catch (err) {
+      console.error("[Supabase] Error cargando datos:", err);
     }
   }, []);
 
