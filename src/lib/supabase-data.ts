@@ -1,8 +1,16 @@
-import { supabase } from "./supabase";
+import { createClient } from "@supabase/supabase-js";
 import type { MentionData, TopPostData, TopComment, Network } from "./mock-data";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const sb = supabase as any;
+// Cliente anónimo dedicado para consultas de datos.
+// El cliente principal (supabase.ts) hereda la sesión del usuario autenticado,
+// cuyo rol "authenticated" no tiene políticas SELECT en las tablas de datos.
+// Este cliente siempre usa el rol "anon" que sí tiene permisos de lectura.
+const sb = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  { auth: { persistSession: false } }
+) as any;
 
 const HTML_ENTITIES: Record<string, string> = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#x27;": "'", "&#x2F;": "/" };
 function cleanText(raw: string): string {

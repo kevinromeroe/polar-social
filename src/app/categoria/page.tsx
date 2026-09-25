@@ -1,10 +1,27 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Component, type ReactNode } from "react";
 import { ProtectedLayout } from "@/components/layout/ProtectedLayout";
 import { formatNumber, networkColors } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 import { FaInstagram, FaFacebookF, FaTiktok, FaLinkedinIn, FaXTwitter, FaRedditAlien } from "react-icons/fa6";
+
+class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="m-8 p-6 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm font-bold text-red-700">Error de renderizado</p>
+          <p className="text-xs text-red-600 mt-2 font-mono">{this.state.error.message}</p>
+          <pre className="text-[10px] text-red-500 mt-2 overflow-auto max-h-40">{this.state.error.stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const networkIcons: Record<string, React.ComponentType<{ className?: string; size?: number }>> = {
   instagram: FaInstagram,
@@ -48,6 +65,8 @@ export default function EscuchaActivaPage() {
     competitors,
     brandColors,
     sovByNetwork: realSOVByNetwork,
+    dataStatus,
+    dataError,
   } = useClientData();
 
   const [sentimentFilter, setSentimentFilter] = useState<string>("all");
@@ -113,7 +132,21 @@ export default function EscuchaActivaPage() {
   );
 
   return (
+    <ErrorBoundary>
     <ProtectedLayout>
+      {dataStatus === "loading" && (
+        <div className="mb-4 px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2">
+          <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full" />
+          <span className="text-sm text-blue-700">Cargando datos reales de Supabase...</span>
+        </div>
+      )}
+      {dataStatus === "error" && (
+        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm font-semibold text-red-700">Error cargando datos</p>
+          <p className="text-xs text-red-600 mt-1">{dataError}</p>
+        </div>
+      )}
+
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Escucha Activa</h2>
         <p className="text-gray-500 text-sm mt-1">Conversaciones reales sobre tus marcas — qué celebran, qué critican, dónde hablan</p>
@@ -503,5 +536,6 @@ export default function EscuchaActivaPage() {
         Fuentes: comentarios reales de Facebook, Instagram, X y Reddit · Sentimiento: clasificación por keywords y emojis · Nota: los porcentajes se calculan sobre el total de comentarios analizados.
       </p>
     </ProtectedLayout>
+    </ErrorBoundary>
   );
 }

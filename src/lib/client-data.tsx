@@ -51,6 +51,8 @@ export interface ClientContextValue extends ClientDataset {
   setSelectedProductLine: (line: string) => void;
   productLineOptions: ProductLineOption[];
   hasMultipleProductLines: boolean;
+  dataStatus: "idle" | "loading" | "loaded" | "error";
+  dataError: string | null;
 }
 
 const polarDataset: ClientDataset = {
@@ -180,6 +182,8 @@ const defaultContext: ClientContextValue = {
   setSelectedProductLine: () => {},
   productLineOptions: [],
   hasMultipleProductLines: false,
+  dataStatus: "idle",
+  dataError: null,
 };
 
 const ClientDataContext = createContext<ClientContextValue>(defaultContext);
@@ -187,8 +191,12 @@ const ClientDataContext = createContext<ClientContextValue>(defaultContext);
 export function ClientDataProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [realData, setRealData] = useState<Partial<ClientDataset> | null>(null);
+  const [dataStatus, setDataStatus] = useState<"idle" | "loading" | "loaded" | "error">("idle");
+  const [dataError, setDataError] = useState<string | null>(null);
 
   const loadRealData = useCallback(async () => {
+    setDataStatus("loading");
+    setDataError(null);
     try {
       const result = await fetchAllRealData();
       const counts = {
@@ -212,11 +220,16 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           accountSnapshots: result.accountSnapshots.length > 0 ? result.accountSnapshots : undefined,
           sovByNetwork: Object.keys(result.sovByNetwork).length > 0 ? result.sovByNetwork : undefined,
         });
+        setDataStatus("loaded");
       } else {
         console.warn("[Supabase] Todas las consultas retornaron vacío");
+        setDataStatus("loaded");
       }
     } catch (err) {
-      console.error("[Supabase] Error cargando datos:", err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("[Supabase] Error cargando datos:", msg);
+      setDataStatus("error");
+      setDataError(msg);
     }
   }, []);
 
@@ -313,7 +326,9 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     setSelectedProductLine,
     productLineOptions,
     hasMultipleProductLines: productLineOptions.length > 1,
-  }), [filteredDataset, effectiveProductLine, productLineOptions]);
+    dataStatus,
+    dataError,
+  }), [filteredDataset, effectiveProductLine, productLineOptions, dataStatus, dataError]);
 
   return (
     <ClientDataContext.Provider value={contextValue}>
