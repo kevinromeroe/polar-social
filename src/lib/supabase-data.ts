@@ -89,21 +89,22 @@ export async function fetchAllRealData(): Promise<AllRealData> {
   //    Solo traemos los campos necesarios para contar, NO el texto completo
   const lightComments = await fetchAll("comments", "account_id, network, published_at, sentiment");
 
-  // 3) Top comentarios para el feed (solo los mejores 50 por sentimiento)
-  const [topPositive, topNegative, topNeutral] = await Promise.all([
-    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-      .eq("sentiment", "positive").order("likes", { ascending: false }).limit(50),
-    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-      .eq("sentiment", "negative").order("likes", { ascending: false }).limit(50),
-    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-      .eq("sentiment", "neutral").order("likes", { ascending: false }).limit(50),
-  ]);
+  // 3) Top comentarios por sentimiento, separado alimentos vs mascotas
+  const allAccounts = Object.values(accountMap);
+  const mascotasIds = allAccounts.filter(a => a.product_line === "mascotas").map(a => a.id);
+  const alimentosIds = allAccounts.filter(a => a.product_line !== "mascotas").map(a => a.id);
 
-  const feedComments: any[] = [
-    ...(topPositive.data || []),
-    ...(topNegative.data || []),
-    ...(topNeutral.data || []),
-  ];
+  const feedQueries = [];
+  for (const ids of [alimentosIds, mascotasIds]) {
+    for (const sent of ["positive", "negative", "neutral"] as const) {
+      feedQueries.push(
+        sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
+          .eq("sentiment", sent).in("account_id", ids).order("likes", { ascending: false }).limit(50)
+      );
+    }
+  }
+  const feedResults = await Promise.all(feedQueries);
+  const feedComments: any[] = feedResults.flatMap(r => r.data || []);
 
   // 4) Posts sin raw_data (~2MB) + snapshots
   const [allPosts, snapshotsRaw] = await Promise.all([

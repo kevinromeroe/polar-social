@@ -95,21 +95,22 @@ console.log(`Cuentas: ${accountsRaw.data?.length || 0}`);
 const lightComments = await fetchAll("comments", "account_id, network, published_at, sentiment");
 console.log(`Comentarios (ligero): ${lightComments.length}`);
 
-const [topPositive, topNegative, topNeutral] = await Promise.all([
-  sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-    .eq("sentiment", "positive").order("likes", { ascending: false }).limit(50),
-  sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-    .eq("sentiment", "negative").order("likes", { ascending: false }).limit(50),
-  sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-    .eq("sentiment", "neutral").order("likes", { ascending: false }).limit(50),
-]);
+const allAccounts = Object.values(accountMap);
+const mascotasIds = allAccounts.filter(a => a.product_line === "mascotas").map(a => a.id);
+const alimentosIds = allAccounts.filter(a => a.product_line !== "mascotas").map(a => a.id);
 
-const feedComments = [
-  ...(topPositive.data || []),
-  ...(topNegative.data || []),
-  ...(topNeutral.data || []),
-];
-console.log(`Feed comments: ${feedComments.length}`);
+const feedQueries = [];
+for (const ids of [alimentosIds, mascotasIds]) {
+  for (const sent of ["positive", "negative", "neutral"]) {
+    feedQueries.push(
+      sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
+        .eq("sentiment", sent).in("account_id", ids).order("likes", { ascending: false }).limit(50)
+    );
+  }
+}
+const feedResults = await Promise.all(feedQueries);
+const feedComments = feedResults.flatMap(r => r.data || []);
+console.log(`Feed comments: ${feedComments.length} (alimentos + mascotas separados)`);
 
 const [allPosts, snapshotsRaw] = await Promise.all([
   fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id"),
