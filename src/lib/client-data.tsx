@@ -152,7 +152,7 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
     growthTrend: filteredGrowth,
     topPosts: dataset.topPosts.filter(p => brandNamesInLine.has(p.brand)),
     mentions: dataset.mentions.filter(m =>
-      brandNamesInLine.has(m.brand) && (!m.productLine || m.productLine === productLine)
+      brandNamesInLine.has(m.brand) && (!m.productLine || m.productLine === productLine || (productLine.startsWith("mascotas_") && m.productLine === "mascotas"))
     ),
     alerts: dataset.alerts.filter(a => brandNamesInLine.has(a.brand)),
     sovByNetwork: Object.fromEntries(
