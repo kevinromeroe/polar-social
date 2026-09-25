@@ -201,6 +201,94 @@ export const brands: BrandData[] = [
       facebook: { username: "atunlaespanola", followers: 550, posts: 0, engagementRate: 0.15, growth: 0.1, avgLikes: 1, avgComments: 0, avgShares: 0 },
     },
   },
+  // ─── Mascotas: Perros ───
+  {
+    brand: "Dogourmet",
+    type: "own",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "dogourmet", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 21, avgComments: 1, avgShares: 0 },
+      facebook: { username: "Dogourmet", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 101, avgComments: 11, avgShares: 21 },
+      tiktok: { username: "dogourmetve", followers: 1871, posts: 50, engagementRate: 5.56, growth: 0, avgLikes: 100, avgComments: 4, avgShares: 40 },
+    },
+  },
+  {
+    brand: "Ringo",
+    type: "competitor",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "efectoringo", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 658, avgComments: 38, avgShares: 0 },
+      facebook: { username: "EfectoRingo", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 102, avgComments: 3, avgShares: 10 },
+    },
+  },
+  {
+    brand: "Dog Chow",
+    type: "competitor",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "dogchowco", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 440, avgComments: 13, avgShares: 0 },
+      facebook: { username: "DogChowCO", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 765, avgComments: 1132, avgShares: 861 },
+    },
+  },
+  {
+    brand: "Chunky",
+    type: "competitor",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "chunkymascotas", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 469, avgComments: 19, avgShares: 0 },
+      facebook: { username: "ChunkyMascotas", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 14, avgComments: 1, avgShares: 4 },
+      tiktok: { username: "chunkymascotas", followers: 37400, posts: 50, engagementRate: 13.86, growth: 0, avgLikes: 5158, avgComments: 25, avgShares: 210 },
+    },
+  },
+  {
+    brand: "Nutre Can",
+    type: "competitor",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "nutrecan", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 286, avgComments: 3, avgShares: 0 },
+      facebook: { username: "Nutrecan", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 242, avgComments: 1, avgShares: 4 },
+      tiktok: { username: "nutrecancol", followers: 27800, posts: 50, engagementRate: 0.54, growth: 0, avgLikes: 147, avgComments: 2, avgShares: 3 },
+    },
+  },
+  {
+    brand: "Nutriss",
+    type: "competitor",
+    productLine: "mascotas_perros",
+    networks: {
+      instagram: { username: "nutrisslovers", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 103, avgComments: 3, avgShares: 0 },
+      facebook: { username: "nutrisslovers", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 169, avgComments: 2, avgShares: 5 },
+      tiktok: { username: "nutrissdoglover", followers: 55200, posts: 50, engagementRate: 1.13, growth: 0, avgLikes: 614, avgComments: 7, avgShares: 157 },
+    },
+  },
+  // ─── Mascotas: Gatos ───
+  {
+    brand: "Mirringo",
+    type: "competitor",
+    productLine: "mascotas_gatos",
+    networks: {
+      instagram: { username: "efectomirringo", followers: 0, posts: 41, engagementRate: 0, growth: 0, avgLikes: 928, avgComments: 10, avgShares: 0 },
+      facebook: { username: "EfectoMirringo", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 250, avgComments: 2, avgShares: 4 },
+      x: { username: "efectomirringo", followers: 0, posts: 714, engagementRate: 0, growth: 0, avgLikes: 0, avgComments: 0, avgShares: 0 },
+    },
+  },
+  {
+    brand: "Cat Chow",
+    type: "competitor",
+    productLine: "mascotas_gatos",
+    networks: {
+      instagram: { username: "catchowco", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 184, avgComments: 10, avgShares: 0 },
+      facebook: { username: "CatChowCO", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 529, avgComments: 111, avgShares: 78 },
+    },
+  },
+  {
+    brand: "Chunky Gatos",
+    type: "competitor",
+    productLine: "mascotas_gatos",
+    networks: {
+      instagram: { username: "chunkygatosoficial", followers: 0, posts: 44, engagementRate: 0, growth: 0, avgLikes: 46, avgComments: 2, avgShares: 0 },
+      facebook: { username: "chunkygatosoficial", followers: 0, posts: 50, engagementRate: 0, growth: 0, avgLikes: 8, avgComments: 0, avgShares: 2 },
+    },
+  },
 ];
 
 export const ownBrands = brands.filter((b) => b.type === "own");
@@ -408,6 +496,16 @@ export const brandColors: Record<string, string> = {
   "La Soberana": "#6366F1",
   "Isabel": "#CA8A04",
   "La Española": "#DB2777",
+  "Dogourmet": "#C77D32",
+  "Ringo": "#E53E3E",
+  "Dog Chow": "#2B6CB0",
+  "Chunky": "#38A169",
+  "Nutre Can": "#D69E2E",
+  "Nutriss": "#9F7AEA",
+  "Mirringo": "#6C4F9E",
+  "Cat Chow": "#3182CE",
+  "Chunky Gatos": "#48BB78",
+  "Alimentos Polar CO": "#0D9488",
 };
 
 export const networkColors: Record<string, string> = {
@@ -502,10 +600,11 @@ export const sentimentCategorySummaries: Record<string, SentimentCategorySummary
 export const productLineLabels: Record<string, string> = {
   pasta: "Pasta",
   pasta_atun: "Atún",
-  mascotas: "Mascotas",
+  mascotas_perros: "Perros",
+  mascotas_gatos: "Gatos",
 };
 
-export const productLineKeys = ["pasta", "pasta_atun", "mascotas"];
+export const productLineKeys = ["pasta", "pasta_atun", "mascotas_perros", "mascotas_gatos"];
 
 export const chartAnnotations: ChartAnnotation[] = [
   { date: "Sep", brand: "P.A.N.", text: "Datos reales confirmados via Apify (IG + FB + TikTok + X)" },

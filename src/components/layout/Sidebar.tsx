@@ -22,7 +22,9 @@ const alimentosLinks = [
 ];
 
 const mascotasLinks = [
-  { name: "Radar Innovacion", href: "/innovacion", icon: Lightbulb },
+  { name: "Competencia", href: "/competencia", icon: Swords },
+  { name: "Escucha Activa", href: "/categoria", icon: Ear },
+  { name: "Radar Innovación", href: "/innovacion", icon: Lightbulb },
 ];
 
 export function Sidebar() {
@@ -36,8 +38,10 @@ export function Sidebar() {
     router.replace("/login");
   };
 
-  const alimentosOptions = productLineOptions.filter(o => o.key !== "mascotas");
-  const hasMascotas = productLineOptions.some(o => o.key === "mascotas");
+  const alimentosOptions = productLineOptions.filter(o => !o.key.startsWith("mascotas"));
+  const mascotasOptions = productLineOptions.filter(o => o.key.startsWith("mascotas"));
+  const hasMascotas = mascotasOptions.length > 0;
+  const isMascotasActive = selectedProductLine.startsWith("mascotas");
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col">
@@ -89,18 +93,18 @@ export function Sidebar() {
 
           <div className="space-y-0.5">
             {alimentosLinks.map((item) => {
-              const isActive = pathname?.startsWith(item.href);
+              const isActive = pathname?.startsWith(item.href) && !isMascotasActive;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   onClick={() => {
-                    if (selectedProductLine === "mascotas" && alimentosOptions.length > 0) {
+                    if (isMascotasActive && alimentosOptions.length > 0) {
                       setSelectedProductLine(alimentosOptions[0].key);
                     }
                   }}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    isActive && selectedProductLine !== "mascotas"
+                    isActive
                       ? "bg-teal-600 text-white"
                       : "text-slate-300 hover:bg-slate-800 hover:text-white"
                   }`}
@@ -120,16 +124,44 @@ export function Sidebar() {
               <PawPrint className="h-3.5 w-3.5 text-slate-500" />
               <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Mascotas</p>
             </div>
+
+            {mascotasOptions.length > 1 && (
+              <div className="flex gap-1 mx-2 mb-2 p-1 rounded-lg bg-slate-800/80">
+                {mascotasOptions.map((opt) => (
+                  <button
+                    key={opt.key}
+                    onClick={() => {
+                      setSelectedProductLine(opt.key);
+                      if (!pathname || (!mascotasLinks.some(l => pathname.startsWith(l.href)))) {
+                        router.push("/competencia");
+                      }
+                    }}
+                    className={`flex-1 px-2 py-1.5 rounded-md text-xs font-semibold text-center transition-colors ${
+                      selectedProductLine === opt.key
+                        ? "bg-slate-600 text-white shadow-sm"
+                        : "text-slate-400 hover:text-slate-300"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <div className="space-y-0.5">
               {mascotasLinks.map((item) => {
-                const isActive = pathname?.startsWith(item.href);
+                const isActive = pathname?.startsWith(item.href) && isMascotasActive;
                 return (
                   <Link
-                    key={item.name}
+                    key={`mascotas-${item.name}`}
                     href={item.href}
-                    onClick={() => setSelectedProductLine("mascotas")}
+                    onClick={() => {
+                      if (!isMascotasActive && mascotasOptions.length > 0) {
+                        setSelectedProductLine(mascotasOptions[0].key);
+                      }
+                    }}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      isActive && selectedProductLine === "mascotas"
+                      isActive
                         ? "bg-teal-600 text-white"
                         : "text-slate-300 hover:bg-slate-800 hover:text-white"
                     }`}
