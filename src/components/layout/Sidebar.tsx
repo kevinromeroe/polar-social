@@ -21,9 +21,9 @@ const alimentosLinks = [
 ];
 
 const mascotasLinks = [
+  { name: "Radar Innovación", href: "/innovacion", icon: Lightbulb },
   { name: "Escucha Activa", href: "/categoria", icon: Ear },
   { name: "Competencia", href: "/competencia", icon: Swords },
-  { name: "Radar Innovación", href: "/innovacion", icon: Lightbulb },
 ];
 
 export function Sidebar() {
@@ -131,7 +131,7 @@ export function Sidebar() {
                     onClick={() => {
                       setSelectedProductLine(opt.key);
                       if (!pathname || (!mascotasLinks.some(l => pathname.startsWith(l.href)))) {
-                        router.push("/competencia");
+                        router.push("/innovacion");
                       }
                     }}
                     className={`flex-1 px-2 py-1.5 rounded-md text-xs font-semibold text-center transition-colors ${
