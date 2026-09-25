@@ -9,6 +9,23 @@ const NEGATIVE_WORDS = /malo|mala|horrible|terrible|asco|pésimo|pésima|feo|fea
 const POSITIVE_EMOJI = /😍|🤤|😋|❤️|💛|💙|🔥|👏|✨|🥰|💯|👌|😊|🙌|💪|😎|🫶/;
 const NEGATIVE_EMOJI = /😡|👎|💔|😤|🤮|😠|😞|😢|💩/;
 
+const HTML_ENTITIES: Record<string, string> = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#x27;": "'", "&#x2F;": "/" };
+function cleanText(raw: string): string {
+  let t = raw;
+  t = t.replace(/&#32;/g, " ");
+  t = t.replace(/&#x200B;/g, "");
+  t = t.replace(/&(amp|lt|gt|quot|#39|#x27|#x2F);/g, (m) => HTML_ENTITIES[m] || m);
+  t = t.replace(/&#\d+;/g, (m) => { const code = parseInt(m.slice(2, -1)); return code > 0 && code < 65536 ? String.fromCharCode(code) : ""; });
+  t = t.replace(/\s*submitted by\s+\/u\/\S+/gi, "");
+  t = t.replace(/\s*\[link\]/gi, "");
+  t = t.replace(/\s*\[comments?\]/gi, "");
+  t = t.replace(/https?:\/\/\S+/g, "");
+  t = t.replace(/\s{2,}/g, " ").trim();
+  return t;
+}
+
+const RELEVANCE_KEYWORDS = /harina|arepa|pan\b|maíz|maiz|atún|atun|pasta|polar|p\.a\.n|comida|cocina|receta|desayuno|almuerzo|cena|alimento|colombia|venezuel|bogot|medell|cali\b|barranquilla|empanada|buñuelo|mascotas|perro|gato|donkan|mirringo|chunky|cat chow|dog chow|purina|ringo/i;
+
 function classifySentiment(text: string): "positive" | "neutral" | "negative" {
   const hasPositive = POSITIVE_WORDS.test(text) || POSITIVE_EMOJI.test(text);
   const hasNegative = NEGATIVE_WORDS.test(text) || NEGATIVE_EMOJI.test(text);
@@ -66,23 +83,31 @@ export async function fetchRealMentions(): Promise<MentionData[]> {
   if (commentsError) console.warn("[Supabase] fetchRealMentions:", commentsError.message);
   if (!comments) return [];
 
-  return comments
+  type CommentItem = { acc: AccountRow | null; text: string; net: string; raw: any };
+  const mapped: CommentItem[] = comments
     .filter((c: any) => c.text && c.text.length > 3)
-    .map((c: any, i: number) => {
+    .map((c: any): CommentItem => {
       const acc = c.account_id ? accountMap[c.account_id] : null;
-      const text = c.text!;
-      return {
-        id: i + 1,
-        brand: acc?.brand_name || "Desconocido",
-        network: c.network || "instagram",
-        author: `@${c.author_username || "usuario"}`,
-        text,
-        sentiment: classifySentiment(text),
-        date: c.published_at?.split("T")[0] || "2026-09-01",
-        likes: c.likes || 0,
-        productLine: acc?.product_line || undefined,
-      };
+      return { acc, text: cleanText(c.text!), net: c.network || "instagram", raw: c };
     });
+
+  return mapped
+    .filter((item) => {
+      if (item.text.length < 4) return false;
+      if (item.net === "reddit" || item.net === "x") return RELEVANCE_KEYWORDS.test(item.text);
+      return true;
+    })
+    .map((item, i) => ({
+      id: i + 1,
+      brand: item.acc?.brand_name || "Desconocido",
+      network: item.net,
+      author: `@${item.raw.author_username || "usuario"}`,
+      text: item.text,
+      sentiment: classifySentiment(item.text),
+      date: item.raw.published_at?.split("T")[0] || "2026-09-01",
+      likes: item.raw.likes || 0,
+      productLine: item.acc?.product_line || undefined,
+    }));
 }
 
 export async function fetchRealTopPosts(): Promise<TopPostData[]> {
@@ -91,7 +116,13 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
     fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data"),
   ]);
 
-  const posts = allPosts.filter((p: any) => p.caption && p.caption.length > 0);
+  const posts = allPosts
+    .filter((p: any) => p.caption && p.caption.length > 0)
+    .map((p: any) => ({ ...p, caption: cleanText(p.caption) }))
+    .filter((p: any) => {
+      if (p.network === "reddit" || p.network === "x") return RELEVANCE_KEYWORDS.test(p.caption);
+      return true;
+    });
   if (posts.length === 0) return [];
 
   const grouped: Record<string, { best: any; worst: any }> = {};
@@ -133,7 +164,7 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
       if (pid && !commentsByPost[pid]) {
         commentsByPost[pid] = {
           author: `@${c.author_username || "usuario"}`,
-          text: c.text || "",
+          text: cleanText(c.text || ""),
           likes: c.likes || 0,
         };
       }
@@ -200,7 +231,7 @@ export async function fetchSentimentByBrand(): Promise<{ brand: string; positive
     const acc = c.account_id ? accountMap[c.account_id] : null;
     const brand = acc?.brand_name || "Otro";
     if (!sentiments[brand]) sentiments[brand] = { positive: 0, neutral: 0, negative: 0 };
-    sentiments[brand][classifySentiment(c.text || "")]++;
+    sentiments[brand][classifySentiment(cleanText(c.text || ""))]++;
   }
 
   return Object.entries(sentiments)
@@ -234,7 +265,7 @@ export async function fetchCommentTrend(): Promise<CommentTrendPoint[]> {
     if (!date) continue;
     if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
     buckets[date].total++;
-    const sent = classifySentiment(c.text || "");
+    const sent = classifySentiment(cleanText(c.text || ""));
     buckets[date][sent]++;
   }
 
