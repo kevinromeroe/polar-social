@@ -86,7 +86,7 @@ export async function fetchAllRealData(): Promise<AllRealData> {
   const [accountsRaw, allComments, allPosts, snapshotsRaw] = await Promise.all([
     sb.from("accounts").select("id, brand_name, account_type, product_line, network, username"),
     fetchAll("comments", "id, text, author_username, likes, published_at, network, account_id, post_id"),
-    fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data"),
+    fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id"),
     sb.from("account_snapshots").select("account_id, followers, following, total_posts, snapshot_date").order("snapshot_date", { ascending: false }),
   ]);
 
@@ -222,6 +222,12 @@ export async function fetchAllRealData(): Promise<AllRealData> {
       if (best.id !== worst.id) selectedPostIds.push(worst.id);
     }
 
+    const rawDataMap: Record<string, any> = {};
+    if (selectedPostIds.length > 0) {
+      const { data: rawRows } = await sb.from("posts").select("id, raw_data").in("id", selectedPostIds);
+      if (rawRows) for (const r of rawRows) rawDataMap[r.id] = r.raw_data;
+    }
+
     const commentsByPost: Record<string, TopComment> = {};
     for (const c of allComments) {
       if (!c.post_id || !c.text || commentsByPost[c.post_id]) continue;
@@ -232,6 +238,7 @@ export async function fetchAllRealData(): Promise<AllRealData> {
     for (const { best, worst } of Object.values(grouped)) {
       const mapPost = (p: any, ranking: "best" | "worst") => {
         const acc = p.account_id ? accountMap[p.account_id] : null;
+        const rd = rawDataMap[p.id];
         return {
           brand: acc?.brand_name || "Desconocido",
           network: (p.network || "instagram") as Network,
@@ -239,7 +246,7 @@ export async function fetchAllRealData(): Promise<AllRealData> {
           likes: p.likes || 0, comments: p.comments || 0, shares: p.shares || 0, views: p.views || 0,
           date: p.published_at?.split("T")[0] || "2026-09-01",
           url: p.post_url || undefined,
-          imageUrl: p.raw_data?.displayUrl || extractFbImage(p.raw_data) || undefined,
+          imageUrl: rd?.displayUrl || extractFbImage(rd) || undefined,
           topComment: commentsByPost[p.id] || undefined,
           ranking,
         };
