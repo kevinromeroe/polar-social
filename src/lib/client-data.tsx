@@ -6,7 +6,7 @@ import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategoryS
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
-import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement, fetchAccountSnapshots, fetchSOVByNetwork } from "./supabase-data";
+import { fetchAllRealData } from "./supabase-data";
 import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry } from "./supabase-data";
 import { supabase } from "./supabase";
 
@@ -203,31 +203,27 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
           console.warn("[Supabase] No se pudo refrescar token:", refreshErr.message);
         }
       }
-      const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement, snapshots, sovByNet] = await Promise.all([
-        fetchRealMentions(),
-        fetchRealTopPosts(),
-        fetchMentionsByNetwork(),
-        fetchSentimentByBrand(),
-        fetchSOVData(),
-        fetchCommentTrend(),
-        fetchBrandEngagement(),
-        fetchAccountSnapshots(),
-        fetchSOVByNetwork(),
-      ]);
-      const counts = { mentions: mentions.length, topPosts: topPosts.length, mentionsByNet: mentionsByNet.length, sentiment: sentiment.length, sov: sov.length, trend: trend.length, engagement: engagement.length, snapshots: snapshots.length, sovByNet: Object.keys(sovByNet).length };
+      const result = await fetchAllRealData();
+      const counts = {
+        mentions: result.mentions.length, topPosts: result.topPosts.length,
+        mentionsByNet: result.mentionsByNetwork.length, sentiment: result.sentimentByBrand.length,
+        sov: result.sovData.length, trend: result.commentTrend.length,
+        engagement: result.brandEngagement.length, snapshots: result.accountSnapshots.length,
+        sovByNet: Object.keys(result.sovByNetwork).length,
+      };
       console.log("[Supabase] Datos cargados:", counts);
       const hasAny = Object.values(counts).some(c => c > 0);
       if (hasAny) {
         setRealData({
-          mentions: mentions.length > 0 ? mentions : undefined,
-          topPosts: topPosts.length > 0 ? topPosts : undefined,
-          mentionsByNetwork: mentionsByNet.length > 0 ? mentionsByNet : undefined,
-          sentimentByBrand: sentiment.length > 0 ? sentiment : undefined,
-          sovData: sov.length > 0 ? sov : undefined,
-          commentTrend: trend.length > 0 ? trend : undefined,
-          brandEngagement: engagement.length > 0 ? engagement : undefined,
-          accountSnapshots: snapshots.length > 0 ? snapshots : undefined,
-          sovByNetwork: Object.keys(sovByNet).length > 0 ? sovByNet : undefined,
+          mentions: result.mentions.length > 0 ? result.mentions : undefined,
+          topPosts: result.topPosts.length > 0 ? result.topPosts : undefined,
+          mentionsByNetwork: result.mentionsByNetwork.length > 0 ? result.mentionsByNetwork : undefined,
+          sentimentByBrand: result.sentimentByBrand.length > 0 ? result.sentimentByBrand : undefined,
+          sovData: result.sovData.length > 0 ? result.sovData : undefined,
+          commentTrend: result.commentTrend.length > 0 ? result.commentTrend : undefined,
+          brandEngagement: result.brandEngagement.length > 0 ? result.brandEngagement : undefined,
+          accountSnapshots: result.accountSnapshots.length > 0 ? result.accountSnapshots : undefined,
+          sovByNetwork: Object.keys(result.sovByNetwork).length > 0 ? result.sovByNetwork : undefined,
         });
       } else {
         console.warn("[Supabase] Todas las consultas retornaron vacío - verificar RLS policies");

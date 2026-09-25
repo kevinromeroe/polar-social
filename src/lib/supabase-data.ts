@@ -58,32 +58,53 @@ async function fetchAll(table: string, columns: string): Promise<any[]> {
   return all;
 }
 
-type AccountRow = { id: string; brand_name: string; account_type: string; product_line: string | null };
+type AccountRow = { id: string; brand_name: string; account_type: string; product_line: string | null; network?: string; username?: string };
 
-async function getAccountMap(): Promise<Record<string, AccountRow>> {
-  const { data } = await sb.from("accounts").select("id, brand_name, account_type, product_line");
-  const map: Record<string, AccountRow> = {};
-  if (data) for (const a of data) map[a.id] = a as AccountRow;
-  return map;
+const MONTH_LABELS: Record<string, string> = {
+  "01": "Ene", "02": "Feb", "03": "Mar", "04": "Abr", "05": "May", "06": "Jun",
+  "07": "Jul", "08": "Ago", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic",
+};
+
+export type CommentTrendPoint = { month: string; total: number; positive: number; neutral: number; negative: number };
+export type BrandEngagement = { brand: string; accountType: string; posts: number; likes: number; comments: number; shares: number; views: number; totalEngagement: number };
+export type AccountSnapshot = { brand: string; network: string; username: string; followers: number; following: number; totalPosts: number; snapshotDate: string; accountType: string };
+export type SOVByNetworkEntry = { brand: string; network: string; comments: number; percentage: number };
+
+export interface AllRealData {
+  mentions: MentionData[];
+  topPosts: TopPostData[];
+  mentionsByNetwork: { network: string; mentions: number; percentage: number }[];
+  sentimentByBrand: { brand: string; positive: number; neutral: number; negative: number }[];
+  sovData: { brand: string; mentions: number; percentage: number }[];
+  commentTrend: CommentTrendPoint[];
+  brandEngagement: BrandEngagement[];
+  accountSnapshots: AccountSnapshot[];
+  sovByNetwork: Record<string, SOVByNetworkEntry[]>;
 }
 
-export async function fetchRealMentions(): Promise<MentionData[]> {
-  const [accountMap, comments] = await Promise.all([
-    getAccountMap(),
-    fetchAll("comments", "id, text, author_username, likes, published_at, network, account_id"),
+export async function fetchAllRealData(): Promise<AllRealData> {
+  const [accountsRaw, allComments, allPosts, snapshotsRaw] = await Promise.all([
+    sb.from("accounts").select("id, brand_name, account_type, product_line, network, username"),
+    fetchAll("comments", "id, text, author_username, likes, published_at, network, account_id, post_id"),
+    fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data"),
+    sb.from("account_snapshots").select("account_id, followers, following, total_posts, snapshot_date").order("snapshot_date", { ascending: false }),
   ]);
 
-  if (!comments || comments.length === 0) return [];
+  const accountMap: Record<string, AccountRow> = {};
+  if (accountsRaw.data) for (const a of accountsRaw.data) accountMap[a.id] = a as AccountRow;
 
+  console.log(`[Supabase] Cargados: ${allComments.length} comentarios, ${allPosts.length} posts, ${Object.keys(accountMap).length} cuentas`);
+
+  const validComments = allComments.filter((c: any) => c.text && c.text.length > 3);
+
+  // --- MENTIONS ---
   type CommentItem = { acc: AccountRow | null; text: string; net: string; raw: any };
-  const mapped: CommentItem[] = comments
-    .filter((c: any) => c.text && c.text.length > 3)
-    .map((c: any): CommentItem => {
-      const acc = c.account_id ? accountMap[c.account_id] : null;
-      return { acc, text: cleanText(c.text!), net: c.network || "instagram", raw: c };
-    });
+  const mapped: CommentItem[] = validComments.map((c: any): CommentItem => {
+    const acc = c.account_id ? accountMap[c.account_id] : null;
+    return { acc, text: cleanText(c.text!), net: c.network || "instagram", raw: c };
+  });
 
-  return mapped
+  const mentions: MentionData[] = mapped
     .filter((item) => {
       if (item.text.length < 4) return false;
       if (item.net === "reddit" || item.net === "x") return RELEVANCE_KEYWORDS.test(item.text);
@@ -100,14 +121,76 @@ export async function fetchRealMentions(): Promise<MentionData[]> {
       likes: item.raw.likes || 0,
       productLine: item.acc?.product_line || undefined,
     }));
-}
 
-export async function fetchRealTopPosts(): Promise<TopPostData[]> {
-  const [accountMap, allPosts] = await Promise.all([
-    getAccountMap(),
-    fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id, raw_data"),
-  ]);
+  // --- MENTIONS BY NETWORK ---
+  const netCounts: Record<string, number> = {};
+  for (const c of allComments) {
+    const net = c.network || "unknown";
+    netCounts[net] = (netCounts[net] || 0) + 1;
+  }
+  const netTotal = Object.values(netCounts).reduce((s, n) => s + n, 0);
+  const mentionsByNetwork = Object.entries(netCounts)
+    .map(([network, cnt]) => ({ network, mentions: cnt, percentage: netTotal > 0 ? Number(((cnt / netTotal) * 100).toFixed(1)) : 0 }))
+    .sort((a, b) => b.mentions - a.mentions);
 
+  // --- SENTIMENT BY BRAND ---
+  const sentiments: Record<string, { positive: number; neutral: number; negative: number }> = {};
+  for (const c of validComments) {
+    const acc = c.account_id ? accountMap[c.account_id] : null;
+    const brand = acc?.brand_name || "Otro";
+    if (!sentiments[brand]) sentiments[brand] = { positive: 0, neutral: 0, negative: 0 };
+    sentiments[brand][classifySentiment(cleanText(c.text || ""))]++;
+  }
+  const sentimentByBrand = Object.entries(sentiments)
+    .map(([brand, s]) => {
+      const total = s.positive + s.neutral + s.negative;
+      return { brand, positive: total > 0 ? Math.round((s.positive / total) * 100) : 0, neutral: total > 0 ? Math.round((s.neutral / total) * 100) : 0, negative: total > 0 ? Math.round((s.negative / total) * 100) : 0 };
+    })
+    .sort((a, b) => (b.positive + b.neutral + b.negative) - (a.positive + a.neutral + a.negative));
+
+  // --- SOV ---
+  const sovCounts: Record<string, number> = {};
+  for (const c of allComments) {
+    const acc = c.account_id ? accountMap[c.account_id] : null;
+    const brand = acc?.brand_name || "Otro";
+    sovCounts[brand] = (sovCounts[brand] || 0) + 1;
+  }
+  const sovTotal = Object.values(sovCounts).reduce((s, n) => s + n, 0);
+  const sovData = Object.entries(sovCounts)
+    .map(([brand, cnt]) => ({ brand, mentions: cnt, percentage: sovTotal > 0 ? Number(((cnt / sovTotal) * 100).toFixed(1)) : 0 }))
+    .sort((a, b) => b.mentions - a.mentions);
+
+  // --- SOV BY NETWORK ---
+  const sovNetCounts: Record<string, Record<string, number>> = {};
+  for (const c of allComments) {
+    const acc = c.account_id ? accountMap[c.account_id] : null;
+    const brand = acc?.brand_name || "Otro";
+    const net = c.network || "unknown";
+    if (!sovNetCounts[net]) sovNetCounts[net] = {};
+    sovNetCounts[net][brand] = (sovNetCounts[net][brand] || 0) + 1;
+  }
+  const sovByNetwork: Record<string, SOVByNetworkEntry[]> = {};
+  for (const [net, brands] of Object.entries(sovNetCounts)) {
+    const total = Object.values(brands).reduce((s, n) => s + n, 0);
+    sovByNetwork[net] = Object.entries(brands)
+      .map(([brand, comments]) => ({ brand, network: net, comments, percentage: total > 0 ? Number(((comments / total) * 100).toFixed(1)) : 0 }))
+      .sort((a, b) => b.comments - a.comments);
+  }
+
+  // --- COMMENT TREND ---
+  const buckets: Record<string, { total: number; positive: number; neutral: number; negative: number }> = {};
+  for (const c of validComments) {
+    const date = c.published_at?.slice(0, 7);
+    if (!date) continue;
+    if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
+    buckets[date].total++;
+    buckets[date][classifySentiment(cleanText(c.text || ""))]++;
+  }
+  const commentTrend: CommentTrendPoint[] = Object.entries(buckets)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, val]) => ({ month: MONTH_LABELS[key.slice(5, 7)] + " " + key.slice(0, 4), ...val }));
+
+  // --- TOP POSTS ---
   const posts = allPosts
     .filter((p: any) => p.caption && p.caption.length > 0)
     .map((p: any) => ({ ...p, caption: cleanText(p.caption) }))
@@ -115,187 +198,64 @@ export async function fetchRealTopPosts(): Promise<TopPostData[]> {
       if (p.network === "reddit" || p.network === "x") return RELEVANCE_KEYWORDS.test(p.caption);
       return true;
     });
-  if (posts.length === 0) return [];
 
-  const grouped: Record<string, { best: any; worst: any }> = {};
-  for (const p of posts) {
-    const acc = p.account_id ? accountMap[p.account_id] : null;
-    const brand = acc?.brand_name || "Desconocido";
-    const net = p.network || "instagram";
-    const key = `${brand}|${net}`;
-    const eng = (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
-    const entry = { ...p, _brand: brand, _eng: eng };
-
-    if (!grouped[key]) {
-      grouped[key] = { best: entry, worst: entry };
-    } else {
-      if (eng > grouped[key].best._eng) grouped[key].best = entry;
-      if (eng < grouped[key].worst._eng) grouped[key].worst = entry;
-    }
-  }
-
-  const selectedPosts: any[] = [];
-  for (const { best, worst } of Object.values(grouped)) {
-    selectedPosts.push(best);
-    if (best.id !== worst.id) selectedPosts.push(worst);
-  }
-
-  const postIds = selectedPosts.map((p: any) => p.id);
-  const { data: topComments } = await sb
-    .from("comments")
-    .select("post_id, author_username, text, likes")
-    .in("post_id", postIds)
-    .not("text", "is", null)
-    .not("text", "eq", "")
-    .order("likes", { ascending: false });
-
-  const commentsByPost: Record<string, TopComment> = {};
-  if (topComments) {
-    for (const c of topComments) {
-      const pid = c.post_id;
-      if (pid && !commentsByPost[pid]) {
-        commentsByPost[pid] = {
-          author: `@${c.author_username || "usuario"}`,
-          text: cleanText(c.text || ""),
-          likes: c.likes || 0,
-        };
+  let topPosts: TopPostData[] = [];
+  if (posts.length > 0) {
+    const grouped: Record<string, { best: any; worst: any }> = {};
+    for (const p of posts) {
+      const acc = p.account_id ? accountMap[p.account_id] : null;
+      const brand = acc?.brand_name || "Desconocido";
+      const net = p.network || "instagram";
+      const key = `${brand}|${net}`;
+      const eng = (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
+      const entry = { ...p, _brand: brand, _eng: eng };
+      if (!grouped[key]) { grouped[key] = { best: entry, worst: entry }; }
+      else {
+        if (eng > grouped[key].best._eng) grouped[key].best = entry;
+        if (eng < grouped[key].worst._eng) grouped[key].worst = entry;
       }
     }
-  }
 
-  const result: TopPostData[] = [];
-  for (const { best, worst } of Object.values(grouped)) {
-    const mapPost = (p: any, ranking: "best" | "worst") => {
-      const acc = p.account_id ? accountMap[p.account_id] : null;
-      return {
-        brand: acc?.brand_name || "Desconocido",
-        network: (p.network || "instagram") as Network,
-        caption: (p.caption || "").slice(0, 200),
-        likes: p.likes || 0,
-        comments: p.comments || 0,
-        shares: p.shares || 0,
-        views: p.views || 0,
-        date: p.published_at?.split("T")[0] || "2026-09-01",
-        url: p.post_url || undefined,
-        imageUrl: p.raw_data?.displayUrl || extractFbImage(p.raw_data) || undefined,
-        topComment: commentsByPost[p.id] || undefined,
-        ranking,
+    const selectedPostIds: string[] = [];
+    for (const { best, worst } of Object.values(grouped)) {
+      selectedPostIds.push(best.id);
+      if (best.id !== worst.id) selectedPostIds.push(worst.id);
+    }
+
+    const commentsByPost: Record<string, TopComment> = {};
+    for (const c of allComments) {
+      if (!c.post_id || !c.text || commentsByPost[c.post_id]) continue;
+      if (!selectedPostIds.includes(c.post_id)) continue;
+      commentsByPost[c.post_id] = { author: `@${c.author_username || "usuario"}`, text: cleanText(c.text), likes: c.likes || 0 };
+    }
+
+    for (const { best, worst } of Object.values(grouped)) {
+      const mapPost = (p: any, ranking: "best" | "worst") => {
+        const acc = p.account_id ? accountMap[p.account_id] : null;
+        return {
+          brand: acc?.brand_name || "Desconocido",
+          network: (p.network || "instagram") as Network,
+          caption: (p.caption || "").slice(0, 200),
+          likes: p.likes || 0, comments: p.comments || 0, shares: p.shares || 0, views: p.views || 0,
+          date: p.published_at?.split("T")[0] || "2026-09-01",
+          url: p.post_url || undefined,
+          imageUrl: p.raw_data?.displayUrl || extractFbImage(p.raw_data) || undefined,
+          topComment: commentsByPost[p.id] || undefined,
+          ranking,
+        };
       };
-    };
-    result.push(mapPost(best, "best"));
-    if (best.id !== worst.id) result.push(mapPost(worst, "worst"));
+      topPosts.push(mapPost(best, "best"));
+      if (best.id !== worst.id) topPosts.push(mapPost(worst, "worst"));
+    }
   }
 
-  return result;
-}
-
-export async function fetchMentionsByNetwork(): Promise<{ network: string; mentions: number; percentage: number }[]> {
-  const data = await fetchAll("comments", "network");
-  if (data.length === 0) return [];
-
-  const counts: Record<string, number> = {};
-  for (const c of data) {
-    const net = c.network || "unknown";
-    counts[net] = (counts[net] || 0) + 1;
-  }
-
-  const total = Object.values(counts).reduce((s, n) => s + n, 0);
-  return Object.entries(counts)
-    .map(([network, mentions]) => ({
-      network,
-      mentions,
-      percentage: total > 0 ? Number(((mentions / total) * 100).toFixed(1)) : 0,
-    }))
-    .sort((a, b) => b.mentions - a.mentions);
-}
-
-export async function fetchSentimentByBrand(): Promise<{ brand: string; positive: number; neutral: number; negative: number }[]> {
-  const [accountMap, data] = await Promise.all([
-    getAccountMap(),
-    fetchAll("comments", "text, account_id"),
-  ]);
-
-  const filtered = data.filter((c: any) => c.text && c.text.length > 0);
-  if (filtered.length === 0) return [];
-
-  const sentiments: Record<string, { positive: number; neutral: number; negative: number }> = {};
-  for (const c of filtered) {
-    const acc = c.account_id ? accountMap[c.account_id] : null;
-    const brand = acc?.brand_name || "Otro";
-    if (!sentiments[brand]) sentiments[brand] = { positive: 0, neutral: 0, negative: 0 };
-    sentiments[brand][classifySentiment(cleanText(c.text || ""))]++;
-  }
-
-  return Object.entries(sentiments)
-    .map(([brand, s]) => {
-      const total = s.positive + s.neutral + s.negative;
-      return {
-        brand,
-        positive: total > 0 ? Math.round((s.positive / total) * 100) : 0,
-        neutral: total > 0 ? Math.round((s.neutral / total) * 100) : 0,
-        negative: total > 0 ? Math.round((s.negative / total) * 100) : 0,
-      };
-    })
-    .sort((a, b) => (b.positive + b.neutral + b.negative) - (a.positive + a.neutral + a.negative));
-}
-
-const MONTH_LABELS: Record<string, string> = {
-  "01": "Ene", "02": "Feb", "03": "Mar", "04": "Abr", "05": "May", "06": "Jun",
-  "07": "Jul", "08": "Ago", "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dic",
-};
-
-export type CommentTrendPoint = { month: string; total: number; positive: number; neutral: number; negative: number };
-
-export async function fetchCommentTrend(): Promise<CommentTrendPoint[]> {
-  const data = await fetchAll("comments", "published_at, text");
-  const filtered = data.filter((c: any) => c.published_at && c.text && c.text.length > 0);
-  if (filtered.length === 0) return [];
-
-  const buckets: Record<string, { total: number; positive: number; neutral: number; negative: number }> = {};
-  for (const c of filtered) {
-    const date = c.published_at?.slice(0, 7);
-    if (!date) continue;
-    if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
-    buckets[date].total++;
-    const sent = classifySentiment(cleanText(c.text || ""));
-    buckets[date][sent]++;
-  }
-
-  return Object.entries(buckets)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, val]) => ({
-      month: MONTH_LABELS[key.slice(5, 7)] + " " + key.slice(0, 4),
-      ...val,
-    }));
-}
-
-export type BrandEngagement = {
-  brand: string;
-  accountType: string;
-  posts: number;
-  likes: number;
-  comments: number;
-  shares: number;
-  views: number;
-  totalEngagement: number;
-};
-
-export async function fetchBrandEngagement(): Promise<BrandEngagement[]> {
-  const [accountMap, posts] = await Promise.all([
-    getAccountMap(),
-    fetchAll("posts", "account_id, likes, comments, shares, views"),
-  ]);
-
-  if (posts.length === 0) return [];
-
-  const brands: Record<string, BrandEngagement> = {};
-  for (const p of posts) {
+  // --- BRAND ENGAGEMENT ---
+  const engBrands: Record<string, BrandEngagement> = {};
+  for (const p of allPosts) {
     const acc = p.account_id ? accountMap[p.account_id] : null;
     const brand = acc?.brand_name || "Otro";
-    if (!brands[brand]) {
-      brands[brand] = { brand, accountType: acc?.account_type || "competitor", posts: 0, likes: 0, comments: 0, shares: 0, views: 0, totalEngagement: 0 };
-    }
-    const b = brands[brand];
+    if (!engBrands[brand]) { engBrands[brand] = { brand, accountType: acc?.account_type || "competitor", posts: 0, likes: 0, comments: 0, shares: 0, views: 0, totalEngagement: 0 }; }
+    const b = engBrands[brand];
     b.posts++;
     b.likes += p.likes || 0;
     b.comments += p.comments || 0;
@@ -303,117 +263,29 @@ export async function fetchBrandEngagement(): Promise<BrandEngagement[]> {
     b.views += p.views || 0;
     b.totalEngagement += (p.likes || 0) + (p.comments || 0) + (p.shares || 0);
   }
+  const brandEngagement = Object.values(engBrands).sort((a, b) => b.totalEngagement - a.totalEngagement);
 
-  return Object.values(brands).sort((a, b) => b.totalEngagement - a.totalEngagement);
-}
-
-export type AccountSnapshot = {
-  brand: string;
-  network: string;
-  username: string;
-  followers: number;
-  following: number;
-  totalPosts: number;
-  snapshotDate: string;
-  accountType: string;
-};
-
-export async function fetchAccountSnapshots(): Promise<AccountSnapshot[]> {
-  const { data } = await sb
-    .from("account_snapshots")
-    .select("account_id, followers, following, total_posts, snapshot_date")
-    .order("snapshot_date", { ascending: false });
-
-  if (!data || data.length === 0) return [];
-
-  const [accountMap] = await Promise.all([getAccountMap()]);
-
-  const { data: accounts } = await sb.from("accounts").select("id, brand_name, network, username, account_type");
-  const acctDetails: Record<string, { brand: string; network: string; username: string; accountType: string }> = {};
-  if (accounts) {
-    for (const a of accounts) {
-      acctDetails[a.id] = { brand: a.brand_name, network: a.network, username: a.username, accountType: a.account_type };
+  // --- ACCOUNT SNAPSHOTS ---
+  const accountSnapshots: AccountSnapshot[] = [];
+  if (snapshotsRaw.data) {
+    const seen = new Set<string>();
+    for (const s of snapshotsRaw.data) {
+      if (seen.has(s.account_id)) continue;
+      seen.add(s.account_id);
+      const acc = accountMap[s.account_id];
+      if (!acc) continue;
+      if (acc.brand_name === "P.A.N." && acc.network === "tiktok") continue;
+      accountSnapshots.push({
+        brand: acc.brand_name, network: acc.network || "", username: acc.username || "",
+        followers: s.followers || 0, following: s.following || 0, totalPosts: s.total_posts || 0,
+        snapshotDate: s.snapshot_date, accountType: acc.account_type,
+      });
     }
   }
 
-  const seen = new Set<string>();
-  const results: AccountSnapshot[] = [];
-  for (const s of data) {
-    const key = s.account_id;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    const acc = acctDetails[s.account_id];
-    if (!acc) continue;
-    if (acc.brand === "P.A.N." && acc.network === "tiktok") continue;
-    results.push({
-      brand: acc.brand,
-      network: acc.network,
-      username: acc.username,
-      followers: s.followers || 0,
-      following: s.following || 0,
-      totalPosts: s.total_posts || 0,
-      snapshotDate: s.snapshot_date,
-      accountType: acc.accountType,
-    });
-  }
-  return results;
+  return { mentions, topPosts, mentionsByNetwork, sentimentByBrand, sovData, commentTrend, brandEngagement, accountSnapshots, sovByNetwork };
 }
 
-export async function fetchSOVData(): Promise<{ brand: string; mentions: number; percentage: number }[]> {
-  const [accountMap, data] = await Promise.all([
-    getAccountMap(),
-    fetchAll("comments", "account_id"),
-  ]);
-
-  if (!data || data.length === 0) return [];
-
-  const counts: Record<string, number> = {};
-  for (const c of data) {
-    const acc = c.account_id ? accountMap[c.account_id] : null;
-    const brand = acc?.brand_name || "Otro";
-    counts[brand] = (counts[brand] || 0) + 1;
-  }
-
-  const total = Object.values(counts).reduce((s, n) => s + n, 0);
-  return Object.entries(counts)
-    .map(([brand, mentions]) => ({
-      brand,
-      mentions,
-      percentage: total > 0 ? Number(((mentions / total) * 100).toFixed(1)) : 0,
-    }))
-    .sort((a, b) => b.mentions - a.mentions);
-}
-
-export type SOVByNetworkEntry = { brand: string; network: string; comments: number; percentage: number };
-
-export async function fetchSOVByNetwork(): Promise<Record<string, SOVByNetworkEntry[]>> {
-  const [accountMap, data] = await Promise.all([
-    getAccountMap(),
-    fetchAll("comments", "account_id, network"),
-  ]);
-
-  if (!data || data.length === 0) return {};
-
-  const counts: Record<string, Record<string, number>> = {};
-  for (const c of data) {
-    const acc = c.account_id ? accountMap[c.account_id] : null;
-    const brand = acc?.brand_name || "Otro";
-    const net = c.network || "unknown";
-    if (!counts[net]) counts[net] = {};
-    counts[net][brand] = (counts[net][brand] || 0) + 1;
-  }
-
-  const result: Record<string, SOVByNetworkEntry[]> = {};
-  for (const [net, brands] of Object.entries(counts)) {
-    const total = Object.values(brands).reduce((s, n) => s + n, 0);
-    result[net] = Object.entries(brands)
-      .map(([brand, comments]) => ({
-        brand,
-        network: net,
-        comments,
-        percentage: total > 0 ? Number(((comments / total) * 100).toFixed(1)) : 0,
-      }))
-      .sort((a, b) => b.comments - a.comments);
-  }
-  return result;
-}
+// Legacy individual exports kept for type compatibility
+export { fetchAll };
+export type { AccountRow };
