@@ -68,6 +68,8 @@ function cleanText(raw) {
 
 const RELEVANCE_KEYWORDS = /harina|arepa|pan\b|maíz|maiz|atún|atun|pasta|polar|p\.a\.n|comida|cocina|receta|desayuno|almuerzo|cena|alimento|colombia|bogot|medell|cali\b|barranquilla|empanada|buñuelo|mascotas|perro|gato|donkan|mirringo|chunky|cat chow|dog chow|purina|ringo/i;
 
+const EXCLUDE_VENEZUELA = /venezuel|vzla|caracas|maracaibo|maracay|en venezuela|desde venezuela/i;
+
 function extractFbImage(raw) {
   if (!raw?.media || !Array.isArray(raw.media)) return undefined;
   for (const m of raw.media) {
@@ -120,6 +122,7 @@ console.log(`Snapshots: ${snapshotsRaw.data?.length || 0}`);
 const mentions = feedComments
   .filter(c => {
     if (!c.text || c.text.length < 4) return false;
+    if (EXCLUDE_VENEZUELA.test(c.text)) return false;
     if (c.network === "reddit" || c.network === "x") return RELEVANCE_KEYWORDS.test(c.text);
     return true;
   })
