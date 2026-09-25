@@ -13,17 +13,14 @@ import { signOut } from "@/lib/auth";
 import { useAuth } from "./AuthProvider";
 import { useClientData } from "@/lib/client-data";
 
-const baseNavigation = [
+const alimentosNavigation = [
   { name: "Competencia", href: "/competencia", icon: Swords },
   { name: "Escucha Activa", href: "/categoria", icon: Ear },
   { name: "Nuestras Marcas", href: "/marca", icon: Star },
 ];
 
 const mascotasNavigation = [
-  { name: "Competencia", href: "/competencia", icon: Swords },
-  { name: "Escucha Activa", href: "/categoria", icon: Ear },
   { name: "Radar Innovacion", href: "/innovacion", icon: Lightbulb },
-  { name: "Nuestras Marcas", href: "/marca", icon: Star },
 ];
 
 export function Sidebar() {
@@ -36,6 +33,8 @@ export function Sidebar() {
     await signOut();
     router.replace("/login");
   };
+
+  const navigation = selectedProductLine === "mascotas" ? mascotasNavigation : alimentosNavigation;
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col">
@@ -56,13 +55,20 @@ export function Sidebar() {
 
       {hasMultipleProductLines && (
         <div className="mx-3 mt-4 mb-3 p-3 rounded-xl bg-slate-800/80 border border-slate-700/50">
-          <p className="text-[10px] text-white uppercase tracking-wider mb-2 px-1">Categoría</p>
-          <div className="grid grid-cols-3 gap-1.5">
+          <p className="text-[10px] text-white uppercase tracking-wider mb-2 px-1">Categoria</p>
+          <div className="flex flex-col gap-1.5">
             {productLineOptions.map((opt) => (
               <button
                 key={opt.key}
-                onClick={() => setSelectedProductLine(opt.key)}
-                className={`px-3 py-2.5 rounded-lg text-sm font-semibold text-center transition-colors ${
+                onClick={() => {
+                  setSelectedProductLine(opt.key);
+                  if (opt.key === "mascotas") {
+                    router.push("/innovacion");
+                  } else if (pathname === "/innovacion") {
+                    router.push("/competencia");
+                  }
+                }}
+                className={`px-3 py-2.5 rounded-lg text-sm font-semibold text-left transition-colors ${
                   selectedProductLine === opt.key
                     ? "bg-white text-slate-900 shadow-md"
                     : "bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-white"
@@ -76,7 +82,7 @@ export function Sidebar() {
       )}
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {(selectedProductLine === "mascotas" ? mascotasNavigation : baseNavigation).map((item) => {
+        {navigation.map((item) => {
           const isActive = pathname?.startsWith(item.href);
           return (
             <Link
@@ -104,7 +110,7 @@ export function Sidebar() {
           className="flex items-center gap-2 text-sm text-slate-400 hover:text-white transition-colors w-full px-3 py-2 rounded-lg hover:bg-slate-800"
         >
           <LogOut className="h-4 w-4" />
-          Cerrar sesión
+          Cerrar sesion
         </button>
       </div>
     </aside>
