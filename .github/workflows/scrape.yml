@@ -1,0 +1,32 @@
+name: Scraping quincenal
+
+on:
+  schedule:
+    - cron: '0 6 1,15 * *'
+  workflow_dispatch: {}
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    env:
+      APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Scraping Polar
+        run: node scripts/scrape-all.mjs --client polar
+
+      - name: Guardar datos scrapeados
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/scraped/
+          git diff --staged --quiet || git commit -m "data: scraping quincenal $(date +%Y-%m-%d)"
+          git push
