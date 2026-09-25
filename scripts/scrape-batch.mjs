@@ -22,17 +22,18 @@ const SUPABASE_KEY = env.SUPABASE_SERVICE_ROLE_KEY;
 const args = process.argv.slice(2);
 const postsLimit = args.includes("--posts") ? parseInt(args[args.indexOf("--posts") + 1]) : 50;
 const onlyNetwork = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
+const onlyProductLine = args.includes("--line") ? args[args.indexOf("--line") + 1] : null;
 
 const ACTORS = {
   instagram: "apify~instagram-scraper",
-  facebook: "apify~facebook-pages-scraper",
+  facebook: "apify~facebook-posts-scraper",
   tiktok: "clockworks~free-tiktok-scraper",
   x: "apidojo~tweet-scraper",
 };
 
 const REDDIT_ACTOR = "trudax~reddit-scraper";
 const REDDIT_SEARCHES = [
-  { query: "harina PAN arepa", subreddits: ["Colombia", "vzla", "cooking", "LatinFood"] },
+  { query: "harina PAN arepa", subreddits: ["Colombia", "cooking", "LatinFood"] },
   { query: "Doria pasta Colombia", subreddits: ["Colombia"] },
   { query: "atún Van Camps Isabel Colombia", subreddits: ["Colombia"] },
   { query: "Zenú alimentos Colombia", subreddits: ["Colombia"] },
@@ -100,7 +101,7 @@ function buildInput(net, username) {
     case "instagram":
       return { directUrls: [`https://www.instagram.com/${username}/`], resultsType: "posts", resultsLimit: postsLimit };
     case "facebook":
-      return { startUrls: [{ url: `https://www.facebook.com/${username}` }], maxPosts: postsLimit, maxComments: 50 };
+      return { startUrls: [{ url: `https://www.facebook.com/${username}/` }], resultsLimit: postsLimit };
     case "tiktok":
       return { profiles: [`https://www.tiktok.com/@${username}`], resultsPerPage: postsLimit, shouldDownloadVideos: false };
     case "x":
@@ -174,56 +175,82 @@ async function scrapeInstagramComments(postCodes, account) {
 }
 
 async function processFacebook(items, account, today) {
-  let profileSaved = false, postsSaved = 0, commentsSaved = 0;
+  let postsSaved = 0;
+  const postUrls = [];
 
   for (const item of items) {
-    if ((item.likes || item.followersCount) && !profileSaved) {
-      await sbUpsert("account_snapshots", {
-        account_id: account.id, snapshot_date: today,
-        followers: item.likes || item.followersCount || 0, following: 0,
-        total_posts: item.postsCount || 0,
-        raw_data: { name: item.name, categories: item.categories },
+    const pid = item.postId || item.id || `fb_${Date.now()}_${Math.random()}`;
+    if (!item.text && !item.postId) continue;
+    const postUrl = item.url || item.postUrl || "";
+    try {
+      await sbUpsert("posts", {
+        account_id: account.id, network: "facebook", post_id_native: String(pid),
+        post_url: postUrl,
+        post_type: item.type || (item.media?.length > 0 ? "media" : "text"),
+        caption: item.text || "",
+        likes: item.likes || 0,
+        comments: item.comments || 0,
+        shares: item.shares || 0,
+        views: item.views || 0,
+        published_at: item.time ? new Date(item.time).toISOString() : null,
+        raw_data: { pageName: item.pageName, media: item.media, user: item.user },
       });
-      profileSaved = true;
-    }
-
-    for (const post of (item.posts || [])) {
-      const pid = post.postId || post.id || `fb_${Date.now()}_${Math.random()}`;
-      try {
-        const [savedPost] = await sbUpsert("posts", {
-          account_id: account.id, network: "facebook", post_id_native: pid,
-          post_url: post.postUrl || post.url || "", post_type: post.type || "unknown",
-          caption: post.text || post.message || "",
-          likes: post.likesCount || post.likes || 0,
-          comments: post.commentsCount || post.comments || 0,
-          shares: post.sharesCount || post.shares || 0,
-          views: post.viewsCount || 0,
-          published_at: post.time ? new Date(post.time).toISOString() : null,
-          raw_data: post,
-        });
-        postsSaved++;
-
-        for (const c of (post.comments?.items || post.latestComments || [])) {
-          const cid = c.id || c.commentId || `fbc_${pid}_${Date.now()}_${Math.random()}`;
-          try {
-            await sbUpsert("comments", {
-              post_id: savedPost.id, account_id: account.id, network: "facebook",
-              comment_id_native: cid, author_username: c.profileUrl || "",
-              author_name: c.name || c.profileName || "", text: c.text || c.message || "",
-              likes: c.likesCount || 0, published_at: c.date ? new Date(c.date).toISOString() : null,
-              raw_data: c,
-            });
-            commentsSaved++;
-          } catch (err) { /* dup */ }
-        }
-      } catch (err) { /* dup */ }
-    }
+      postsSaved++;
+      if ((item.comments || 0) > 0 && postUrl) postUrls.push(postUrl);
+    } catch (err) { /* dup */ }
   }
-  return { profileSaved, postsSaved, commentsSaved };
+  return { profileSaved: false, postsSaved, commentsSaved: 0, postUrls };
+}
+
+async function scrapeFacebookComments(postUrls, account) {
+  if (postUrls.length === 0) return 0;
+  console.log(`      Scraping comentarios de ${postUrls.length} posts...`);
+
+  const { items } = await runApify("apify~facebook-comments-scraper", {
+    startUrls: postUrls.map(u => ({ url: u })),
+    resultsLimit: 500,
+    includeNestedComments: false,
+  });
+
+  const postIdMap = {};
+  for (const url of postUrls) {
+    const saved = await sbGet("posts", `post_url=eq.${encodeURIComponent(url)}&account_id=eq.${account.id}&select=id`);
+    if (saved.length > 0) postIdMap[url] = saved[0].id;
+  }
+
+  let commentsSaved = 0;
+  for (const c of items) {
+    const postUrl = c.postUrl || c.facebookUrl || "";
+    let postId = postIdMap[postUrl];
+    if (!postId) {
+      for (const [savedUrl, id] of Object.entries(postIdMap)) {
+        if (postUrl.includes(savedUrl) || savedUrl.includes(postUrl)) { postId = id; break; }
+      }
+    }
+    if (!postId) continue;
+
+    const cid = c.id || c.commentId || `fbc_${Date.now()}_${Math.random()}`;
+    try {
+      await sbUpsert("comments", {
+        post_id: postId, account_id: account.id, network: "facebook",
+        comment_id_native: String(cid),
+        author_username: c.profileUrl || "",
+        author_name: c.name || c.profileName || "",
+        text: c.text || "",
+        likes: c.likesCount || 0,
+        replies_count: c.repliesCount || 0,
+        published_at: c.date ? new Date(c.date).toISOString() : null,
+        raw_data: c,
+      });
+      commentsSaved++;
+    } catch (err) { /* dup */ }
+  }
+  return commentsSaved;
 }
 
 async function processTikTok(items, account, today) {
-  let profileSaved = false, postsSaved = 0, commentsSaved = 0;
+  let profileSaved = false, postsSaved = 0;
+  const videoUrls = [];
 
   for (const item of items) {
     if (item.authorMeta && !profileSaved) {
@@ -237,35 +264,65 @@ async function processTikTok(items, account, today) {
     }
 
     if (item.id) {
+      const videoUrl = item.webVideoUrl || `https://www.tiktok.com/@${account.username}/video/${item.id}`;
       try {
-        const [savedPost] = await sbUpsert("posts", {
+        await sbUpsert("posts", {
           account_id: account.id, network: "tiktok", post_id_native: item.id,
-          post_url: item.webVideoUrl || `https://www.tiktok.com/@${account.username}/video/${item.id}`,
-          post_type: "video", caption: item.text || "",
+          post_url: videoUrl, post_type: "video", caption: item.text || "",
           likes: item.diggCount || 0, comments: item.commentCount || 0,
           shares: item.shareCount || 0, views: item.playCount || 0,
           published_at: item.createTimeISO || null,
           raw_data: { musicMeta: item.musicMeta },
         });
         postsSaved++;
-
-        for (const c of (item.comments || [])) {
-          const cid = c.cid || `ttc_${item.id}_${Date.now()}_${Math.random()}`;
-          try {
-            await sbUpsert("comments", {
-              post_id: savedPost.id, account_id: account.id, network: "tiktok",
-              comment_id_native: cid, author_username: c.uniqueId || "",
-              author_name: c.nickName || "", text: c.text || "",
-              likes: c.diggCount || 0, replies_count: c.replyCommentTotal || 0,
-              published_at: c.createTimeISO || null, raw_data: c,
-            });
-            commentsSaved++;
-          } catch (err) { /* dup */ }
-        }
+        if ((item.commentCount || 0) > 0) videoUrls.push(videoUrl);
       } catch (err) { /* dup */ }
     }
   }
-  return { profileSaved, postsSaved, commentsSaved };
+  return { profileSaved, postsSaved, commentsSaved: 0, videoUrls };
+}
+
+async function scrapeTikTokComments(videoUrls, account) {
+  if (videoUrls.length === 0) return 0;
+  console.log(`      Scraping comentarios de ${videoUrls.length} videos...`);
+
+  const { items } = await runApify("clockworks~tiktok-comments-scraper", {
+    postURLs: videoUrls,
+    commentsPerPost: 50,
+  });
+
+  const postIdMap = {};
+  for (const url of videoUrls) {
+    const videoId = url.match(/\/video\/(\d+)/)?.[1];
+    if (videoId) {
+      const saved = await sbGet("posts", `post_id_native=eq.${videoId}&account_id=eq.${account.id}&select=id`);
+      if (saved.length > 0) postIdMap[videoId] = saved[0].id;
+    }
+  }
+
+  let commentsSaved = 0;
+  for (const c of items) {
+    const videoId = c.videoId || c.videoWebUrl?.match(/\/video\/(\d+)/)?.[1] || "";
+    const postId = postIdMap[videoId];
+    if (!postId) continue;
+
+    const cid = c.cid || c.id || `ttc_${videoId}_${Date.now()}_${Math.random()}`;
+    try {
+      await sbUpsert("comments", {
+        post_id: postId, account_id: account.id, network: "tiktok",
+        comment_id_native: String(cid),
+        author_username: c.uniqueId || "",
+        author_name: c.nickName || "",
+        text: c.text || "",
+        likes: c.diggCount || 0,
+        replies_count: c.replyCommentTotal || 0,
+        published_at: c.createTimeISO || null,
+        raw_data: c,
+      });
+      commentsSaved++;
+    } catch (err) { /* dup */ }
+  }
+  return commentsSaved;
 }
 
 async function processX(items, account, today) {
@@ -394,11 +451,14 @@ async function main() {
   const startTime = Date.now();
   console.log(`\n${"═".repeat(60)}`);
   console.log(`  SCRAPE BATCH — ${today}`);
-  console.log(`  Posts por cuenta: ${postsLimit} | Filtro: ${onlyNetwork || "todas"}`);
+  console.log(`  Posts por cuenta: ${postsLimit} | Filtro: ${onlyNetwork || "todas"} | Línea: ${onlyProductLine || "todas"}`);
   console.log(`${"═".repeat(60)}`);
 
-  // Todas las cuentas activas
-  const accounts = await sbGet("accounts", "is_active=eq.true&order=network,brand_name");
+  // Todas las cuentas activas (opcionalmente filtradas por product_line)
+  const accountsQuery = onlyProductLine
+    ? `is_active=eq.true&product_line=eq.${onlyProductLine}&order=network,brand_name`
+    : "is_active=eq.true&order=network,brand_name";
+  const accounts = await sbGet("accounts", accountsQuery);
   const networks = ["instagram", "facebook", "tiktok", "x"];
   const summary = [];
 
@@ -434,8 +494,16 @@ async function main() {
           }
         } else if (net === "facebook") {
           result = await processFacebook(items, account, today);
+          if (result.postUrls && result.postUrls.length > 0) {
+            const cs = await scrapeFacebookComments(result.postUrls, account);
+            result.commentsSaved = cs;
+          }
         } else if (net === "tiktok") {
           result = await processTikTok(items, account, today);
+          if (result.videoUrls && result.videoUrls.length > 0) {
+            const cs = await scrapeTikTokComments(result.videoUrls, account);
+            result.commentsSaved = cs;
+          }
         } else if (net === "x") {
           result = await processX(items, account, today);
         }
