@@ -10,7 +10,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!loading) {
-      router.replace(user ? "/marca" : "/login");
+      router.replace(user ? "/categoria" : "/login");
     }
   }, [user, loading, router]);
 

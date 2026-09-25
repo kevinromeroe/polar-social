@@ -30,7 +30,7 @@ export default function LoginPage() {
     try {
       const email = resolveEmail(username);
       await signIn(email, password);
-      router.replace("/marca");
+      router.replace("/categoria");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Error al iniciar sesión";
       setError(message);
