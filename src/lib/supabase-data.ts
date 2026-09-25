@@ -4,11 +4,6 @@ import type { MentionData, TopPostData, TopComment, Network } from "./mock-data"
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const sb = supabase as any;
 
-const POSITIVE_WORDS = /delicioso|deliciosa|rico|rica|excelente|perfecto|perfecta|increíble|divino|divina|bueno|buena|genial|maravill|espectacular|mejor|favorit|encanta|amo|hermoso|hermosa|buen|sabroso|sabrosa|riquísim|exquisit|fantástic|recomiendo|recomendad|me gusta|me encanta|lo máximo|de calidad|súper|super bien|nutritiv|salud|practico|práctico|fácil|rendidor/i;
-const NEGATIVE_WORDS = /malo|mala|horrible|terrible|asco|pésimo|pésima|feo|fea|peor|odio|decepcion|basura|fraude|caro|cara\b|costoso|costosa|no me gust|no sirv|no rind|no vale|no encuentr|no hay\b|agotad|mediocre|regular\b|desagradabl|grumo|seco\b|seca\b|duro\b|dura\b|vencid|caducad|dañad|porquería|mugr|sucio|sucia|engaño|estafa|queja|reclam|decepcionan|lástima|lastima|enferm|intoxica|dolor de|mal sabor|mal olor|no compren|no compr[eé]|subió|aumentó|inflación|escas|desabastecer|no recomien|perjudic|tóxico|tóxic|nocivo|insípid|desabrid|químic|artificial|aburrido|aburrida|desperdicio|botaron|tirar a la basura|echó a perder/i;
-const POSITIVE_EMOJI = /😍|🤤|😋|❤️|💛|💙|🔥|👏|✨|🥰|💯|👌|😊|🙌|💪|😎|🫶|😻|🐾❤|♥️|💕|💖|🎉|👍/;
-const NEGATIVE_EMOJI = /😡|👎|💔|😤|🤮|😠|😞|😢|💩|🙄|😒|😖|😣|😩|😫|🤢|🚫|⚠️|❌/;
-
 const HTML_ENTITIES: Record<string, string> = { "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#x27;": "'", "&#x2F;": "/" };
 function cleanText(raw: string): string {
   let t = raw;
@@ -25,14 +20,6 @@ function cleanText(raw: string): string {
 }
 
 const RELEVANCE_KEYWORDS = /harina|arepa|pan\b|maíz|maiz|atún|atun|pasta|polar|p\.a\.n|comida|cocina|receta|desayuno|almuerzo|cena|alimento|colombia|venezuel|bogot|medell|cali\b|barranquilla|empanada|buñuelo|mascotas|perro|gato|donkan|mirringo|chunky|cat chow|dog chow|purina|ringo/i;
-
-function classifySentiment(text: string): "positive" | "neutral" | "negative" {
-  const hasPositive = POSITIVE_WORDS.test(text) || POSITIVE_EMOJI.test(text);
-  const hasNegative = NEGATIVE_WORDS.test(text) || NEGATIVE_EMOJI.test(text);
-  if (hasPositive && !hasNegative) return "positive";
-  if (hasNegative && !hasPositive) return "negative";
-  return "neutral";
-}
 
 function extractFbImage(raw: any): string | undefined {
   if (!raw?.media || !Array.isArray(raw.media)) return undefined;
@@ -83,48 +70,66 @@ export interface AllRealData {
 }
 
 export async function fetchAllRealData(): Promise<AllRealData> {
-  const [accountsRaw, allComments, allPosts, snapshotsRaw] = await Promise.all([
-    sb.from("accounts").select("id, brand_name, account_type, product_line, network, username"),
-    fetchAll("comments", "id, text, author_username, likes, published_at, network, account_id, post_id"),
+  // 1) Cuentas (pequeño ~65 filas)
+  const accountsRaw = await sb.from("accounts").select("id, brand_name, account_type, product_line, network, username");
+  const accountMap: Record<string, AccountRow> = {};
+  if (accountsRaw.data) for (const a of accountsRaw.data) accountMap[a.id] = a as AccountRow;
+
+  // 2) Datos LIGEROS de comentarios para agregados (~800KB en vez de ~5MB)
+  //    Solo traemos los campos necesarios para contar, NO el texto completo
+  const lightComments = await fetchAll("comments", "account_id, network, published_at, sentiment");
+
+  // 3) Top comentarios para el feed (solo los mejores 50 por sentimiento)
+  const [topPositive, topNegative, topNeutral] = await Promise.all([
+    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
+      .eq("sentiment", "positive").order("likes", { ascending: false }).limit(50),
+    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
+      .eq("sentiment", "negative").order("likes", { ascending: false }).limit(50),
+    sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
+      .eq("sentiment", "neutral").order("likes", { ascending: false }).limit(50),
+  ]);
+
+  const feedComments: any[] = [
+    ...(topPositive.data || []),
+    ...(topNegative.data || []),
+    ...(topNeutral.data || []),
+  ];
+
+  // 4) Posts sin raw_data (~2MB) + snapshots
+  const [allPosts, snapshotsRaw] = await Promise.all([
     fetchAll("posts", "id, caption, likes, comments, shares, views, published_at, network, post_url, account_id"),
     sb.from("account_snapshots").select("account_id, followers, following, total_posts, snapshot_date").order("snapshot_date", { ascending: false }),
   ]);
 
-  const accountMap: Record<string, AccountRow> = {};
-  if (accountsRaw.data) for (const a of accountsRaw.data) accountMap[a.id] = a as AccountRow;
+  console.log(`[Supabase] Cargados: ${lightComments.length} comentarios (ligero), ${feedComments.length} feed, ${allPosts.length} posts, ${Object.keys(accountMap).length} cuentas`);
 
-  console.log(`[Supabase] Cargados: ${allComments.length} comentarios, ${allPosts.length} posts, ${Object.keys(accountMap).length} cuentas`);
-
-  const validComments = allComments.filter((c: any) => c.text && c.text.length > 3);
-
-  // --- MENTIONS ---
-  type CommentItem = { acc: AccountRow | null; text: string; net: string; raw: any };
-  const mapped: CommentItem[] = validComments.map((c: any): CommentItem => {
-    const acc = c.account_id ? accountMap[c.account_id] : null;
-    return { acc, text: cleanText(c.text!), net: c.network || "instagram", raw: c };
-  });
-
-  const mentions: MentionData[] = mapped
-    .filter((item) => {
-      if (item.text.length < 4) return false;
-      if (item.net === "reddit" || item.net === "x") return RELEVANCE_KEYWORDS.test(item.text);
+  // --- MENTIONS (feed) ---
+  const mentions: MentionData[] = feedComments
+    .filter((c: any) => {
+      if (!c.text || c.text.length < 4) return false;
+      if (c.network === "reddit" || c.network === "x") return RELEVANCE_KEYWORDS.test(c.text);
       return true;
     })
-    .map((item, i) => ({
-      id: i + 1,
-      brand: item.acc?.brand_name || "Desconocido",
-      network: item.net,
-      author: `@${item.raw.author_username || "usuario"}`,
-      text: item.text,
-      sentiment: classifySentiment(item.text),
-      date: item.raw.published_at?.split("T")[0] || "2026-09-01",
-      likes: item.raw.likes || 0,
-      productLine: item.acc?.product_line || undefined,
-    }));
+    .map((c: any, i: number) => {
+      const acc = c.account_id ? accountMap[c.account_id] : null;
+      return {
+        id: i + 1,
+        brand: acc?.brand_name || "Desconocido",
+        network: c.network || "instagram",
+        author: `@${c.author_username || "usuario"}`,
+        text: cleanText(c.text),
+        sentiment: (c.sentiment || "neutral") as "positive" | "neutral" | "negative",
+        date: c.published_at?.split("T")[0] || "2026-09-01",
+        likes: c.likes || 0,
+        productLine: acc?.product_line || undefined,
+      };
+    });
 
-  // --- MENTIONS BY NETWORK ---
+  // --- AGGREGADOS desde datos ligeros (sin texto) ---
+
+  // Mentions by network
   const netCounts: Record<string, number> = {};
-  for (const c of allComments) {
+  for (const c of lightComments) {
     const net = c.network || "unknown";
     netCounts[net] = (netCounts[net] || 0) + 1;
   }
@@ -133,13 +138,16 @@ export async function fetchAllRealData(): Promise<AllRealData> {
     .map(([network, cnt]) => ({ network, mentions: cnt, percentage: netTotal > 0 ? Number(((cnt / netTotal) * 100).toFixed(1)) : 0 }))
     .sort((a, b) => b.mentions - a.mentions);
 
-  // --- SENTIMENT BY BRAND ---
+  // Sentiment by brand
   const sentiments: Record<string, { positive: number; neutral: number; negative: number }> = {};
-  for (const c of validComments) {
+  for (const c of lightComments) {
     const acc = c.account_id ? accountMap[c.account_id] : null;
     const brand = acc?.brand_name || "Otro";
     if (!sentiments[brand]) sentiments[brand] = { positive: 0, neutral: 0, negative: 0 };
-    sentiments[brand][classifySentiment(cleanText(c.text || ""))]++;
+    const s = c.sentiment || "neutral";
+    if (s === "positive") sentiments[brand].positive++;
+    else if (s === "negative") sentiments[brand].negative++;
+    else sentiments[brand].neutral++;
   }
   const sentimentByBrand = Object.entries(sentiments)
     .map(([brand, s]) => {
@@ -148,9 +156,9 @@ export async function fetchAllRealData(): Promise<AllRealData> {
     })
     .sort((a, b) => (b.positive + b.neutral + b.negative) - (a.positive + a.neutral + a.negative));
 
-  // --- SOV ---
+  // SOV
   const sovCounts: Record<string, number> = {};
-  for (const c of allComments) {
+  for (const c of lightComments) {
     const acc = c.account_id ? accountMap[c.account_id] : null;
     const brand = acc?.brand_name || "Otro";
     sovCounts[brand] = (sovCounts[brand] || 0) + 1;
@@ -160,9 +168,9 @@ export async function fetchAllRealData(): Promise<AllRealData> {
     .map(([brand, cnt]) => ({ brand, mentions: cnt, percentage: sovTotal > 0 ? Number(((cnt / sovTotal) * 100).toFixed(1)) : 0 }))
     .sort((a, b) => b.mentions - a.mentions);
 
-  // --- SOV BY NETWORK ---
+  // SOV by network
   const sovNetCounts: Record<string, Record<string, number>> = {};
-  for (const c of allComments) {
+  for (const c of lightComments) {
     const acc = c.account_id ? accountMap[c.account_id] : null;
     const brand = acc?.brand_name || "Otro";
     const net = c.network || "unknown";
@@ -177,14 +185,17 @@ export async function fetchAllRealData(): Promise<AllRealData> {
       .sort((a, b) => b.comments - a.comments);
   }
 
-  // --- COMMENT TREND ---
+  // Comment trend
   const buckets: Record<string, { total: number; positive: number; neutral: number; negative: number }> = {};
-  for (const c of validComments) {
+  for (const c of lightComments) {
     const date = c.published_at?.slice(0, 7);
     if (!date) continue;
     if (!buckets[date]) buckets[date] = { total: 0, positive: 0, neutral: 0, negative: 0 };
     buckets[date].total++;
-    buckets[date][classifySentiment(cleanText(c.text || ""))]++;
+    const s = c.sentiment || "neutral";
+    if (s === "positive") buckets[date].positive++;
+    else if (s === "negative") buckets[date].negative++;
+    else buckets[date].neutral++;
   }
   const commentTrend: CommentTrendPoint[] = Object.entries(buckets)
     .sort(([a], [b]) => a.localeCompare(b))
@@ -228,8 +239,9 @@ export async function fetchAllRealData(): Promise<AllRealData> {
       if (rawRows) for (const r of rawRows) rawDataMap[r.id] = r.raw_data;
     }
 
+    // Match top comment per selected post from feed comments
     const commentsByPost: Record<string, TopComment> = {};
-    for (const c of allComments) {
+    for (const c of feedComments) {
       if (!c.post_id || !c.text || commentsByPost[c.post_id]) continue;
       if (!selectedPostIds.includes(c.post_id)) continue;
       commentsByPost[c.post_id] = { author: `@${c.author_username || "usuario"}`, text: cleanText(c.text), likes: c.likes || 0 };
@@ -293,6 +305,5 @@ export async function fetchAllRealData(): Promise<AllRealData> {
   return { mentions, topPosts, mentionsByNetwork, sentimentByBrand, sovData, commentTrend, brandEngagement, accountSnapshots, sovByNetwork };
 }
 
-// Legacy individual exports kept for type compatibility
 export { fetchAll };
 export type { AccountRow };
