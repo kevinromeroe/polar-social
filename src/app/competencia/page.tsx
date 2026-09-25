@@ -8,7 +8,7 @@ import {
   networkColors,
   networkLabels,
 } from "@/lib/mock-data";
-import type { BrandData, Network, TopPostData } from "@/lib/mock-data";
+import type { BrandData, Network, TopPostData, CompetitorStrategy } from "@/lib/mock-data";
 import { useClientData } from "@/lib/client-data";
 import {
   ChevronDown,
@@ -28,6 +28,21 @@ const networkIcons: Record<string, React.ComponentType<{ className?: string; siz
   linkedin: FaLinkedinIn,
   x: FaXTwitter,
   reddit: FaRedditAlien,
+};
+
+const threatConfig: Record<string, { label: string; color: string; bg: string }> = {
+  critica: { label: "Prioridad crítica", color: "text-red-700", bg: "bg-red-50" },
+  alta: { label: "Prioridad alta", color: "text-orange-700", bg: "bg-orange-50" },
+  media: { label: "Prioridad media", color: "text-amber-700", bg: "bg-amber-50" },
+  baja: { label: "Prioridad baja", color: "text-gray-600", bg: "bg-gray-50" },
+};
+
+const networkStatusDot: Record<string, string> = {
+  domina: "bg-emerald-500",
+  fuerte: "bg-blue-500",
+  presente: "bg-amber-400",
+  debil: "bg-orange-400",
+  ausente: "bg-gray-300",
 };
 
 function getSemaforoColor(value: number, allValues: number[]): string {
@@ -351,8 +366,75 @@ function PostCard({ post, brandColors }: { post: TopPostData; brandColors: Recor
   );
 }
 
+function CompetitorCard({ competitor, brandColor }: { competitor: CompetitorStrategy; brandColor?: string }) {
+  const threat = threatConfig[competitor.threatLevel];
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <div className={`rounded-xl border overflow-hidden ${competitor.threatLevel === "critica" ? "border-red-200" : "border-gray-200"}`}>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold" style={{ color: brandColor || "#334155" }}>{competitor.brand}</span>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${threat.bg} ${threat.color}`}>{threat.label}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            {competitor.networks.map((n) => (
+              <div key={n.network} className="flex items-center gap-1" title={`${n.network}: ${n.status} (ER ${n.er}%)`}>
+                <span className={`w-2 h-2 rounded-full ${networkStatusDot[n.status]}`} />
+                <span className="text-[9px] text-gray-400">{n.network[0]}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-500 mb-1">{competitor.mainStrength}</p>
+
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="text-[11px] font-semibold text-teal-700 hover:text-teal-900 transition-colors mt-1"
+        >
+          {expanded ? "Ocultar ▲" : "Ver estrategia, qué copiar y qué evitar ▼"}
+        </button>
+
+        {expanded && (
+          <div className="mt-3 space-y-3">
+            <div className="bg-gray-50 rounded-lg p-3">
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Estrategia</p>
+              <p className="text-xs text-gray-700 leading-relaxed">{competitor.strategy}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="bg-emerald-50 rounded-lg p-3 border border-emerald-100">
+                <p className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider mb-1">Copiar</p>
+                <p className="text-xs text-emerald-900 leading-relaxed mb-2">{competitor.toCopy.action}</p>
+                <p className="text-[10px] text-emerald-700 italic">{competitor.toCopy.proof}</p>
+              </div>
+              <div className="bg-red-50 rounded-lg p-3 border border-red-100">
+                <p className="text-[10px] font-bold text-red-700 uppercase tracking-wider mb-1">Evitar</p>
+                <p className="text-xs text-red-900 leading-relaxed mb-2">{competitor.toAvoid.action}</p>
+                <p className="text-[10px] text-red-700 italic">{competitor.toAvoid.proof}</p>
+              </div>
+            </div>
+
+            <div className="flex gap-2 flex-wrap">
+              {competitor.networks.map((n) => (
+                <div key={n.network} className="flex items-center gap-1.5 bg-white border border-gray-100 rounded-lg px-2.5 py-1.5">
+                  <span className={`w-2 h-2 rounded-full ${networkStatusDot[n.status]}`} />
+                  <span className="text-[11px] font-medium text-gray-700">{n.network}</span>
+                  <span className="text-[10px] text-gray-400">ER {n.er}%</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function CompetenciaPage() {
-  const { ownBrands, competitors, brandColors, topPosts, brandTopicMaps } = useClientData();
+  const { ownBrands, competitors, brandColors, topPosts, brandTopicMaps, competitorStrategies } = useClientData();
   const allBrands = [...ownBrands, ...competitors];
 
   const hasInstagram = allBrands.some((b) => b.networks.instagram);
@@ -476,6 +558,43 @@ export default function CompetenciaPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Mapa estratégico competitivo */}
+      {competitorStrategies.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">
+            Mapa estrat&eacute;gico competitivo
+          </h3>
+          <p className="text-xs text-gray-400 mb-2">
+            Qu&eacute; copiar y qu&eacute; evitar de cada competidor &mdash; inteligencia accionable para tu estrategia de contenido
+          </p>
+          <div className="flex gap-3 mb-4 flex-wrap">
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" /> Domina
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-blue-500" /> Fuerte
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-amber-400" /> Presente
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-orange-400" /> D&eacute;bil
+            </div>
+            <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+              <span className="w-2 h-2 rounded-full bg-gray-300" /> Ausente
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {competitorStrategies.map((c) => (
+              <CompetitorCard key={c.brand} competitor={c} brandColor={brandColors[c.brand]} />
+            ))}
+          </div>
+          <p className="text-[10px] text-gray-300 mt-4 leading-relaxed">
+            Nivel de prioridad calculado por combinaci&oacute;n de: tama&ntilde;o de audiencia, engagement rate, presencia multicanal y crecimiento. Recomendaciones basadas en an&aacute;lisis de contenido real publicado por cada marca.
+          </p>
         </div>
       )}
 
