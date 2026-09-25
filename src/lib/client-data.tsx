@@ -8,6 +8,7 @@ import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
 import { fetchRealMentions, fetchRealTopPosts, fetchMentionsByNetwork, fetchSentimentByBrand, fetchSOVData, fetchCommentTrend, fetchBrandEngagement, fetchAccountSnapshots, fetchSOVByNetwork } from "./supabase-data";
 import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry } from "./supabase-data";
+import { supabase } from "./supabase";
 
 export interface ClientDataset {
   brands: BrandData[];
@@ -189,6 +190,19 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
 
   const loadRealData = useCallback(async () => {
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        console.warn("[Supabase] No hay sesión autenticada activa");
+        return;
+      }
+      const tokenExp = session.expires_at ? new Date(session.expires_at * 1000) : null;
+      const isExpired = tokenExp && tokenExp < new Date();
+      if (isExpired) {
+        const { error: refreshErr } = await supabase.auth.refreshSession();
+        if (refreshErr) {
+          console.warn("[Supabase] No se pudo refrescar token:", refreshErr.message);
+        }
+      }
       const [mentions, topPosts, mentionsByNet, sentiment, sov, trend, engagement, snapshots, sovByNet] = await Promise.all([
         fetchRealMentions(),
         fetchRealTopPosts(),
