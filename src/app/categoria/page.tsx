@@ -137,7 +137,7 @@ export default function EscuchaActivaPage() {
       {dataStatus === "loading" && (
         <div className="mb-4 px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-2">
           <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full" />
-          <span className="text-sm text-blue-700">Cargando datos reales de Supabase...</span>
+          <span className="text-sm text-blue-700">Cargando datos...</span>
         </div>
       )}
       {dataStatus === "error" && (

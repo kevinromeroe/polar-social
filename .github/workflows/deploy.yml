@@ -31,6 +31,12 @@ jobs:
           rm -f package-lock.json
           npm install
 
+      - name: Generate static data from Supabase
+        run: node scripts/generate-static-data.mjs
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
       - name: Build static export
         run: npm run build
         env:

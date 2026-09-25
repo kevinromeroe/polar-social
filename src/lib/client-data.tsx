@@ -6,8 +6,7 @@ import type { BrandData, MentionData, AlertData, TopPostData, SentimentCategoryS
 
 import * as polarData from "./mock-data";
 import * as havolineData from "./mock-data-havoline";
-import { fetchAllRealData } from "./supabase-data";
-import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry } from "./supabase-data";
+import type { CommentTrendPoint, BrandEngagement, AccountSnapshot, SOVByNetworkEntry, AllRealData } from "./supabase-data";
 
 
 export interface ClientDataset {
@@ -120,6 +119,29 @@ const clients: Record<string, ClientDataset> = {
   "havoline@datalitica.com.co": havolineDataset,
 };
 
+// Dataset vacío para Polar mientras se cargan datos reales (no muestra mock)
+const emptyPolarDataset: ClientDataset = {
+  ...polarDataset,
+  sovData: [],
+  sentimentByBrand: [],
+  growthTrend: [],
+  mentionsByNetwork: [],
+  topPosts: [],
+  mentions: [],
+  alerts: [],
+  googleMapsData: [],
+  sentimentCategorySummaries: {},
+  categoryTrends: [],
+  brandTopicMaps: [],
+  mentionVolumeData: [],
+  networkIntelligence: [],
+  competitorStrategies: [],
+  commentTrend: [],
+  brandEngagement: [],
+  accountSnapshots: [],
+  sovByNetwork: {},
+};
+
 function filterDatasetByProductLine(dataset: ClientDataset, productLine: string): ClientDataset {
   const filteredOwnBrands = dataset.ownBrands.filter(b => b.productLine === productLine || (b.productLine === null && !productLine.startsWith("mascotas_")));
   const filteredCompetitors = dataset.competitors.filter(b => b.productLine === productLine);
@@ -177,7 +199,7 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
 }
 
 const defaultContext: ClientContextValue = {
-  ...polarDataset,
+  ...emptyPolarDataset,
   selectedProductLine: "",
   setSelectedProductLine: () => {},
   productLineOptions: [],
@@ -198,7 +220,24 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     setDataStatus("loading");
     setDataError(null);
     try {
-      const result = await fetchAllRealData();
+      let result: AllRealData | null = null;
+
+      // Intentar JSON estático primero (generado en build time)
+      try {
+        const res = await fetch("/data/real-data.json");
+        if (res.ok) {
+          result = await res.json();
+          console.log("[Static] Datos precargados desde JSON estático");
+        }
+      } catch { /* static file not found — fall back to runtime */ }
+
+      // Fallback: queries en tiempo real a Supabase (solo dev local)
+      if (!result) {
+        console.log("[Supabase] Cargando datos en tiempo real...");
+        const { fetchAllRealData } = await import("./supabase-data");
+        result = await fetchAllRealData();
+      }
+
       const counts = {
         mentions: result.mentions.length, topPosts: result.topPosts.length,
         mentionsByNet: result.mentionsByNetwork.length, sentiment: result.sentimentByBrand.length,
@@ -206,7 +245,7 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         engagement: result.brandEngagement.length, snapshots: result.accountSnapshots.length,
         sovByNet: Object.keys(result.sovByNetwork).length,
       };
-      console.log("[Supabase] Datos cargados:", counts);
+      console.log("[Data] Datos cargados:", counts);
       const hasAny = Object.values(counts).some(c => c > 0);
       if (hasAny) {
         setRealData({
@@ -222,12 +261,12 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
         });
         setDataStatus("loaded");
       } else {
-        console.warn("[Supabase] Todas las consultas retornaron vacío");
+        console.warn("[Data] Todas las consultas retornaron vacío");
         setDataStatus("loaded");
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error("[Supabase] Error cargando datos:", msg);
+      console.error("[Data] Error cargando datos:", msg);
       setDataStatus("error");
       setDataError(msg);
     }
@@ -239,8 +278,15 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
 
   const baseDataset = useMemo(() => {
     const email = user?.email ?? "";
+
+    // Havoline: usa datos mock (no tiene datos reales en Supabase)
+    if (email === "havoline@datalitica.com.co") return havolineDataset;
+
+    // Polar: mientras carga, mostrar vacío (no mock)
     const mock = clients[email] ?? polarDataset;
-    if (!realData || email === "havoline@datalitica.com.co") return mock;
+    if (!realData) return emptyPolarDataset;
+
+    // Polar: merge datos reales con configuración de marcas
     const merged = { ...mock } as ClientDataset;
 
     if (realData.mentions && realData.mentions.length > 0) merged.mentions = realData.mentions;

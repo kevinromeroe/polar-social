@@ -43,5 +43,8 @@ data/scraped/
 # Supabase temp
 supabase/.temp/
 
+# Static data (generated at build time)
+public/data/
+
 # Misc
 *.log
