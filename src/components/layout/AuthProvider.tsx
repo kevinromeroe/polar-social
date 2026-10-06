@@ -1,12 +1,12 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import type { User, Session } from "@supabase/supabase-js";
-import { onAuthStateChange, getSession } from "@/lib/auth";
+import type { StaticUser, StaticSession } from "@/lib/auth";
+import { getSession, onAuthChange } from "@/lib/auth";
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: StaticUser | null;
+  session: StaticSession | null;
   loading: boolean;
 }
 
@@ -21,8 +21,8 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<StaticUser | null>(null);
+  const [session, setSession] = useState<StaticSession | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,13 +32,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    const { data: { subscription } } = onAuthStateChange((s) => {
-      setSession(s);
-      setUser(s?.user ?? null);
-      setLoading(false);
+    const unsub = onAuthChange(() => {
+      getSession().then((s) => {
+        setSession(s);
+        setUser(s?.user ?? null);
+      });
     });
 
-    return () => subscription.unsubscribe();
+    return unsub;
   }, []);
 
   return (

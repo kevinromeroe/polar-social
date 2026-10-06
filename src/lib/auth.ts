@@ -1,34 +1,79 @@
 "use client";
 
-import { supabase } from "./supabase";
-import type { User, Session } from "@supabase/supabase-js";
+export interface StaticUser {
+  email: string;
+  id: string;
+}
+
+export interface StaticSession {
+  user: StaticUser;
+}
+
+const STORAGE_KEY = "eac_session";
+
+const listeners = new Set<() => void>();
+
+function notifyChange() {
+  listeners.forEach((fn) => fn());
+}
+
+export function onAuthChange(fn: () => void) {
+  listeners.add(fn);
+  return () => {
+    listeners.delete(fn);
+  };
+}
+
+function getStoredSession(): StaticSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+async function sha256(text: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 export async function signIn(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-  if (error) throw error;
-  return data;
+  const res = await fetch("/data/auth.json");
+  if (!res.ok) throw new Error("No se pudo verificar credenciales");
+  const credentials: { email: string; hash: string }[] = await res.json();
+
+  const hash = await sha256(password);
+  const match = credentials.find((c) => c.email === email && c.hash === hash);
+
+  if (!match) throw new Error("Credenciales inválidas");
+
+  const session: StaticSession = {
+    user: { email: match.email, id: match.email },
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  } catch {}
+  notifyChange();
+  return { user: session.user, session };
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch {}
+  notifyChange();
 }
 
-export async function getSession(): Promise<Session | null> {
-  const { data } = await supabase.auth.getSession();
-  return data.session;
+export async function getSession(): Promise<StaticSession | null> {
+  return getStoredSession();
 }
 
-export async function getUser(): Promise<User | null> {
-  const { data } = await supabase.auth.getUser();
-  return data.user;
-}
-
-export function onAuthStateChange(callback: (session: Session | null) => void) {
-  return supabase.auth.onAuthStateChange((_event, session) => {
-    callback(session);
-  });
+export async function getUser(): Promise<StaticUser | null> {
+  return getStoredSession()?.user ?? null;
 }

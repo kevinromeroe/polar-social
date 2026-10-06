@@ -31,6 +31,12 @@ jobs:
           rm -f package-lock.json
           npm install
 
+      - name: Generate static auth
+        run: node scripts/generate-auth.mjs
+        env:
+          AUTH_POLAR_PASSWORD: ${{ secrets.AUTH_POLAR_PASSWORD }}
+          AUTH_HAVOLINE_PASSWORD: ${{ secrets.AUTH_HAVOLINE_PASSWORD }}
+
       - name: Generate static data from Supabase
         run: node scripts/generate-static-data.mjs
         env:
