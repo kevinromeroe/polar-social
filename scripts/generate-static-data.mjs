@@ -285,7 +285,7 @@ for (const ids of [alimentosIds, mascotasIds, lubricantesIds]) {
   for (const sent of ["positive", "negative", "neutral"]) {
     feedQueries.push(
       sb.from("comments").select("id, text, author_username, likes, published_at, network, account_id, sentiment")
-        .eq("sentiment", sent).in("account_id", ids).order("likes", { ascending: false }).limit(50)
+        .eq("sentiment", sent).in("account_id", ids).order("likes", { ascending: false }).limit(500)
     );
   }
 }
