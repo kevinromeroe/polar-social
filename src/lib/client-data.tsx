@@ -110,8 +110,8 @@ const havolineDataset: ClientDataset = {
   sovByNetwork: {},
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
-  clientName: "Havoline",
-  clientDescription: "Havoline Colombia",
+  clientName: "Valvoline",
+  clientDescription: "Lubricantes para Carros",
 };
 
 const clients: Record<string, ClientDataset> = {
@@ -119,9 +119,31 @@ const clients: Record<string, ClientDataset> = {
   "havoline@datalitica.com.co": havolineDataset,
 };
 
-// Dataset vacío para Polar mientras se cargan datos reales (no muestra mock)
+// Dataset vacío mientras se cargan datos reales (no muestra mock)
 const emptyPolarDataset: ClientDataset = {
   ...polarDataset,
+  sovData: [],
+  sentimentByBrand: [],
+  growthTrend: [],
+  mentionsByNetwork: [],
+  topPosts: [],
+  mentions: [],
+  alerts: [],
+  googleMapsData: [],
+  sentimentCategorySummaries: {},
+  categoryTrends: [],
+  brandTopicMaps: [],
+  mentionVolumeData: [],
+  networkIntelligence: [],
+  competitorStrategies: [],
+  commentTrend: [],
+  brandEngagement: [],
+  accountSnapshots: [],
+  sovByNetwork: {},
+};
+
+const emptyHavolineDataset: ClientDataset = {
+  ...havolineDataset,
   sovData: [],
   sentimentByBrand: [],
   growthTrend: [],
@@ -216,26 +238,36 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
   const [dataStatus, setDataStatus] = useState<"idle" | "loading" | "loaded" | "error">("idle");
   const [dataError, setDataError] = useState<string | null>(null);
 
-  const loadRealData = useCallback(async () => {
+  const loadRealData = useCallback(async (email: string) => {
     setDataStatus("loading");
     setDataError(null);
     try {
       let result: AllRealData | null = null;
 
+      const jsonFile = email === "havoline@datalitica.com.co"
+        ? "/data/real-data-valvoline.json"
+        : "/data/real-data.json";
+
       // Intentar JSON estático primero (generado en build time)
       try {
-        const res = await fetch("/data/real-data.json");
+        const res = await fetch(jsonFile);
         if (res.ok) {
           result = await res.json();
-          console.log("[Static] Datos precargados desde JSON estático");
+          console.log(`[Static] Datos precargados desde ${jsonFile}`);
         }
       } catch { /* static file not found — fall back to runtime */ }
 
-      // Fallback: queries en tiempo real a Supabase (solo dev local)
-      if (!result) {
+      // Fallback: queries en tiempo real a Supabase (solo dev local, solo Polar)
+      if (!result && email !== "havoline@datalitica.com.co") {
         console.log("[Supabase] Cargando datos en tiempo real...");
         const { fetchAllRealData } = await import("./supabase-data");
         result = await fetchAllRealData();
+      }
+
+      if (!result) {
+        console.warn("[Data] No se encontraron datos estáticos");
+        setDataStatus("loaded");
+        return;
       }
 
       const counts = {
@@ -273,20 +305,17 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   useEffect(() => {
-    if (user?.email) loadRealData();
+    if (user?.email) loadRealData(user.email);
   }, [user?.email, loadRealData]);
 
   const baseDataset = useMemo(() => {
     const email = user?.email ?? "";
 
-    // Havoline: usa datos mock (no tiene datos reales en Supabase)
-    if (email === "havoline@datalitica.com.co") return havolineDataset;
-
-    // Polar: mientras carga, mostrar vacío (no mock)
     const mock = clients[email] ?? polarDataset;
-    if (!realData) return emptyPolarDataset;
+    const emptyDataset = email === "havoline@datalitica.com.co" ? emptyHavolineDataset : emptyPolarDataset;
 
-    // Polar: merge datos reales con configuración de marcas
+    if (!realData) return emptyDataset;
+
     const merged = { ...mock } as ClientDataset;
 
     if (realData.mentions && realData.mentions.length > 0) merged.mentions = realData.mentions;
