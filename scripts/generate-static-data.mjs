@@ -216,6 +216,7 @@ function buildDataset(accountMap, accountIds, feedComments, lightComments, allPo
         imageUrl: undefined,
         topComment: undefined,
         ranking,
+        productLine: acc?.product_line || undefined,
       };
     };
     topPosts.push(mapPost(best, "best"));
@@ -273,14 +274,14 @@ const lightComments = await fetchAll("comments", "account_id, network, published
 console.log(`Comentarios (ligero): ${lightComments.length}`);
 
 const allAccounts = Object.values(accountMap);
-const polarIds = allAccounts.filter(a => a.product_line !== "lubricantes").map(a => a.id);
-const lubricantesIds = allAccounts.filter(a => a.product_line === "lubricantes").map(a => a.id);
+const polarIds = allAccounts.filter(a => a.product_line !== "lubricantes" && a.product_line !== "motos").map(a => a.id);
+const havolineIds = allAccounts.filter(a => a.product_line === "lubricantes" || a.product_line === "motos").map(a => a.id);
 const mascotasIds = allAccounts.filter(a => a.product_line === "mascotas").map(a => a.id);
 const alimentosIds = polarIds.filter(id => !mascotasIds.includes(id));
 
 // Feed queries separados por grupo (alimentos vs mascotas para Polar, lubricantes para Valvoline)
 const feedQueries = [];
-for (const ids of [alimentosIds, mascotasIds, lubricantesIds]) {
+for (const ids of [alimentosIds, mascotasIds, havolineIds]) {
   if (ids.length === 0) continue;
   for (const sent of ["positive", "negative", "neutral"]) {
     feedQueries.push(
@@ -312,15 +313,15 @@ const polarKB = Math.round(JSON.stringify(polarResult).length / 1024);
 console.log(`  ${polarPath} (${polarKB} KB)`);
 console.log(`  mentions: ${polarResult.mentions.length}, topPosts: ${polarResult.topPosts.length}, sovData: ${polarResult.sovData.length}`);
 
-// ── VALVOLINE ──
-if (lubricantesIds.length > 0) {
-  console.log("\n── Generando datos Valvoline ──");
-  const valvolineResult = buildDataset(accountMap, lubricantesIds, feedComments, lightComments, allPosts, snapshotsRaw.data);
-  const valvolinePath = join(outDir, "real-data-valvoline.json");
-  writeFileSync(valvolinePath, JSON.stringify(valvolineResult));
-  const valKB = Math.round(JSON.stringify(valvolineResult).length / 1024);
-  console.log(`  ${valvolinePath} (${valKB} KB)`);
-  console.log(`  mentions: ${valvolineResult.mentions.length}, topPosts: ${valvolineResult.topPosts.length}, sovData: ${valvolineResult.sovData.length}`);
+// ── HAVOLINE (lubricantes + motos) ──
+if (havolineIds.length > 0) {
+  console.log("\n── Generando datos Havoline/Valvoline ──");
+  const havolineResult = buildDataset(accountMap, havolineIds, feedComments, lightComments, allPosts, snapshotsRaw.data);
+  const havolinePath = join(outDir, "real-data-valvoline.json");
+  writeFileSync(havolinePath, JSON.stringify(havolineResult));
+  const havKB = Math.round(JSON.stringify(havolineResult).length / 1024);
+  console.log(`  ${havolinePath} (${havKB} KB)`);
+  console.log(`  mentions: ${havolineResult.mentions.length}, topPosts: ${havolineResult.topPosts.length}, sovData: ${havolineResult.sovData.length}`);
 }
 
 const elapsed = Date.now() - t0;
