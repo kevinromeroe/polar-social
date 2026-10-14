@@ -63,6 +63,8 @@ function cleanText(raw) {
 
 const RELEVANCE_KEYWORDS = /harina|arepa|pan\b|maíz|maiz|atún|atun|pasta|polar|p\.a\.n|comida|cocina|receta|desayuno|almuerzo|cena|alimento|colombia|bogot|medell|cali\b|barranquilla|empanada|buñuelo|mascotas|perro|gato|donkan|mirringo|chunky|cat chow|dog chow|purina|ringo|lubricant|aceite|motor|carro|auto|moto|valvoline|shell|mobil|liqui moly|helix|rimula|super|sintético|sintetico|10w|20w|5w|sae/i;
 
+const LUBRICANTES_KEYWORDS = /aceite|lubricant|motor|moto|carro|auto|vehículo|vehiculo|camion|camión|cambio de aceite|sintético|sintetico|mineral|semisintético|semisintetico|viscosidad|10w|20w|5w|sae|transmisión|transmision|hidráulico|hidraulico|filtro|mantenimiento|taller|mecánic|kilómetro|kilometro|rendimiento|protección|proteccion|desgaste|fricción|friccion|temperatura|recalent|sobrecalent|fuga|gotea|consume|consumo|duración|duracion|calidad|rinde|producto|marca|precio|caro|barato|bueno|malo|recomend|comprar|usar|uso|prob[aé]|servicio|garantía|garantia|havoline|valvoline|castrol|mobil|shell|liqui moly|motul|rimula|helix|delvac|power|advance|magnatec|edge|ultra|maxlife/i;
+
 const EXCLUDE_VENEZUELA = /venezuel|vzla|caracas|maracaibo|maracay|en venezuela|desde venezuela/i;
 
 function extractFbImage(raw) {
@@ -86,11 +88,18 @@ function buildDataset(accountMap, accountIds, feedComments, lightComments, allPo
   const myPosts = allPosts.filter(p => idSet.has(p.account_id));
 
   // --- MENTIONS ---
+  const isLubricantesSet = new Set(accountIds.filter(id => {
+    const a = accountMap[id];
+    return a && (a.product_line === "lubricantes" || a.product_line === "motos");
+  }));
+  const isLubricantesGroup = isLubricantesSet.size > 0 && isLubricantesSet.size === accountIds.length;
+
   const mentions = myFeed
     .filter(c => {
       if (!c.text || c.text.length < 4) return false;
       if (EXCLUDE_VENEZUELA.test(c.text)) return false;
       if (c.network === "reddit" || c.network === "x") return RELEVANCE_KEYWORDS.test(c.text);
+      if (isLubricantesGroup) return LUBRICANTES_KEYWORDS.test(c.text);
       return true;
     })
     .map((c, i) => {

@@ -10,6 +10,7 @@ import {
   LogOut,
   PawPrint,
   UtensilsCrossed,
+  Droplets,
 } from "lucide-react";
 import { signOut } from "@/lib/auth";
 import { useClientData } from "@/lib/client-data";
@@ -28,7 +29,7 @@ const mascotasLinks = [
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { selectedProductLine, setSelectedProductLine, productLineOptions, hasMultipleProductLines } = useClientData();
+  const { selectedProductLine, setSelectedProductLine, productLineOptions, hasMultipleProductLines, clientName } = useClientData();
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -40,6 +41,9 @@ export function Sidebar() {
   const mascotasOptions = productLineOptions.filter(o => o.key.startsWith("mascotas"));
   const hasMascotas = mascotasOptions.length > 0;
   const isMascotasActive = selectedProductLine.startsWith("mascotas");
+  const isLubricantes = clientName?.includes("Havoline") || clientName?.includes("Valvoline");
+  const sectionLabel = isLubricantes ? "Lubricantes" : "Alimentos";
+  const SectionIcon = isLubricantes ? Droplets : UtensilsCrossed;
 
   return (
     <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col">
@@ -62,8 +66,8 @@ export function Sidebar() {
         {/* Alimentos section */}
         <div>
           <div className="flex items-center gap-2 px-3 mb-2">
-            <UtensilsCrossed className="h-3.5 w-3.5 text-slate-500" />
-            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Alimentos</p>
+            <SectionIcon className="h-3.5 w-3.5 text-slate-500" />
+            <p className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold">{sectionLabel}</p>
           </div>
 
           {hasMultipleProductLines && alimentosOptions.length > 1 && (
