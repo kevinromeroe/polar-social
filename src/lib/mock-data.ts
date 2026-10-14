@@ -66,6 +66,7 @@ export interface TopPostData {
   imageUrl?: string;
   topComment?: TopComment;
   ranking?: "best" | "worst";
+  productLine?: string;
 }
 
 export interface SentimentCategorySummary {

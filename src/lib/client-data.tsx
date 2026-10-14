@@ -110,8 +110,8 @@ const havolineDataset: ClientDataset = {
   sovByNetwork: {},
   productLineLabels: havolineData.productLineLabels,
   productLineKeys: havolineData.productLineKeys,
-  clientName: "Valvoline",
-  clientDescription: "Lubricantes para Carros",
+  clientName: "Havoline / Valvoline",
+  clientDescription: "Lubricantes Colombia",
 };
 
 const clients: Record<string, ClientDataset> = {
@@ -197,7 +197,9 @@ function filterDatasetByProductLine(dataset: ClientDataset, productLine: string)
     sovData: recalcSov,
     sentimentByBrand: dataset.sentimentByBrand.filter(s => brandNamesInLine.has(s.brand)),
     growthTrend: filteredGrowth,
-    topPosts: dataset.topPosts.filter(p => brandNamesInLine.has(p.brand)),
+    topPosts: dataset.topPosts.filter(p =>
+      brandNamesInLine.has(p.brand) && (!p.productLine || p.productLine === productLine)
+    ),
     mentions: dataset.mentions.filter(m =>
       brandNamesInLine.has(m.brand) && (!m.productLine || m.productLine === productLine || (productLine.startsWith("mascotas_") && m.productLine === "mascotas"))
     ),
@@ -317,7 +319,40 @@ export function ClientDataProvider({ children }: { children: React.ReactNode }) 
     if (!realData) return emptyDataset;
 
     const merged = { ...mock } as ClientDataset;
+    const isMultiLine = email === "havoline@datalitica.com.co";
 
+    if (isMultiLine) {
+      // Havoline: COMBINAR mock (motos) + real (carros) — el filtro productLine los separa
+      if (realData.mentions && realData.mentions.length > 0)
+        merged.mentions = [...mock.mentions, ...realData.mentions];
+      if (realData.topPosts && realData.topPosts.length > 0)
+        merged.topPosts = [...mock.topPosts, ...realData.topPosts];
+      if (realData.mentionsByNetwork && realData.mentionsByNetwork.length > 0)
+        merged.mentionsByNetwork = realData.mentionsByNetwork;
+      if (realData.commentTrend && realData.commentTrend.length > 0)
+        merged.commentTrend = realData.commentTrend;
+      if (realData.brandEngagement && realData.brandEngagement.length > 0)
+        merged.brandEngagement = realData.brandEngagement;
+      if (realData.accountSnapshots && realData.accountSnapshots.length > 0)
+        merged.accountSnapshots = realData.accountSnapshots;
+      if (realData.sovByNetwork && Object.keys(realData.sovByNetwork).length > 0)
+        merged.sovByNetwork = realData.sovByNetwork;
+      if (realData.sentimentByBrand && realData.sentimentByBrand.length > 0) {
+        const realBrandsSent = new Set(realData.sentimentByBrand.map(s => s.brand));
+        const mockMissing = mock.sentimentByBrand.filter(s => !realBrandsSent.has(s.brand));
+        merged.sentimentByBrand = [...realData.sentimentByBrand, ...mockMissing];
+      }
+      if (realData.sovData && realData.sovData.length > 0) {
+        const realBrandsSov = new Set(realData.sovData.map(s => s.brand));
+        const mockMissing = mock.sovData.filter(s => !realBrandsSov.has(s.brand));
+        const combined = [...realData.sovData, ...mockMissing];
+        const total = combined.reduce((s, e) => s + e.mentions, 0);
+        merged.sovData = combined.map(e => ({ ...e, percentage: total > 0 ? Number(((e.mentions / total) * 100).toFixed(1)) : 0 })).sort((a, b) => b.mentions - a.mentions);
+      }
+      return merged;
+    }
+
+    // Polar: datos reales REEMPLAZAN mock
     if (realData.mentions && realData.mentions.length > 0) merged.mentions = realData.mentions;
     if (realData.mentionsByNetwork && realData.mentionsByNetwork.length > 0) merged.mentionsByNetwork = realData.mentionsByNetwork;
     if (realData.commentTrend && realData.commentTrend.length > 0) merged.commentTrend = realData.commentTrend;
